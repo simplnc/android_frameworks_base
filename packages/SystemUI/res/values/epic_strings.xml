@@ -9,4 +9,19 @@
     <!-- Kill button in notification guts -->
     <string name="force_stop_dlg_title">Force stop?</string>
     <string name="force_stop_dlg_text">If you force stop an app, it may misbehave.</string>
+
+
+    <!-- On The Go -->
+    <string name="onthego_notif_ticker">B Mobile activated</string>
+    <string name="onthego_notif_title">B Mobile is active</string>
+    <string name="onthego_notif_stop">Stop</string>
+    <string name="onthego_notif_options">Options</string>
+    <string name="onthego_notif_error">Unable to start B Mobile</string>
+    <string name="onthego_notif_restart">Restart B Mobile</string>
+    <string name="onthego_notif_camera_changed">Camera mode changed</string>
+    <string name="onthego_transparency">Transparency</string>
+    <string name="onthego_front_camera">Use front camera</string>
+    <string name="onthego_service_toggle">Automatically restart B Mobile service</string>
+    <string name="onthego_channel_name">Main</string>
+    <string name="global_action_onthego">B-Mobile</string>
 </resources>
