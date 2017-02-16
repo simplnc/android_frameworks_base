@@ -18495,6 +18495,12 @@ public final class Settings {
          * @hide
          */
         public static final String ONE_HANDED_KEYGUARD_SIDE = "one_handed_keyguard_side";
+        
+        /**
+         * Audio focus mode for ringtones when headset is connected
+         * @hide
+        */
+               public static final String RINGTONE_FOCUS_MODE = "ringtone_focus_mode";   
 
         /**
          * A list of uids that are allowed to use restricted networks.
