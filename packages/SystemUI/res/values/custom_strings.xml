@@ -62,4 +62,22 @@
     <string name="quick_settings_preferred_network_lte">4G / LTE</string>
     <string name="quick_settings_preferred_network_nr">5G / NR</string>
     <string name="quick_settings_preferred_network_unsupported">Unsupported</string>
+
+    <!-- Task Locking Settings -->
+    <string name="task_locking_title">Task Locking</string>
+    <string name="task_locking_summary">Prevent apps from being killed in background</string>
+    <string name="task_locking_enabled_title">Enable task locking</string>
+    <string name="task_locking_enabled_summary">Allow locking tasks to prevent background killing</string>
+    <string name="task_locking_confirmation_title">Show confirmation</string>
+    <string name="task_locking_confirmation_summary">Show confirmation dialog when locking tasks</string>
+    <string name="task_locking_pinning_title">Enable persistence</string>
+    <string name="task_locking_pinning_summary">Keep locked tasks persistent in memory</string>
+    <string name="task_locking_reset_title">Reset to defaults</string>
+    <string name="task_locking_reset_summary">Reset all task locking settings to defaults</string>
+    <string name="task_locked">Task locked - won\'t be killed in background</string>
+    <string name="task_unlocked">Task unlocked - can be killed in background</string>
+    <string name="task_locking_failed">Failed to lock task</string>
+    <string name="task_unlocking_failed">Failed to unlock task</string>
+    <string name="task_locking_clear_all">Clear all locked tasks</string>
+    <string name="task_locking_prevented_kill">Prevented locked task from being killed</string>
 </resources>
