@@ -63,6 +63,12 @@
             android:title="@string/plugins"
             android:fragment="com.android.systemui.tuner.PluginFragment" />
 
+    <Preference
+            android:key="task_locking"
+            android:title="@string/task_locking_title"
+            android:summary="@string/task_locking_summary"
+            android:fragment="com.android.systemui.tuner.TaskLockingFragment" />
+
     <!-- Warning, this goes last. -->
     <Preference
         android:summary="@string/tuner_persistent_warning"
