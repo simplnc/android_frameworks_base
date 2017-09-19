@@ -24,6 +24,9 @@ import static android.view.WindowManager.ScreenshotSource.SCREENSHOT_GLOBAL_ACTI
 import static android.view.WindowManager.TAKE_SCREENSHOT_FULLSCREEN;
 import static android.view.WindowManager.TAKE_SCREENSHOT_SELECTED_REGION;
 
+import android.view.CrossWindowBlurListeners;
+import com.android.systemui.statusbar.BlurUtils;
+import com.android.systemui.dump.DumpManager;
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.SOME_AUTH_REQUIRED_AFTER_USER_REQUEST;
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_NOT_REQUIRED;
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_REQUIRED_AFTER_USER_LOCKDOWN;
@@ -717,13 +720,19 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         RestartBootloaderAction blAction = new RestartBootloaderAction();
         RestartDownloadAction dlAction = new RestartDownloadAction();
         RestartFastbootAction fbAction = new RestartFastbootAction();
+        
+        // Define the missing action variables
+        RestartBootloaderAction restartBootloaderAction = blAction;
+        RestartRecoveryAction restartRecoveryAction = recAction;
+        RestartSystemAction restartSystemUiAction = sysAction;
         ArraySet<String> addedKeys = new ArraySet<>();
         ArraySet<String> addedRestartKeys = new ArraySet<String>();
         List<Action> tempActions = new ArrayList<>();
         CurrentUserProvider currentUser = new CurrentUserProvider();
 
         // make sure emergency affordance action is first, if needed
-        if (mEmergencyAffordanceManager.needsEmergencyAffordance()) {
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWERMENU_EMERGENCY, 0) == 1) {
             addIfShouldShowAction(tempActions, new EmergencyAffordanceAction());
             addedKeys.add(GLOBAL_ACTION_KEY_EMERGENCY);
         }
@@ -735,27 +744,37 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 continue;
             }
             if (GLOBAL_ACTION_KEY_POWER.equals(actionKey)) {
-                addIfShouldShowAction(tempActions, shutdownAction);
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_POWER, 1) == 1) {
+                    addIfShouldShowAction(tempActions, shutdownAction);
+                }
             } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
-                addIfShouldShowAction(tempActions, mAirplaneModeOn);
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_AIRPLANE, 0) == 1) {
+                    addIfShouldShowAction(tempActions, mAirplaneModeOn);
+                }
             } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
                 if (shouldDisplayBugReport(currentUser.get())) {
                     addIfShouldShowAction(tempActions, new BugReportAction());
                 }
             } else if (GLOBAL_ACTION_KEY_SILENT.equals(actionKey)) {
-                if (mShowSilentToggle) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_SOUNDPANEL, 0) == 1) {
                     addIfShouldShowAction(tempActions, mSilentModeAction);
                 }
             } else if (GLOBAL_ACTION_KEY_USERS.equals(actionKey)) {
-                List<UserInfo> users = mUserManager.getUsers();
-                if (users.size() > 1) {
-                    addUserActions(mUsersItems, currentUser.get());
-                    addIfShouldShowAction(tempActions, new UsersAction());
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_USERS, 0) == 1) {
+                    addUserActions(tempActions, currentUser.get());
                 }
             } else if (GLOBAL_ACTION_KEY_SETTINGS.equals(actionKey)) {
-                addIfShouldShowAction(tempActions, getSettingsAction());
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_SETTINGS, 0) != 0) {
+                    addIfShouldShowAction(tempActions, getSettingsAction());
+                }
             } else if (GLOBAL_ACTION_KEY_LOCKDOWN.equals(actionKey)) {
-                if (shouldDisplayLockdown(currentUser.get())) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_LOCKDOWN, 0) != 0) {
                     addIfShouldShowAction(tempActions, new LockDownAction());
                 }
             } else if (GLOBAL_ACTION_KEY_VOICEASSIST.equals(actionKey)) {
@@ -763,7 +782,14 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             } else if (GLOBAL_ACTION_KEY_ASSIST.equals(actionKey)) {
                 addIfShouldShowAction(tempActions, getAssistAction());
             } else if (GLOBAL_ACTION_KEY_RESTART.equals(actionKey)) {
-                addIfShouldShowAction(tempActions, restartAction);
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_RESTART, 1) == 1) {
+                    addIfShouldShowAction(tempActions, restartAction);
+                    // if Restart action is available, add advanced restart actions too
+                    addIfShouldShowAction(tempActions, restartBootloaderAction);
+                    addIfShouldShowAction(tempActions, restartRecoveryAction);
+                    addIfShouldShowAction(tempActions, restartSystemUiAction);
+                }
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
                 UiModeManager uiModeManager =
                         (UiModeManager) mContext.getSystemService(Context.UI_MODE_SERVICE);
@@ -788,6 +814,22 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 addIfShouldShowAction(tempActions, new SystemUpdateAction());
             } else if (GLOBAL_ACTION_KEY_DEVICECONTROLS.equals(actionKey)) {
                 addIfShouldShowAction(tempActions, new DeviceControlsAction());
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_SCREENSHOT, 0) == 1) {
+                    addIfShouldShowAction(tempActions, new ScreenshotAction());
+                }
+            } else if (GLOBAL_ACTION_KEY_LOGOUT.equals(actionKey)) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_LOGOUT, 0) == 1
+                        && currentUser.get() != null
+                        && currentUser.get().id != UserHandle.USER_SYSTEM) {
+                    addIfShouldShowAction(tempActions, new LogoutAction());
+                }
+            } else if (GLOBAL_ACTION_KEY_EMERGENCY.equals(actionKey)) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_EMERGENCY, 0) == 1) {
+                    addIfShouldShowAction(tempActions, new EmergencyDialerAction());
+                }
             } else {
                 Log.e(TAG, "Invalid global action key " + actionKey);
             }
@@ -1466,7 +1508,6 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private Action getSettingsAction() {
         return new SinglePressAction(R.drawable.ic_settings,
                 R.string.global_action_settings) {
-
             @Override
             public void onPress() {
                 Intent intent = new Intent(Settings.ACTION_SETTINGS);
@@ -1561,7 +1602,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     @VisibleForTesting
     class LockDownAction extends SinglePressAction {
         LockDownAction() {
-            super(R.drawable.ic_lock_lockdown, R.string.global_action_lockdown);
+            super(R.drawable.ic_lock_lock, R.string.global_action_lockdown);
         }
 
         @Override
@@ -2734,7 +2775,6 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         protected Drawable mBackgroundDrawable;
         protected final SysuiColorExtractor mColorExtractor;
         private boolean mKeyguardShowing;
-        protected float mScrimAlpha;
         protected final LightBarController mLightBarController;
         private final KeyguardStateController mKeyguardStateController;
         protected final NotificationShadeWindowController mNotificationShadeWindowController;
@@ -2751,6 +2791,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         private SelectedUserInteractor mSelectedUserInteractor;
         private LockPatternUtils mLockPatternUtils;
         private float mWindowDimAmount;
+        private BlurUtils mBlurUtils;
 
         protected ViewGroup mContainer;
 
@@ -2858,6 +2899,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             mLockPatternUtils = lockPatternUtils;
             mGestureDetector = new GestureDetector(mContext, mGestureListener);
             mSelectedUserInteractor = selectedUserInteractor;
+            mBlurUtils = new BlurUtils(mContext.getResources(),
+                    CrossWindowBlurListeners.getInstance(), new DumpManager());
         }
 
         @Override
@@ -2998,7 +3041,21 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
             if (mBackgroundDrawable == null) {
                 mBackgroundDrawable = new ScrimDrawable();
-                mScrimAlpha = 1.0f;
+            }
+
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            if (mBlurUtils.supportsBlursOnWindows()) {
+                // Enable blur behind
+                // Enable dim behind since we are setting some amount dim for the blur.
+                window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                // Set blur behind radius
+                int blurBehindRadius = mContext.getResources()
+                        .getDimensionPixelSize(com.android.systemui.res.R.dimen.max_window_blur_radius);
+                window.getAttributes().setBlurBehindRadius(blurBehindRadius);
+                window.setDimAmount(0.54f);
+            } else {
+                window.setDimAmount(0.88f);
             }
 
             // If user entered from the lock screen and smart lock was enabled, disable it
