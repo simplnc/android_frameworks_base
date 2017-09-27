@@ -21,6 +21,13 @@
         />
     <item android:id="@id/background">
         <layer-list>
+            <!-- Shadow layer for depth -->
+            <item
+                android:id="@+id/qs_tile_shadow"
+                android:top="2dp"
+                android:left="2dp"
+                android:drawable="@drawable/qs_tile_shadow_shape" />
+            <!-- Main tile background -->
             <item
                 android:id="@+id/qs_tile_background_base"
                 android:drawable="@drawable/qs_tile_background_shape" />

@@ -123,6 +123,12 @@ public class PreferredNetworkTile extends QSTileImpl<State> {
                 : (TelephonyManagerConstants.is5gMode(mode) ?
                 mContext.getResources().getString(R.string.quick_settings_preferred_network_nr)
                 : mContext.getResources().getString(R.string.quick_settings_preferred_network_lte));
+        
+        // Set pastel green background when enabled
+        if (state.state == Tile.STATE_ACTIVE) {
+            state.contentDescription = mContext.getString(R.string.quick_settings_preferred_network_label) + ", " +
+                    "On";
+        }
     }
 
     @Override
