@@ -186,7 +186,7 @@
     <!-- Default value for Settings.Secure.HIDE_APPLIST setting,
          which is a comma separated list of packages to hide from app lists.
          Empty by default. -->
-    <string name="def_hide_applist" translatable="false"></string>
+    <string name="def_hide_applist" translatable="false">com.demizo.daily_you,com.devrinth.launchpad,com.kaleedtc.privacium,com.shezik.drawanywhere,com.stario.launcher,image.toolbox,native.alpha,nethical.digipaws,nethical.locklock,com.android.messaging,athena,com.truemlgpro.wifiinfo,com.fibelatti.photowidget,TapTap,QuickTiles,firewall,com.drnoob.datamonitor</string>
 
     <!-- Default for Settings.Global.WIFI_SCAN_ALWAYS_AVAILABLE -->
     <integer name="def_wifi_scan_always_available">0</integer>
