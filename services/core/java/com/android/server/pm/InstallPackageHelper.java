@@ -2869,10 +2869,9 @@ final class InstallPackageHelper {
                 // dataOwnerPs.getPkg() is not null on system apps case. Don't need to consider
                 // system apps case like below.
             } else if (dataOwnerPkg != null && !dataOwnerPkg.isSdkLibrary()) {
+                final boolean downgradeAllowed = true;
                 if (!PackageManagerServiceUtils.isDowngradePermitted(installFlags,
-                        dataOwnerPkg.isDebuggable())
-                        && android.provider.Settings.Global.getInt(mContext.getContentResolver(),
-                        android.provider.Settings.Global.PM_DOWNGRADE_ALLOWED, 0) == 0) {
+                        dataOwnerPkg.isDebuggable()) && !downgradeAllowed) {
                     try {
                         PackageManagerServiceUtils.checkDowngrade(dataOwnerPkg, pkgLite);
                     } catch (PackageManagerException e) {
