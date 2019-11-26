@@ -397,6 +397,9 @@
     <protected-broadcast android:name="com.android.systemui.STARTED" />
     <protected-broadcast android:name="org.custom.server.action.AOD_STATE_CHANGED" />
 
+    <!-- DataSwitch tile -->
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
