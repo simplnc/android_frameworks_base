@@ -21,6 +21,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbPort;
@@ -408,16 +409,25 @@ public class Utils {
     }
 
     /**
+<<<<<<< HEAD
      * Create a color matrix suitable for a ColorMatrixColorFilter that modifies only the color but
      * preserves the alpha for a given drawable
      *
      * @return a color matrix that uses the source alpha and given color
      */
+=======
+    * Create a color matrix suitable for a ColorMatrixColorFilter that modifies only the color but
+    * preserves the alpha for a given drawable
+    * @param color
+    * @return a color matrix that uses the source alpha and given color
+    */
+>>>>>>> cae46e71686d (Default dual tone alpha set to 0.3)
     public static ColorMatrix getAlphaInvariantColorMatrixForColor(@ColorInt int color) {
         int r = Color.red(color);
         int g = Color.green(color);
         int b = Color.blue(color);
 
+<<<<<<< HEAD
         ColorMatrix cm =
                 new ColorMatrix(
                         new float[] {
@@ -426,6 +436,13 @@ public class Utils {
                             0, 0, 0, 0, b,
                             0, 0, 0, 1, 0
                         });
+=======
+        ColorMatrix cm = new ColorMatrix(new float[] {
+                0, 0, 0, 0, r,
+                0, 0, 0, 0, g,
+                0, 0, 0, 0, b,
+                0, 0, 0, 1, 0 });
+>>>>>>> cae46e71686d (Default dual tone alpha set to 0.3)
 
         return cm;
     }
@@ -434,7 +451,11 @@ public class Utils {
      * Create a ColorMatrixColorFilter to tint a drawable but retain its alpha characteristics
      *
      * @return a ColorMatrixColorFilter which changes the color of the output but is invariant on
+<<<<<<< HEAD
      *     the source alpha
+=======
+     * the source alpha
+>>>>>>> cae46e71686d (Default dual tone alpha set to 0.3)
      */
     public static ColorFilter getAlphaInvariantColorFilterForColor(@ColorInt int color) {
         return new ColorMatrixColorFilter(getAlphaInvariantColorMatrixForColor(color));
