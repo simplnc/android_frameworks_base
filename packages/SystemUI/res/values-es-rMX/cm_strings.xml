@@ -21,4 +21,11 @@
     <string name="quick_settings_caffeine_label">Cafeína</string>
     <string name="accessibility_quick_settings_caffeine_off">Desactivar Cafeína.</string>
     <string name="accessibility_quick_settings_caffeine_on">Activar Cafeína.</string>
+    <color name="dot_notification_dim">#99000000</color>
+    <color name="dot_notification_bg">#99000000</color>
+
+    <color name="qs_draghandle_color">#e5e5e5</color>
+
+    <!-- Clear all notifications button -->
+    <color name="dismiss_all_icon_color">@android:color/white</color>
 </resources>

@@ -17,4 +17,8 @@
 
 <resources>
     <color name="bigIconColor">#C8CCCE</color>
+
+    <color name="dialogPillColor">@*android:color/monet_background_secondary_device_default</color>
+    <color name="dialogBackgroundColor">@*android:color/monet_background_device_default</color>
+    <color name="dialogSubBackgroundColor">@*android:color/monet_background_secondary_device_default</color>
 </resources>
