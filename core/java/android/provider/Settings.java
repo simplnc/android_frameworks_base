@@ -6562,7 +6562,21 @@ public final class Settings {
          * Transparent power menu and dialogs
          * @hide
          */
+
         public static final String TRANSPARENT_POWER_MENU = "transparent_power_menu";
+
+        /**
+         * Arcane Idle Manager
+         * @hide
+         */
+        @Readable
+        public static final String ARCANE_IDLE_MANAGER = "arcane_idle_manager";
+        
+        /**
+	 * Settings Base Layout
+	 * @hide
+	 */
+	public static final String ALT_SETTINGS_LAYOUT = "alt_settings_layout";
 
         /**
          * Dim amount around power/reboot menu dialogs
