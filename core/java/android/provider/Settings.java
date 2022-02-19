@@ -6503,36 +6503,10 @@ public final class Settings {
         public static final String NOTIFICATION_SOUND_VIB_SCREEN_ON = "notification_sound_vib_screen_on";
 
         /**
-         * Stores the array name of the values currently used for SpoofBuildGms
+         * Navbar style
          * @hide
          */
-        public static final String PPU_SPOOF_BUILD_GMS_ARRAY = "ppu_spoof_build_gms_array";
-
-        /**
-         * Enable/disable Bluetooth Battery bar
-         * @hide
-         */
-        public static final String BLUETOOTH_SHOW_BATTERY = "bluetooth_show_battery";
-
-        /**
-         * Whether to disable qs on secure lockscreen.
-         * @hide
-         */
-        public static final String SECURE_LOCKSCREEN_QS_DISABLED = "secure_lockscreen_qs_disabled";
-
-        /**
-         * Whether to enable the ripple animation on fingerprint unlock
-         * @hide
-         */
-        public static final String ENABLE_RIPPLE_EFFECT = "enable_ripple_effect";
-
-        /**
-         * Whether to play notification sound and vibration if screen is ON
-         * 0 - never
-         * 1 - always
-         * @hide
-         */
-        public static final String NOTIFICATION_SOUND_VIB_SCREEN_ON = "notification_sound_vib_screen_on";
+        public static final String NAVBAR_STYLE = "navbar_style";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
