@@ -6503,6 +6503,24 @@ public final class Settings {
         public static final String ENABLE_RIPPLE_EFFECT = "enable_ripple_effect";
 
         /**
+         * Settings Base Layout
+	 * @hide
+	 */
+	public static final String ALT_SETTINGS_LAYOUT = "alt_settings_layout";
+
+	/**
+	 * Settings Homepage Layout
+	 * @hide
+	 */
+	public static final String USE_STOCK_LAYOUT = "use_stock_layout";
+
+	/**
+	 * Settings UserCard
+	 * @hide
+	 */
+	public static final String DISABLE_USERCARD = "disable_usercard";
+
+        /**
          * Whether to play notification sound and vibration if screen is ON
          * 0 - never
          * 1 - always
@@ -6963,6 +6981,7 @@ public final class Settings {
         public static final String[] LEGACY_RESTORE_SETTINGS = {
         };
 
+       
         /**
          * Three Finger Gesture from Oppo
          * @hide
@@ -6980,6 +6999,12 @@ public final class Settings {
          * @hide
          */
         public static final String FP_ERROR_VIBRATE = "fp_error_vibrate";
+
+        /** 
+         * Settings Dashboard Style
+         * @hide
+         */
+        public static final String SETTINGS_DASHBOARD_GMS = "settings_dashboard_gms";
 
         /**
          * These are all public system settings
