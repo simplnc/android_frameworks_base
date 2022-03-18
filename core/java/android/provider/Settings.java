@@ -13227,13 +13227,6 @@ public final class Settings {
         public static final String STYLUS_POINTER_ICON_ENABLED = "stylus_pointer_icon_enabled";
 
         /**
-         * Whether to show an overlay in the bottom corner of the screen on copying stuff
-         * into the clipboard.
-         * @hide
-         */
-        public static final String SHOW_CLIPBOARD_OVERLAY = "show_clipboard_overlay";
-
-        /**
          * These entries are considered common between the personal and the managed profile,
          * since the managed profile doesn't get to change them.
          */
@@ -19804,6 +19797,13 @@ public final class Settings {
          * @hide
          */
         public static final String NO_STORAGE_RESTRICT = "no_storage_restrict";
+
+        /**
+         * Control whether FLAG_SECURE is ignored for all windows.
+         * @hide
+         */
+        @Readable
+        public static final String WINDOW_IGNORE_SECURE = "window_ignore_secure";
 
         /**
          * Setting indicating whether Low Power Standby is enabled, if supported.
