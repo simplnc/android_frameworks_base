@@ -46,6 +46,9 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 
 import com.android.internal.annotations.VisibleForTesting;
+
+import com.android.settingslib.Utils;
+
 import com.android.internal.display.BrightnessSynchronizer;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
@@ -351,11 +354,14 @@ public class BrightnessController implements ToggleSlider.Listener, MirroredBrig
         mBrightnessObserver = new BrightnessObserver(mMainHandler);
 
         mIcon = control.getIcon();
-        mIcon.setOnClickListener(v -> Settings.System.putIntForUser(mContext.getContentResolver(),
-                Settings.System.SCREEN_BRIGHTNESS_MODE, mAutomatic ?
-                    Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL :
-                    Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC,
-                UserHandle.USER_CURRENT));
+        mIcon.setOnClickListener(v -> {
+            Settings.System.putIntForUser(mContext.getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS_MODE, 
+                mAutomatic ? Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL 
+                           : Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC,
+                UserHandle.USER_CURRENT);
+            com.android.internal.util.android.VibrationUtils.triggerVibration(context, 4);
+        });
     }
 
     public void registerCallbacks() {
@@ -467,8 +473,8 @@ public class BrightnessController implements ToggleSlider.Listener, MirroredBrig
     private void updateIcon(boolean automatic) {
         if (mIcon != null) {
             mIcon.setImageResource(mAutomatic ?
-                    R.drawable.ic_qs_brightness_auto_on :
-                    R.drawable.ic_qs_brightness_auto_off);
+                    R.drawable.ic_qs_brightness_auto_on_new :
+                    R.drawable.ic_qs_brightness_auto_off_new);
         }
     }
 
