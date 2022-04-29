@@ -88,7 +88,7 @@ public final class ShutdownThread extends Thread {
     private static final int MOUNT_SERVICE_STOP_PERCENT = 20;
 
     // length of vibration before shutting down
-    @VisibleForTesting static final int DEFAULT_SHUTDOWN_VIBRATE_MS = 500;
+    private static final int SHUTDOWN_VIBRATE_MS = 250;
 
     // state tracking
     private static final Object sIsStartedGuard = new Object();
@@ -811,7 +811,7 @@ public final class ShutdownThread extends Thread {
         // A negative vibration duration may indicate a vibration effect whose duration is not
         // known by the system (e.g. pre-baked effects). In that case, use the default shutdown
         // vibration duration.
-        mInjector.sleep(vibrationDuration < 0 ? DEFAULT_SHUTDOWN_VIBRATE_MS : vibrationDuration);
+        mInjector.sleep(vibrationDuration < 0 ? SHUTDOWN_VIBRATE_MS : vibrationDuration);
     }
 
     private static void saveMetrics(boolean reboot, String reason) {
@@ -951,7 +951,7 @@ public final class ShutdownThread extends Thread {
 
     private static VibrationEffect createDefaultVibrationEffect() {
         return VibrationEffect.createOneShot(
-                DEFAULT_SHUTDOWN_VIBRATE_MS, VibrationEffect.DEFAULT_AMPLITUDE);
+                SHUTDOWN_VIBRATE_MS, VibrationEffect.DEFAULT_AMPLITUDE);
     }
 
     /** Utility class to inject instances, for easy testing. */

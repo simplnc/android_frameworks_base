@@ -7450,5 +7450,13 @@ message MetricsEvent {
 
     // Epic 
     EPIC = 4000;
+
+    // CUSTOM SETTINGS 
+    CUSTOM_SETTINGS = 8900;
+
+
+    // CUSTOM SETTINGS 
+    ORCHIDOS_SETTINGS = 9900;
+    
   }
 }
