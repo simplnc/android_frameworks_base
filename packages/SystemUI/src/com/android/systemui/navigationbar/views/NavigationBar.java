@@ -2075,6 +2075,10 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
 
     private final Gefingerpoken mTouchHandler = new Gefingerpoken() {
         private boolean mDeadZoneConsuming;
+        private MotionEvent mOneHandedDownEvent;
+        private boolean mOneHandedGestureDetected;
+        private static final float SWIPE_DOWN_THRESHOLD = 100f; // Minimum distance for swipe down
+        private static final float SWIPE_DOWN_VELOCITY_THRESHOLD = 500f; // Minimum velocity for swipe down
 
         @Override
         public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -2083,13 +2087,67 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
                 SysUiStatsLog.write(SysUiStatsLog.IME_TOUCH_REPORTED,
                         (int) ev.getX(), (int) ev.getY());
             }
+            handleOneHandedGesture(ev);
             return shouldDeadZoneConsumeTouchEvents(ev);
         }
 
         @Override
         public boolean onTouchEvent(MotionEvent ev) {
+            handleOneHandedGesture(ev);
             shouldDeadZoneConsumeTouchEvents(ev);
             return false;
+        }
+
+        private void handleOneHandedGesture(MotionEvent event) {
+            // Only handle one-handed mode gesture in gesture navigation mode
+            if (!isGesturalMode(mNavBarMode)) {
+                return;
+            }
+
+            int action = event.getActionMasked();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    // Check if touch is in navigation bar area (bottom of screen)
+                    float y = event.getY();
+                    float viewHeight = mView.getHeight();
+                    // Check if touch is in bottom 20% of navigation bar (gesture area)
+                    if (y > viewHeight * 0.8f) {
+                        mOneHandedDownEvent = MotionEvent.obtain(event);
+                        mOneHandedGestureDetected = false;
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (mOneHandedDownEvent != null && !mOneHandedGestureDetected) {
+                        float dy = event.getY() - mOneHandedDownEvent.getY();
+                        float dx = Math.abs(event.getX() - mOneHandedDownEvent.getX());
+                        // Detect swipe down: vertical movement down is greater than horizontal
+                        if (dy > SWIPE_DOWN_THRESHOLD && dy > dx * 2) {
+                            // Swipe down detected - trigger one-handed mode
+                            mOneHandedGestureDetected = true;
+                            triggerOneHandedMode();
+                        }
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if (mOneHandedDownEvent != null) {
+                        mOneHandedDownEvent.recycle();
+                        mOneHandedDownEvent = null;
+                    }
+                    mOneHandedGestureDetected = false;
+                    break;
+            }
+        }
+
+        private void triggerOneHandedMode() {
+            // Set ONE_HANDED_MODE_ACTIVATED to 1 to trigger one-handed mode
+            try {
+                int userId = mUserTracker.getUserId();
+                Settings.Secure.putIntForUser(mContext.getContentResolver(),
+                        Settings.Secure.ONE_HANDED_MODE_ACTIVATED, 1, userId);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to trigger one-handed mode", e);
+            }
         }
 
         private boolean shouldDeadZoneConsumeTouchEvents(MotionEvent event) {

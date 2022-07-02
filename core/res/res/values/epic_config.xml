@@ -23,6 +23,8 @@
         <item>airplane</item>
         <item>settings</item>
         <item>lockdown</item>
+        <item>onthego</item>
+        <item>restart_sysui</item>
     </string-array>
 
 </resources>
