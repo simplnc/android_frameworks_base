@@ -205,7 +205,16 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private static final String RESTART_ACTION_KEY_RESTART_BOOTLOADER = "restart_bootloader";
     private static final String RESTART_ACTION_KEY_RESTART_DOWNLOAD = "restart_download";
     private static final String RESTART_ACTION_KEY_RESTART_FASTBOOT = "restart_fastboot";
-    private static final String RESTART_ACTION_KEY_RESTART_SYSTEMUI = "restart_systemui";
+    private static final String RESTART_ACTION_KEY_RESTART_SYSUI = "restart_sysui";
+
+    private static final String GLOBAL_ACTION_KEY_ADVANCED_RESTART = "advanced";
+    private static final String GLOBAL_ACTION_KEY_TORCH = "torch";
+    private static final String GLOBAL_ACTION_KEY_ONTHEGO = "onthego";
+
+    private static final int RESTART_RECOVERY_BUTTON = 1;
+    private static final int RESTART_BOOTLOADER_BUTTON = 2;
+    private static final int RESTART_UI_BUTTON = 3;
+    private static final int RESTART_FASTBOOT_BUTTON = 4;
 
     // See NotificationManagerService#scheduleDurationReachedLocked
     private static final long TOAST_FADE_TIME = 333;
@@ -693,8 +702,13 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
     @VisibleForTesting
     protected String[] getRestartActions() {
-        return mResources.getStringArray(
-                org.lineageos.platform.internal.R.array.config_restartActionsList);
+        try {
+            return mResources.getStringArray(
+                    org.lineageos.platform.internal.R.array.config_restartActionsList);
+        } catch (Resources.NotFoundException e) {
+            // Fallback to default restart actions if LineageOS resource is not available
+            return new String[]{"restart", "restart_recovery", "restart_bootloader", "restart_sysui"};
+        }
     }
 
     @VisibleForTesting
@@ -856,7 +870,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 addIfShouldShowAction(mRestartItems, dlAction);
             } else if (RESTART_ACTION_KEY_RESTART_FASTBOOT.equals(actionKey)) {
                 addIfShouldShowAction(mRestartItems, fbAction);
-            } else if (RESTART_ACTION_KEY_RESTART_SYSTEMUI.equals(actionKey)) {
+            } else if (RESTART_ACTION_KEY_RESTART_SYSUI.equals(actionKey)) {
                 addIfShouldShowAction(mRestartItems, sysuiAction);
             }
             // Add here so we don't add more than one.
@@ -1332,7 +1346,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             rebootAction(false, PowerManager.REBOOT_FASTBOOT);
         }
     }
-
+    
     private final class RestartDownloadAction extends SinglePressAction {
         private RestartDownloadAction() {
             super(com.android.systemui.res.R.drawable.ic_lock_restart_bootloader,
@@ -1801,6 +1815,10 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         mAirplaneModeOn.updateState(mAirplaneState);
         mAdapter.notifyDataSetChanged();
         mLifecycle.setCurrentState(Lifecycle.State.RESUMED);
+    }
+
+    private void restartSystemUI() {
+       android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     private void refreshSilentMode() {
