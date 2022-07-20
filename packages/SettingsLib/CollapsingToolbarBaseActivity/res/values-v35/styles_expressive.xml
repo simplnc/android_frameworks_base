@@ -28,17 +28,24 @@
         <item name="scrimAnimationDuration">50</item>
         <item name="collapsedTitleTextColor">@color/settingslib_materialColorOnSurface</item>
         <item name="expandedTitleTextColor">@color/settingslib_materialColorOnSurface</item>
+        <item name="titleEnabled">false</item>
+        <item name="title">@null</item>
     </style>
     <style name="SettingsLibCollapsingToolbarLayoutStyle.Expressive">
         <item name="contentScrim">@color/settingslib_materialColorSurfaceContainer</item>
     </style>
 
     <style name="SettingsLibCollapsingToolbarTitle.Collapsed" parent="@android:style/TextAppearance.DeviceDefault.Headline">
-        <!--set dp because we don't want size adjust when font size change-->
-        <item name="android:textSize">20dp</item>
+        <!-- Hide text completely -->
+        <item name="android:textSize">0dp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:alpha">0</item>
     </style>
 
     <style name="SettingsLibCollapsingToolbarTitle.Expanded" parent="CollapsingToolbarTitle.Collapsed">
-        <item name="android:textSize">36dp</item>
+        <!-- Hide text completely -->
+        <item name="android:textSize">0dp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:alpha">0</item>
     </style>
 </resources>

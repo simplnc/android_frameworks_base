@@ -168,7 +168,7 @@ public class CollapsingToolbarDelegate {
                 if (mIsExpressiveTheme) {
                     actionBar.setHomeAsUpIndicator(R.drawable.settingslib_expressive_icon_back);
                 }
-                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setDisplayShowTitleEnabled(false);
             }
         }
         return view;
@@ -190,7 +190,7 @@ public class CollapsingToolbarDelegate {
             if (mIsExpressiveTheme) {
                 actionBar.setHomeAsUpIndicator(R.drawable.settingslib_expressive_icon_back);
             }
-            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
         }
     }
 
@@ -207,7 +207,7 @@ public class CollapsingToolbarDelegate {
             if (mIsExpressiveTheme) {
                 actionBar.setHomeAsUpIndicator(R.drawable.settingslib_expressive_icon_back);
             }
-            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
         }
     }
 
@@ -221,6 +221,8 @@ public class CollapsingToolbarDelegate {
     public void setTitle(CharSequence title) {
         if (mCollapsingToolbarLayout != null) {
             mCollapsingToolbarLayout.setTitle(title);
+            // Hide the title text as per design - keep it disabled
+            mCollapsingToolbarLayout.setTitleEnabled(false);
         }
         mHostCallback.setOuterTitle(title);
     }
