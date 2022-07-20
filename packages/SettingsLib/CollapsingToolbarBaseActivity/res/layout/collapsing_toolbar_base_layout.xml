@@ -28,11 +28,15 @@
         style="?android:attr/actionBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
         android:theme="?android:attr/actionBarTheme" />
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/support_action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
         android:theme="?android:attr/actionBarTheme"
         android:visibility="gone" />
     <FrameLayout

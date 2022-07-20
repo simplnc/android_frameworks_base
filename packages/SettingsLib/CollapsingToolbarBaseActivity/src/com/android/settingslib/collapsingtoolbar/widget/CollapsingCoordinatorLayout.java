@@ -125,6 +125,8 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
             }
             if (!TextUtils.isEmpty(mToolbarTitle)) {
                 mCollapsingToolbarLayout.setTitle(mToolbarTitle);
+                // Hide the title text as per design - keep it disabled
+                mCollapsingToolbarLayout.setTitleEnabled(false);
             }
         }
         autoSetCollapsingToolbarLayoutScrolling();
@@ -175,7 +177,7 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
             if (SettingsThemeHelper.isExpressiveTheme(getContext())) {
                 actionBar.setHomeAsUpIndicator(R.drawable.settingslib_expressive_icon_back);
             }
@@ -208,7 +210,7 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
             if (SettingsThemeHelper.isExpressiveTheme(getContext())) {
                 actionBar.setHomeAsUpIndicator(R.drawable.settingslib_expressive_icon_back);
             }
@@ -230,6 +232,8 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
         if (!TextUtils.isEmpty(title) && mCollapsingToolbarLayout != null) {
             mToolbarTitle = title;
             mCollapsingToolbarLayout.setTitle(mToolbarTitle);
+            // Hide the title text as per design - keep it disabled
+            mCollapsingToolbarLayout.setTitleEnabled(false);
         }
     }
 
