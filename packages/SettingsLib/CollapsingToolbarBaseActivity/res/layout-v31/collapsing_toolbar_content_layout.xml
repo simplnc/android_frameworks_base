@@ -26,6 +26,7 @@
         android:outlineAmbientShadowColor="@android:color/transparent"
         android:outlineSpotShadowColor="@android:color/transparent"
         android:background="@android:color/transparent"
+        android:elevation="0dp"
         android:theme="@style/Theme.CollapsingToolbar.Settings">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -34,12 +35,17 @@
             android:layout_height="@dimen/settingslib_toolbar_layout_height"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:toolbarId="@id/action_bar"
+            android:background="@android:color/transparent"
+            app:contentScrim="@android:color/transparent"
+            app:statusBarScrim="@android:color/transparent"
             style="@style/CollapsingToolbarLayoutStyle.SettingsLib">
 
             <Toolbar
                 android:id="@+id/action_bar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
                 android:theme="?android:attr/actionBarTheme"
                 android:transitionName="shared_element_view"
                 app:layout_collapseMode="pin"/>

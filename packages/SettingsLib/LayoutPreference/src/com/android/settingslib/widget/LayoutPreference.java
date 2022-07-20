@@ -103,10 +103,8 @@ public class LayoutPreference extends Preference {
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, androidx.preference.R.styleable.Preference);
-        mAllowDividerAbove = TypedArrayUtils.getBoolean(a, androidx.preference.R.styleable.Preference_allowDividerAbove,
-                androidx.preference.R.styleable.Preference_allowDividerAbove, false);
-        mAllowDividerBelow = TypedArrayUtils.getBoolean(a, androidx.preference.R.styleable.Preference_allowDividerBelow,
-                androidx.preference.R.styleable.Preference_allowDividerBelow, false);
+        mAllowDividerAbove = false;
+        mAllowDividerBelow = false;
         a.recycle();
 
         a = context.obtainStyledAttributes(

@@ -17,11 +17,15 @@
 <resources>
     <style name="CollapsingToolbarTitle.Collapsed" parent="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title">
         <item name="android:fontFamily">@string/settingslib_config_headlineFontFamily</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">0dp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:alpha">0</item>
     </style>
 
     <style name="CollapsingToolbarTitle.Expanded" parent="CollapsingToolbarTitle.Collapsed">
-        <item name="android:textSize">36dp</item>
+        <item name="android:textSize">0dp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:alpha">0</item>
     </style>
 
     <style name="Base.CollapsingToolbarLayoutStyle.SettingsLib" parent="@style/Widget.Material3.CollapsingToolbar">
@@ -32,9 +36,11 @@
         <item name="expandedTitleMarginBottom">@dimen/expanded_title_margin_bottom</item>
         <item name="maxLines">3</item>
         <item name="scrimVisibleHeightTrigger">@dimen/settingslib_scrim_visible_height_trigger</item>
-        <item name="contentScrim">@color/settingslib_colorSurfaceHeader</item>
-        <item name="statusBarScrim">@null</item>
+        <item name="contentScrim">@android:color/transparent</item>
+        <item name="statusBarScrim">@android:color/transparent</item>
         <item name="scrimAnimationDuration">50</item>
+        <item name="titleEnabled">false</item>
+        <item name="title">@null</item>
     </style>
 
     <style name="CollapsingToolbarLayoutStyle.SettingsLib" parent="@style/Base.CollapsingToolbarLayoutStyle.SettingsLib">
