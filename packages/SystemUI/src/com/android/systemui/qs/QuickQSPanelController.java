@@ -50,7 +50,8 @@ import javax.inject.Provider;
 
 /** Controller for {@link QuickQSPanel}. */
 @QSScope
-public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> {
+public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel>
+        implements TunerService.Tunable {
 
     private final Provider<Boolean> mUsingCollapsedLandscapeMediaProvider;
 
@@ -70,7 +71,7 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
     ) {
         super(view, qsHost, qsCustomizerController, usingMediaPlayer, mediaHost, metricsLogger,
                 uiEventLogger, qsLogger, dumpManager, splitShadeStateController,
-                longPressEffectProvider);
+                longPressEffectProvider, configurationController, tunerService);
         mUsingCollapsedLandscapeMediaProvider = usingCollapsedLandscapeMediaProvider;
         mMediaCarouselInteractor = mediaCarouselInteractor;
     }
@@ -110,6 +111,23 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
     @Override
     protected void onViewAttached() {
         super.onViewAttached();
+
+        mTunerService.addTunable(mView, QSPanel.QS_BRIGHTNESS_SLIDER_POSITION);
+        mTunerService.addTunable(mView, QSPanel.QS_SHOW_AUTO_BRIGHTNESS);
+        mTunerService.addTunable(mView, QSPanel.QS_SHOW_BRIGHTNESS_SLIDER);
+        mTunerService.addTunable(mView, QSPanel.QS_LAYOUT_COLUMNS);
+        mTunerService.addTunable(mView, QSPanel.QS_LAYOUT_COLUMNS_LANDSCAPE);
+        mTunerService.addTunable(mView, QSPanel.QQS_LAYOUT_ROWS);
+        mTunerService.addTunable(mView, QSPanel.QQS_LAYOUT_ROWS_LANDSCAPE);
+
+        mView.setBrightnessRunnable(() -> {
+            mView.updateResources();
+            mView.setSceneContainerEnabled(mSceneContainerEnabled);
+            updateBrightnessMirror();
+        });
+
+        mBrightnessMirrorHandler.onQsPanelAttached();
+        mBrightnessController.addListeners();
     }
 
     @Override
@@ -117,16 +135,12 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
         super.onViewDetached();
     }
 
-    private void setMaxTiles(int parseNumTiles) {
-        mView.setMaxTiles(parseNumTiles);
-        setTiles();
-    }
-
     @Override
     protected void onConfigurationChanged() {
-        int newMaxTiles = getResources().getInteger(R.integer.quick_qs_panel_max_tiles);
-        if (newMaxTiles != mView.getNumQuickTiles()) {
-            setMaxTiles(newMaxTiles);
+        mView.updateResources();
+        setTiles();
+        if (mView.isListening()) {
+            refreshAllTiles();
         }
         if (!SceneContainerFlag.isEnabled()) {
             updateMediaExpansion();
@@ -135,10 +149,11 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
 
     @Override
     public void setTiles() {
+        int numQuickTiles = mView.getNumQuickTiles();
         List<QSTile> tiles = new ArrayList<>();
         for (QSTile tile : mHost.getTiles()) {
             tiles.add(tile);
-            if (tiles.size() == mView.getNumQuickTiles()) {
+            if (tiles.size() == numQuickTiles) {
                 break;
             }
         }

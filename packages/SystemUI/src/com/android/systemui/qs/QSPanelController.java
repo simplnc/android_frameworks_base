@@ -60,7 +60,8 @@ import javax.inject.Provider;
  * Controller for {@link QSPanel}.
  */
 @QSScope
-public class QSPanelController extends QSPanelControllerBase<QSPanel> {
+public class QSPanelController extends QSPanelControllerBase<QSPanel>
+        implements TunerService.Tunable {
 
     private final QSCustomizerController mQsCustomizerController;
     private final QSTileRevealController.Factory mQsTileRevealControllerFactory;
@@ -105,7 +106,8 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
             MediaCarouselInteractor mediaCarouselInteractor) {
         super(view, qsHost, qsCustomizerController, usingMediaPlayer, mediaHost,
                 metricsLogger, uiEventLogger, qsLogger, dumpManager, splitShadeStateController,
-                longPRessEffectProvider);
+                longPRessEffectProvider, configurationController, tunerService);
+        mTunerService = tunerService;
         mQsCustomizerController = qsCustomizerController;
         mQsTileRevealControllerFactory = qsTileRevealControllerFactory;
         mFalsingManager = falsingManager;
@@ -144,20 +146,19 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
 
         updateMediaDisappearParameters();
 
-        getContext().getContentResolver().registerContentObserver(
-                LineageSettings.Secure.getUriFor(LineageSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS),
-                false, mView.getContentObserver());
-        mView.getContentObserver().onChange(true,
-                LineageSettings.Secure.getUriFor(LineageSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS));
-        getContext().getContentResolver().registerContentObserver(
-                LineageSettings.Secure.getUriFor(LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER),
-                false, mView.getContentObserver());
-        mView.getContentObserver().onChange(true,
-                LineageSettings.Secure.getUriFor(LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER));
-        getContext().getContentResolver().registerContentObserver(
-                Settings.Secure.getUriFor(QS_SHOW_BRIGHTNESS), false, mView.getContentObserver());
-        mView.getContentObserver().onChange(true,
-                Settings.Secure.getUriFor(QS_SHOW_BRIGHTNESS));
+        mTunerService.addTunable(mView, QSPanel.QS_SHOW_BRIGHTNESS_SLIDER);
+        mTunerService.addTunable(mView, QSPanel.QS_SHOW_AUTO_BRIGHTNESS);
+        mTunerService.addTunable(mView, QSPanel.QS_BRIGHTNESS_SLIDER_POSITION);
+        mTunerService.addTunable(mView, QSPanel.QS_LAYOUT_COLUMNS);
+        mTunerService.addTunable(mView, QSPanel.QS_LAYOUT_COLUMNS_LANDSCAPE);
+        mTunerService.addTunable(mView, QSPanel.QS_LAYOUT_ROWS);
+        mTunerService.addTunable(mView, QSPanel.QS_LAYOUT_ROWS_LANDSCAPE);
+
+        mView.setBrightnessRunnable(() -> {
+            mView.updateResources();
+            updateBrightnessMirror();
+        });
+
         mView.updateResources();
         mView.setSceneContainerEnabled(mSceneContainerEnabled);
         if (mView.isListening()) {
