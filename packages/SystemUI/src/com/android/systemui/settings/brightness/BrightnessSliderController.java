@@ -19,6 +19,8 @@ package com.android.systemui.settings.brightness;
 import android.annotation.StringRes;
 import android.content.Context;
 import android.content.Intent;
+import android.provider.Settings;
+import static android.view.HapticFeedbackConstants.CLOCK_TICK;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,6 +75,8 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
     private final ActivityStarter mActivityStarter;
 
     private final BrightnessWarningToast mBrightnessWarningToast;
+
+    private Context mContext;
 
     private final Gefingerpoken mOnInterceptListener = new Gefingerpoken() {
         @Override
@@ -262,6 +266,12 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
                 if (fromUser) {
                     mBrightnessSliderHapticPlugin.onProgressChanged(progress, true);
                 }
+            }
+            mContext = mView.getContext();
+            final boolean doVibrate = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.BRIGHTNESS_SLIDER_HAPTIC_FEEDBACK, 1) != 0;
+            if (doVibrate) {
+            seekBar.performHapticFeedback(CLOCK_TICK);
             }
         }
 
