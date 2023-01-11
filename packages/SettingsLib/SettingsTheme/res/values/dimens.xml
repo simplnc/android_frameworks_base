@@ -20,7 +20,7 @@
     <dimen name="app_preference_padding_start">?android:attr/listPreferredItemPaddingStart</dimen>
     <dimen name="app_icon_min_width">56dp</dimen>
     <dimen name="two_target_min_width">72dp</dimen>
-    <dimen name="settingslib_dialogCornerRadius">8dp</dimen>
+    <dimen name="settingslib_dialogCornerRadius">24dp</dimen>
 
     <!-- Left padding of the preference -->
     <dimen name="settingslib_listPreferredItemPaddingStart">16dp</dimen>
@@ -28,4 +28,19 @@
     <dimen name="settingslib_listPreferredItemPaddingEnd">16dp</dimen>
     <!-- Icon size of the preference -->
     <dimen name="settingslib_preferenceIconSize">24dp</dimen>
+    
+    <!-- Minimum width of switch -->
+    <dimen name="settingslib_min_switch_width">42dp</dimen>
+    <!-- Radius of switch bar -->
+    <dimen name="settingslib_switch_bar_radius">30dp</dimen>
+    <!-- Margin of switch thumb -->
+    <dimen name="settingslib_switch_thumb_margin">8dp</dimen>
+    <!-- Size of switch thumb -->
+    <dimen name="settingslib_switch_thumb_size">14dp</dimen>
+    <!-- Width of switch track -->
+    <dimen name="settingslib_switch_track_width">42dp</dimen>
+    <!-- Height of switch track -->
+    <dimen name="settingslib_switch_track_height">24dp</dimen>
+    <!-- Radius of switch track -->
+    <dimen name="settingslib_switch_track_radius">32dp</dimen>
 </resources>

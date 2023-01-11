@@ -15,6 +15,7 @@
   limitations under the License.
 -->
 <resources>
+    <style name="Base.CollapsingToolbarLayoutStyle.SettingsLib" parent="@style/SettingsLibCollapsingToolbarLayoutStyle"/>
     <style name="CollapsingToolbarLayoutStyle.SettingsLib" parent="@style/Base.CollapsingToolbarLayoutStyle.SettingsLib">
         <item name="collapsedTitleTextColor">@color/settingslib_materialColorOnSurface</item>
         <item name="expandedTitleTextColor">@color/settingslib_materialColorOnSurface</item>

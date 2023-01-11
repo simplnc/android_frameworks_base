@@ -32,16 +32,31 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/settingslib_toolbar_layout_height"
+            android:clipToPadding="false"
+            app:forceApplySystemWindowInsetTop="true"
+            app:extraMultilineHeightEnabled="true"
+            app:contentScrim="@color/settingslib_colorSurfaceHeader"
+            app:maxLines="3"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:toolbarId="@id/action_bar"
-            style="@style/CollapsingToolbarLayoutStyle.SettingsLib">
+            app:scrimAnimationDuration="120"
+            app:scrimVisibleHeightTrigger="@dimen/settingslib_scrim_visible_height_trigger"
+            app:statusBarScrim="@null"
+            app:titleCollapseMode="scale"
+            app:collapsedTitleTextAppearance="@style/CollapsingToolbarTitle.Collapsed"
+            app:expandedTitleTextAppearance="@style/CollapsingToolbarTitle.Expanded"
+            app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
+            app:expandedTitleMarginEnd="@dimen/expanded_title_margin_end"
+            app:toolbarId="@id/action_bar">
 
             <Toolbar
                 android:id="@+id/action_bar"
+                android:layout_marginTop="5.0dp"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="?android:attr/actionBarTheme"
                 android:transitionName="shared_element_view"
+                android:contentInsetStartWithNavigation="0dp"
+                android:navigationIcon="@drawable/ic_back_arrow"
                 app:layout_collapseMode="pin"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -49,7 +64,18 @@
 
     <FrameLayout
         android:id="@+id/content_frame"
+        android:paddingTop="5.0dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="5.0dp"
+        android:backgroundTint="@color/settingslib_colorSurfaceHeader"
+        android:background="@drawable/nad_round_top"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom"
+        android:layout_gravity="bottom"/>
 </merge>
