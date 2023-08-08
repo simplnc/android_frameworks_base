@@ -3711,6 +3711,7 @@
         <item>lockdown</item>
         <item>power</item>
         <item>restart</item>
+        <item>restart_systemui</item>
         <item>logout</item>
         <item>screenshot</item>
         <item>bugreport</item>
