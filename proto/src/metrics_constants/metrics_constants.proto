@@ -7444,5 +7444,11 @@ message MetricsEvent {
     // ---- End Q Constants, all Q constants go above this line ----
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
+    
+    // BASHAMOBILE 
+    BASHA = 7000;
+
+    // Epic 
+    EPIC = 4000;
   }
 }
