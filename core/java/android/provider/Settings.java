@@ -13061,6 +13061,16 @@ public final class Settings {
         public static final String ACCESSIBILITY_DISPLAY_MAGNIFICATION_EDGE_HAPTIC_ENABLED =
                 "accessibility_display_magnification_edge_haptic_enabled";
 
+         /**
+         * Parameter for Pocket Mode
+         *
+         * The value "1", Enable Pocket Mode
+         * The value "0", Disables Pocket Mode
+         *
+         * @hide
+         */
+        public static final String POCKET_MODE_ENABLED = "pocket_mode_enabled";
+                
         /**
          * If 1, DND default allowed packages have been updated
          *
