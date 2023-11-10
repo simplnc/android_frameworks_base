@@ -28,6 +28,8 @@ public class HideAppListUtils {
         if (cr == null || packageName == null || !isBootCompleted()) {
             return false;
         }
+        
+        if (!settingsToHide.contains(name)) return false;
 
         Set<String> apps = getApps(cr);
         if (apps.isEmpty()) {
