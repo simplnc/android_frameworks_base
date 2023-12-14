@@ -720,9 +720,9 @@ public class CompanionDeviceManagerService extends SystemService {
                 @NonNull ParcelFileDescriptor out, @NonNull ParcelFileDescriptor err,
                 @NonNull String[] args) {
             return new CompanionDeviceShellCommand(CompanionDeviceManagerService.this,
-                    mAssociationStore, mDevicePresenceMonitor, mTransportManager,
+                    mAssociationStore, mDevicePresenceProcessor, mTransportManager,
                     mSystemDataTransferProcessor, mAssociationRequestsProcessor,
-                    mBackupRestoreProcessor, mAssociationRevokeProcessor)
+                    mBackupRestoreProcessor, mDisassociationProcessor)
                     .exec(this, in.getFileDescriptor(), out.getFileDescriptor(),
                             err.getFileDescriptor(), args);
         }
