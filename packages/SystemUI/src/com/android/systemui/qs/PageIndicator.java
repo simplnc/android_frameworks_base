@@ -152,6 +152,35 @@ public class PageIndicator extends ViewGroup {
         }
     }
 
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateResources();
+    }
+
+    private void updateResources() {
+        Resources res = getResources();
+        boolean changed = false;
+        int pageIndicatorWidth = res.getDimensionPixelSize(R.dimen.qs_page_indicator_width);
+        if (pageIndicatorWidth != mPageIndicatorWidth) {
+            mPageIndicatorWidth = pageIndicatorWidth;
+            changed = true;
+        }
+        int pageIndicatorHeight = res.getDimensionPixelSize(R.dimen.qs_page_indicator_height);
+        if (pageIndicatorHeight != mPageIndicatorHeight) {
+            mPageIndicatorHeight = pageIndicatorHeight;
+            changed = true;
+        }
+        int pageIndicatorDotWidth = res.getDimensionPixelSize(R.dimen.qs_page_indicator_dot_width);
+        if (pageIndicatorDotWidth != mPageDotWidth) {
+            mPageDotWidth = pageIndicatorDotWidth;
+            changed = true;
+        }
+        if (changed) {
+            invalidate();
+        }
+    }
+
     public void setNumPages(int numPages) {
         setVisibility(numPages > 1 ? View.VISIBLE : View.GONE);
         int childCount = getChildCount();
