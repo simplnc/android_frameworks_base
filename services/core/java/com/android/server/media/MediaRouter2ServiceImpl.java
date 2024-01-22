@@ -2809,6 +2809,11 @@ class MediaRouter2ServiceImpl {
             return routerRecord != null ? routerRecord.mPackageName : "<null router record>";
         }
 
+        private static String getPackageNameFromNullableRecord(
+                @Nullable RouterRecord routerRecord) {
+            return routerRecord != null ? routerRecord.mPackageName : "<null router record>";
+        }
+
         private static String toLoggingMessage(
                 String source, String providerId, ArrayList<MediaRoute2Info> routes) {
             String routesString =
