@@ -1924,6 +1924,12 @@ class BackNavigationController {
                         WindowContainer.enforceSurfaceVisible(visibleOpenActivities[i]);
                     }
                 }
+                // Force update mLastSurfaceShowing for opening activity and its task.
+                if (mWindowManagerService.mRoot.mTransitionController.isShellTransitionsEnabled()) {
+                    for (int i = visibleOpenActivities.length - 1; i >= 0; --i) {
+                        WindowContainer.enforceSurfaceVisible(visibleOpenActivities[i]);
+                    }
+                }
             }
 
             @Nullable Runnable build() {
