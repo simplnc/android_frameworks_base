@@ -151,7 +151,8 @@ public:
           : PointerController(
                     policy, looper, spriteController,
                     [&registeredListener](const sp<android::gui::WindowInfosListener>& listener)
-                            -> std::vector<gui::DisplayInfo> {
+                            -> std::pair<std::vector<gui::WindowInfo>,
+                                         std::vector<gui::DisplayInfo>> {
                         // Register listener
                         registeredListener = listener;
                         return {};
