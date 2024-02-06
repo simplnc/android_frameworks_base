@@ -540,6 +540,69 @@ class MagnetizedObjectTest : ShellTestCase() {
         verify(magnetListener, times(1)).onStuckToTarget(magneticTarget)
     }
 
+    @Test
+    fun testMagneticTargetHasScreenOffset_moveIntoAndReleaseInTarget() {
+        magneticTarget.screenVerticalOffset = 500
+
+        dispatchMotionEvents(getMotionEvent(x = targetCenterX, y = targetCenterY))
+        // Moved into the target location, but it should be shifted due to screen offset.
+        // Should not get stuck.
+        verify(magnetListener, never()).onStuckToTarget(magneticTarget)
+
+        dispatchMotionEvents(getMotionEvent(x = targetCenterX, y = targetCenterY + 500))
+        verify(magnetListener).onStuckToTarget(magneticTarget)
+
+        dispatchMotionEvents(
+            getMotionEvent(
+                x = targetCenterX,
+                y = targetCenterY + 500,
+                action = MotionEvent.ACTION_UP
+            )
+        )
+
+        verify(magnetListener).onReleasedInTarget(magneticTarget)
+        verifyNoMoreInteractions(magnetListener)
+    }
+
+    @Test
+    fun testMagneticTargetHasScreenOffset_screenOffsetUpdates() {
+        magneticTarget.screenVerticalOffset = 500
+        val adjustedTargetCenter = targetCenterY + 500
+
+        dispatchMotionEvents(getMotionEvent(x = targetCenterX, y = adjustedTargetCenter))
+        dispatchMotionEvents(getMotionEvent(x = 0, y = 0))
+        verify(magnetListener).onStuckToTarget(magneticTarget)
+        verify(magnetListener)
+                .onUnstuckFromTarget(eq(magneticTarget), anyFloat(), anyFloat(), anyBoolean())
+
+        // Offset if removed, we should now get stuck at the target location
+        magneticTarget.screenVerticalOffset = 0
+        dispatchMotionEvents(getMotionEvent(x = targetCenterX, y = targetCenterY))
+        verify(magnetListener, times(2)).onStuckToTarget(magneticTarget)
+    }
+
+    @Test
+    fun testMagneticTargetHasScreenOffset_flingTowardsTarget() {
+        timeStep = 10
+
+        magneticTarget.screenVerticalOffset = 500
+        val adjustedTargetCenter = targetCenterY + 500
+
+        // Forcefully fling the object towards the target (but never touch the magnetic field).
+        dispatchMotionEvents(
+            getMotionEvent(x = 0, y = 0, action = MotionEvent.ACTION_DOWN),
+            getMotionEvent(x = targetCenterX / 2, y = adjustedTargetCenter / 2),
+            getMotionEvent(
+                x = targetCenterX,
+                y = adjustedTargetCenter - magneticFieldRadius * 2,
+                action = MotionEvent.ACTION_UP
+            )
+        )
+
+        // Nevertheless it should have ended up stuck to the target.
+        verify(magnetListener, times(1)).onStuckToTarget(magneticTarget)
+    }
+
     private fun getSecondMagneticTarget(): MagnetizedObject.MagneticTarget {
         // The first target view is at bounds (400, 800, 600, 1000) and it has a center of
         // (500, 900). We'll add a second one at bounds (0, 800, 200, 1000) with center (100, 900).
