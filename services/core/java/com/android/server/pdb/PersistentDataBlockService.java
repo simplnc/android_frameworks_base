@@ -635,7 +635,7 @@ public class PersistentDataBlockService extends SystemService {
             // version.  If so, we deactivate FRP and set the secret to the default value.
             if (isUpgradingFromPreVRelease()) {
                 Slog.w(TAG, "Upgrading from Android 14 or lower, defaulting FRP secret");
-                writeFrpMagicAndDefaultSecret();
+                writeFrpMagicAndDefaultSecretLocked();
                 mFrpActive = false;
                 setOldSettingForBackworkCompatibility(mFrpActive);
                 return true;
@@ -737,7 +737,7 @@ public class PersistentDataBlockService extends SystemService {
         synchronized (mLock) {
             if (!hasFrpSecretMagic()) {
                 Slog.i(TAG, "No FRP secret magic, system must have been upgraded.");
-                writeFrpMagicAndDefaultSecret();
+                writeFrpMagicAndDefaultSecretLocked();
             }
         }
 
@@ -760,7 +760,7 @@ public class PersistentDataBlockService extends SystemService {
         }
     }
 
-    private void writeFrpMagicAndDefaultSecret() {
+    private void writeFrpMagicAndDefaultSecretLocked() {
         try (FileChannel channel = getBlockOutputChannelIgnoringFrp()) {
             synchronized (mLock) {
                 Slog.i(TAG, "Writing default FRP secret");
