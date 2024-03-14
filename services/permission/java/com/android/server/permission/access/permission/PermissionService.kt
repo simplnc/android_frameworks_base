@@ -2417,7 +2417,7 @@ class PermissionService(private val service: AccessCheckingService) :
         packageName: String,
         appId: Int,
         packageState: PackageState,
-        androidPackage: AndroidPackage?,
+        androidPackage: AndroidPackage,
         sharedUserPkgs: List<AndroidPackage>,
         userId: Int
     ) {
