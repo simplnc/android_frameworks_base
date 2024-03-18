@@ -47,7 +47,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApexStagedEvent;
-import android.content.pm.Flags;
 import android.content.pm.IPackageManagerNative;
 import android.content.pm.IStagedApexObserver;
 import android.content.pm.PackageManager;
