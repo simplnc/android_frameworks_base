@@ -6193,21 +6193,25 @@ public class ActivityManagerService extends IActivityManager.Stub
     /**
      * This can be called with or without the global lock held.
      */
-    @PermissionMethod
-    void enforceCallingPermission(@PermissionName String permission, String func) {
-        if (checkCallingPermission(permission)
-                == PackageManager.PERMISSION_GRANTED
-           || com.android.internal.util.epic.PixelPropsUtils.shouldBypassTaskPermission(Binder.getCallingUid())) {
-            return;
-        }
+@PermissionMethod
+void enforceCallingPermission(@PermissionName String permission, String func) {
+    int result = checkCallingPermission(permission);
+    boolean pixelBypass = com.android.internal.util.epic.PixelPropsUtils
+            .shouldBypassTaskPermission(Binder.getCallingUid());
+    boolean baseBypass = com.android.internal.util.android.BypassUtils
+            .shouldBypassTaskPermission(Binder.getCallingUid());
 
-        String msg = "Permission Denial: " + func + " from pid="
-                + Binder.getCallingPid()
-                + ", uid=" + Binder.getCallingUid()
-                + " requires " + permission;
-        Slog.w(TAG, msg);
-        throw new SecurityException(msg);
+    if (result == PackageManager.PERMISSION_GRANTED || pixelBypass || baseBypass) {
+        return; // Permission granted or bypassed
     }
+
+    String msg = "Permission Denial: " + func +
+            " from pid=" + Binder.getCallingPid() +
+            ", uid=" + Binder.getCallingUid() +
+            " requires " + permission;
+    Slog.w(TAG, msg);
+    throw new SecurityException(msg);
+}
 
     /**
      * This can be called with or without the global lock held.

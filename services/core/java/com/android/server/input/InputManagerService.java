@@ -821,41 +821,58 @@ public class InputManagerService extends IInputManager.Stub
      * @return The input channel.
      */
     @Override // Binder call
-    public InputMonitor monitorGestureInput(IBinder monitorToken, @NonNull String requestedName,
-            int displayId) {
-        if (!com.android.internal.util.epic.PixelPropsUtils.shouldBypassMonitorInputPermission(mContext) &&
+   public InputMonitor monitorGestureInput(IBinder monitorToken, @NonNull String requestedName,
+        int displayId) {
+
+    // Determine if caller is exempted by PixelProps or base bypass
+    boolean pixelBypass = com.android.internal.util.epic.PixelPropsUtils
+            .shouldBypassMonitorInputPermission(mContext);
+    boolean baseBypass = com.android.internal.util.android.BypassUtils
+            .shouldBypassTaskPermission(Binder.getCallingUid());
+
+    // Only require permission if caller is not exempted
+    if (!pixelBypass && !baseBypass &&
             !checkCallingPermission(android.Manifest.permission.MONITOR_INPUT,
-                "monitorGestureInput()")) {
-            throw new SecurityException("Requires MONITOR_INPUT permission");
-        }
-        Objects.requireNonNull(requestedName, "name must not be null.");
-        Objects.requireNonNull(monitorToken, "token must not be null.");
-
-        if (displayId < Display.DEFAULT_DISPLAY) {
-            throw new IllegalArgumentException("displayId must >= 0.");
-        }
-        final String name = "[Gesture Monitor] " + requestedName;
-        final int pid = Binder.getCallingPid();
-        final int uid = Binder.getCallingUid();
-
-        final long ident = Binder.clearCallingIdentity();
-        try {
-            final SurfaceControl sc = mWindowManagerCallbacks.createSurfaceForGestureMonitor(name,
-                    displayId);
-            if (sc == null) {
-                throw new IllegalArgumentException(
-                        "Could not create gesture monitor surface on display: " + displayId);
-            }
-
-            final InputChannel inputChannel = createSpyWindowGestureMonitor(
-                    monitorToken, name, sc, displayId, pid, uid);
-            return new InputMonitor(inputChannel,
-                new InputMonitorHost(inputChannel.getToken()),
-                new SurfaceControl(sc, "IMS.monitorGestureInput"));
-        } finally {
-            Binder.restoreCallingIdentity(ident);
-        }
+                    "monitorGestureInput()")) {
+        throw new SecurityException("Requires MONITOR_INPUT permission");
     }
+
+    // Parameter validation
+    Objects.requireNonNull(requestedName, "name must not be null.");
+    Objects.requireNonNull(monitorToken, "token must not be null.");
+
+    if (displayId < Display.DEFAULT_DISPLAY) {
+        throw new IllegalArgumentException("displayId must >= 0.");
+    }
+
+    final String name = "[Gesture Monitor] " + requestedName;
+    final int pid = Binder.getCallingPid();
+    final int uid = Binder.getCallingUid();
+
+    final long ident = Binder.clearCallingIdentity();
+    try {
+        // Create gesture monitor surface
+        final SurfaceControl sc = mWindowManagerCallbacks.createSurfaceForGestureMonitor(name,
+                displayId);
+        if (sc == null) {
+            throw new IllegalArgumentException(
+                    "Could not create gesture monitor surface on display: " + displayId);
+        }
+
+        // Create input channel and monitor
+        final InputChannel inputChannel = createSpyWindowGestureMonitor(
+                monitorToken, name, sc, displayId, pid, uid);
+
+        return new InputMonitor(
+                inputChannel,
+                new InputMonitorHost(inputChannel.getToken()),
+                new SurfaceControl(sc, "IMS.monitorGestureInput")
+        );
+    } finally {
+        Binder.restoreCallingIdentity(ident);
+    }
+}
+
 
     /**
      * Creates an input channel to be used as an input event target.

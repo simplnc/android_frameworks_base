@@ -3398,25 +3398,35 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
         enforceTaskPermission(func);
     }
 
-    static void enforceTaskPermission(String func) {
-        if (PixelPropsUtils.shouldBypassTaskPermission(Binder.getCallingUid())) {
-            return;
-        }
-        if (checkCallingPermission(MANAGE_ACTIVITY_TASKS) == PackageManager.PERMISSION_GRANTED) {
+   static void enforceTaskPermission(String func) {
+    // Check if caller is exempted by PixelProps or base bypass
+    boolean pixelBypass = PixelPropsUtils.shouldBypassTaskPermission(Binder.getCallingUid());
+    boolean baseBypass  = com.android.internal.util.android.BypassUtils.shouldBypassTaskPermission(Binder.getCallingUid());
+
+    // If not exempted, check normal permissions
+    if (!pixelBypass && !baseBypass) {
+        if (checkCallingPermission(android.Manifest.permission.MANAGE_ACTIVITY_TASKS)
+                == PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
-        if (checkCallingPermission(MANAGE_ACTIVITY_STACKS) == PackageManager.PERMISSION_GRANTED) {
+        if (checkCallingPermission(android.Manifest.permission.MANAGE_ACTIVITY_STACKS)
+                == PackageManager.PERMISSION_GRANTED) {
             Slog.w(TAG, "MANAGE_ACTIVITY_STACKS is deprecated, "
                     + "please use alternative permission: MANAGE_ACTIVITY_TASKS");
             return;
         }
 
-        String msg = "Permission Denial: " + func + " from pid=" + Binder.getCallingPid() + ", uid="
-                + Binder.getCallingUid() + " requires android.permission.MANAGE_ACTIVITY_TASKS";
+        // Neither bypass nor permission granted → throw
+        String msg = "Permission Denial: " + func + " from pid=" + Binder.getCallingPid() +
+                ", uid=" + Binder.getCallingUid() +
+                " requires android.permission.MANAGE_ACTIVITY_TASKS";
         Slog.w(TAG, msg);
         throw new SecurityException(msg);
     }
+    // If pixelBypass or baseBypass is true → allow silently
+}
+
 
     static int checkPermission(String permission, int pid, int uid) {
         if (permission == null) {

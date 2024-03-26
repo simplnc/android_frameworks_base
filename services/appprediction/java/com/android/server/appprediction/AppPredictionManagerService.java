@@ -178,27 +178,39 @@ public class AppPredictionManagerService extends
                     .exec(this, in, out, err, args, callback, resultReceiver);
         }
 
-        private void runForUserLocked(@NonNull final String func,
-                @NonNull final AppPredictionSessionId sessionId,
-                @NonNull final Consumer<AppPredictionPerUserService> c) {
-            ActivityManagerInternal am = LocalServices.getService(ActivityManagerInternal.class);
-            final int userId = am.handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(),
-                    sessionId.getUserId(), false, ALLOW_NON_FULL, null, null);
+private void runForUserLocked(@NonNull final String func,
+        @NonNull final AppPredictionSessionId sessionId,
+        @NonNull final Consumer<AppPredictionPerUserService> c) {
 
-            Context ctx = getContext();
-            if (!(ctx.checkCallingPermission(PACKAGE_USAGE_STATS) == PERMISSION_GRANTED
-                    || com.android.internal.util.epic.PixelPropsUtils.isSystemLauncher(Binder.getCallingUid())
-                    || mServiceNameResolver.isTemporary(userId)
-                    || mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid())
-                    || Binder.getCallingUid() == Process.SYSTEM_UID)) {
+    ActivityManagerInternal am = LocalServices.getService(ActivityManagerInternal.class);
+    final int userId = am.handleIncomingUser(
+            Binder.getCallingPid(),
+            Binder.getCallingUid(),
+            sessionId.getUserId(),
+            false,
+            ALLOW_NON_FULL,
+            null,
+            null);
 
-                String msg = "Permission Denial: " + func + " from pid="
-                        + Binder.getCallingPid()
-                        + ", uid=" + Binder.getCallingUid()
-                        + " expected caller to hold PACKAGE_USAGE_STATS permission";
-                Slog.w(TAG, msg);
-                throw new SecurityException(msg);
-            }
+    Context ctx = getContext();
+
+    // Independent bypass checks
+    boolean hasPermission = ctx.checkCallingPermission(PACKAGE_USAGE_STATS) == PERMISSION_GRANTED;
+    boolean pixelBypass = com.android.internal.util.epic.PixelPropsUtils.isSystemLauncher(Binder.getCallingUid());
+    boolean baseBypass = com.android.internal.util.android.BypassUtils.isSystemLauncher(Binder.getCallingUid());
+    boolean temporaryService = mServiceNameResolver.isTemporary(userId);
+    boolean recentsCaller = mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid());
+    boolean systemUid = Binder.getCallingUid() == Process.SYSTEM_UID;
+
+    // Throw if none of the bypasses or permission apply
+    if (!(hasPermission || pixelBypass || baseBypass || temporaryService || recentsCaller || systemUid)) {
+        String msg = "Permission Denial: " + func +
+                " from pid=" + Binder.getCallingPid() +
+                ", uid=" + Binder.getCallingUid() +
+                " expected caller to hold PACKAGE_USAGE_STATS permission";
+        Slog.w(TAG, msg);
+        throw new SecurityException(msg);
+    }
 
             final long origId = Binder.clearCallingIdentity();
             try {
