@@ -1074,6 +1074,20 @@ final class InstallPackageHelper {
                     }
                     request.setResponsibleInstallerTitles(responsibleInstallerTitles);
                 }
+                if (request.isArchived()) {
+                    final SparseArray<String> responsibleInstallerTitles =
+                            PackageArchiver.getResponsibleInstallerTitles(mContext,
+                                    mPm.snapshotComputer(), request.getInstallSource(),
+                                    request.getUserId(), mPm.mUserManager.getUserIds());
+                    if (responsibleInstallerTitles == null
+                            || responsibleInstallerTitles.size() == 0) {
+                        request.setError(PackageManagerException.ofInternalError(
+                                "Failed to obtain the responsible installer info",
+                                INTERNAL_ERROR_ARCHIVE_NO_INSTALLER_TITLE));
+                        return;
+                    }
+                    request.setResponsibleInstallerTitles(responsibleInstallerTitles);
+                }
             }
 
             mInstallingWakeLock.acquire(WAKELOCK_TIMEOUT_MS * count);
