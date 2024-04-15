@@ -553,6 +553,21 @@ public class PipTaskOrganizer implements ShellTaskOrganizer.TaskListener,
         }
     }
 
+    private void mayRemoveContentOverlay(SurfaceControl overlay) {
+        final WeakReference<SurfaceControl> overlayRef = new WeakReference<>(overlay);
+        final long timeoutDuration = (mEnterAnimationDuration
+                + CONTENT_OVERLAY_FADE_OUT_DELAY_MS
+                + EXTRA_CONTENT_OVERLAY_FADE_OUT_DELAY_MS) * 2L;
+        mMainExecutor.executeDelayed(() -> {
+            final SurfaceControl overlayLeash = overlayRef.get();
+            if (overlayLeash != null && overlayLeash.isValid() && overlayLeash == mPipOverlay) {
+                ProtoLog.w(ShellProtoLogGroup.WM_SHELL_PICTURE_IN_PICTURE,
+                        "Cleanup the overlay(%s) as a last resort.", overlayLeash);
+                removeContentOverlay(overlayLeash, null /* callback */);
+            }
+        }, timeoutDuration);
+    }
+
     /**
      * Returns non-null Rect if the pip is entering from swipe-to-home with a specified source hint.
      * This also consumes the rect hint.
