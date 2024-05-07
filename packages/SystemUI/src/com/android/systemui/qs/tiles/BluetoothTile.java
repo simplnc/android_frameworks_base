@@ -56,6 +56,7 @@ import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
+import com.android.systemui.qs.tiles.dialog.bluetooth.BluetoothTileDialogViewModel;
 import com.android.systemui.res.R;
 import com.android.systemui.statusbar.policy.BluetoothController;
 
@@ -101,10 +102,11 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
             QSLogger qsLogger,
             BluetoothController bluetoothController,
             FeatureFlags featureFlags,
-            BluetoothTileDialogViewModel dialogViewModel
+            BluetoothTileDialogViewModel dialogViewModel,
+            KeyguardStateController keyguardStateController
     ) {
         super(host, uiEventLogger, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger);
+                statusBarStateController, activityStarter, qsLogger, keyguardStateController);
         mController = bluetoothController;
         mController.observe(getLifecycle(), mCallback);
         mExecutor = new HandlerExecutor(mainHandler);
@@ -114,9 +116,7 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
 
     @Override
     public BooleanState newTileState() {
-        BooleanState s = new BooleanState();
-        s.handlesSecondaryClick = true;
-        return s;
+        return new BooleanState();
     }
 
     @Override
@@ -143,7 +143,10 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
             mDialogViewModel.showDialog(expandable);
         } else {
             // Secondary clicks are header clicks, just toggle.
-            toggleBluetooth();
+        final boolean isEnabled = mState.value;
+        // Immediately enter transient enabling state when turning bluetooth on.
+        refreshState(isEnabled ? null : ARG_SHOW_TRANSIENT_ENABLING);
+        mController.setBluetoothEnabled(!isEnabled);
         }
     }
 

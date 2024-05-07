@@ -116,10 +116,7 @@ public class TileQueryHelper {
         }
 
         final ArrayList<QSTile> tilesToAdd = new ArrayList<>();
-        if (Flags.evenDimmer() && mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_evenDimmerEnabled)) {
-            possibleTiles.remove("reduce_brightness");
-        }
+        possibleTiles.remove("internet");
 
         for (String spec : possibleTiles) {
             // Only add current and stock tiles that can be created from QSFactoryImpl.

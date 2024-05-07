@@ -738,11 +738,10 @@ constructor(
                 getBackgroundColorForState(state.state, state.disabledByPolicy),
             )
             if (allowAnimations) {
-                for (i in 0 until backgroundOverlayDrawable.getStateCount()) {
-                    shapeAnimator.setFloatValues(
-                        (backgroundOverlayDrawable.getStateDrawable(i) as GradientDrawable).cornerRadius,
-                        getCornerRadiusForState(state.state))
-                }
+                shapeAnimator.setFloatValues(
+                    (backgroundDrawable as GradientDrawable).cornerRadius,
+                    getCornerRadiusForState(state.state)
+                )
                 singleAnimator.setValues(
                         colorValuesHolder(
                                 BACKGROUND_NAME,
@@ -872,9 +871,8 @@ constructor(
     }
 
     private fun setCornerRadius(cornerRadius: Float) {
-        for (i in 0 until backgroundOverlayDrawable.getStateCount()) {
-            (backgroundOverlayDrawable.getStateDrawable(i) as GradientDrawable).cornerRadius = cornerRadius
-        }
+        val mBg = ripple.findDrawableByLayerId(R.id.background) as GradientDrawable
+        mBg.cornerRadius = cornerRadius
     }
 
     private fun getCornerRadiusForState(state: Int): Float {
