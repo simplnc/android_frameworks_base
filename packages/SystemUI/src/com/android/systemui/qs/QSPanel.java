@@ -50,6 +50,7 @@ import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
 import lineageos.providers.LineageSettings;
+import com.android.systemui.qs.TileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +95,7 @@ public class QSPanel extends LinearLayout {
 
     @Nullable
     protected View mFooter;
+    private View mQsControlsLayoutShade;
 
     @Nullable
     private PageIndicator mFooterPageIndicator;
@@ -155,9 +157,12 @@ public class QSPanel extends LinearLayout {
                 } else if (LineageSettings.Secure.getUriFor(
                             LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER).equals(uri)
                         && mBrightnessView != null) {
+                    // Hide brightness slider when QS widgets are enabled
+                    boolean showBrightness = LineageSettings.Secure.getString(mContext.getContentResolver(),
+                            LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER).equals("1");
+                    boolean qsWidgetsEnabled = TileUtils.isQsWidgetsEnabled(mContext);
                     updateViewVisibilityForTuningValue(mBrightnessView,
-                            LineageSettings.Secure.getString(mContext.getContentResolver(),
-                                    LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER));
+                            (showBrightness && !qsWidgetsEnabled) ? "1" : "0");
                 }
             }
         };
@@ -442,7 +447,9 @@ public class QSPanel extends LinearLayout {
 
     protected void updatePadding() {
         final Resources res = mContext.getResources();
-        int paddingTop = res.getDimensionPixelSize(R.dimen.qs_panel_padding_top);
+        int paddingTop = res.getDimensionPixelSize(TileUtils.canShowQsWidgets(mContext)
+            ? R.dimen.qs_controls_padding_top
+            : R.dimen.qs_panel_padding_top);
         int paddingBottom = res.getDimensionPixelSize(R.dimen.qs_panel_padding_bottom);
         setPaddingRelative(getPaddingStart(),
                 mSceneContainerEnabled ? 0 : paddingTop,
@@ -466,6 +473,18 @@ public class QSPanel extends LinearLayout {
         }
         mOnConfigurationChangedListeners.forEach(
                 listener -> listener.onConfigurationChange(newConfig));
+        needsDynamicRowsAndColumns();
+        updateControlsLayoutVisibility();
+    }
+    
+    private void updateControlsLayoutVisibility() {
+        if (mQsControlsLayoutShade != null) {
+            boolean isLandscape = mContext.getResources().getConfiguration().orientation 
+                == Configuration.ORIENTATION_LANDSCAPE;
+            if (mQsControlsLayoutShade != null) {
+                mQsControlsLayoutShade.setVisibility(TileUtils.isQsWidgetsEnabled(mContext) && isLandscape ? View.VISIBLE : View.GONE);
+            }
+        }
     }
 
     final boolean hadConfigurationChangeWhileDetached() {
@@ -482,6 +501,7 @@ public class QSPanel extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mFooter = findViewById(R.id.qs_footer);
+        mQsControlsLayoutShade = findViewById(R.id.qs_controls_layout_shade);
     }
 
     private void updateHorizontalLinearLayoutMargins() {
@@ -516,6 +536,14 @@ public class QSPanel extends LinearLayout {
 
     private void switchAllContentToParent(ViewGroup parent, QSTileLayout newLayout) {
         int index = parent == this ? mMovableContentStartIndex : 0;
+        boolean isLandscape = mContext.getResources().getConfiguration().orientation 
+            == Configuration.ORIENTATION_LANDSCAPE;
+
+        if (mQsControlsLayoutShade != null 
+            && TileUtils.isQsWidgetsEnabled(mContext) && isLandscape) {
+            switchToParent(mQsControlsLayoutShade, parent, index);
+            index++;
+        }
 
         // Let's first move the tileLayout to the new parent, since that should come first.
         switchToParent((View) newLayout, parent, index);
@@ -534,6 +562,16 @@ public class QSPanel extends LinearLayout {
 
     /** Call when orientation has changed and MediaHost needs to be adjusted. */
     private void reAttachMediaHost(ViewGroup hostView, boolean horizontal) {
+        ViewGroup currentParent = (ViewGroup) hostView.getParent();
+        ViewGroup newParent = horizontal ? mHorizontalLinearLayout : this;
+        if (TileUtils.isQsWidgetsEnabled(mContext)) {
+            if (currentParent != newParent) {
+                if (currentParent != null) {
+                    currentParent.removeView(hostView);
+                }
+            }
+            return;
+        }
         if (!mUsingMediaPlayer) {
             // If the host view was attached, detach it.
             ViewGroup parent = (ViewGroup) hostView.getParent();
@@ -543,8 +581,6 @@ public class QSPanel extends LinearLayout {
             return;
         }
         mMediaHostView = hostView;
-        ViewGroup newParent = horizontal ? mHorizontalLinearLayout : this;
-        ViewGroup currentParent = (ViewGroup) hostView.getParent();
         Log.d(getDumpableTag(), "Reattaching media host: " + horizontal
                 + ", current " + currentParent + ", new " + newParent);
         if (currentParent != newParent) {
