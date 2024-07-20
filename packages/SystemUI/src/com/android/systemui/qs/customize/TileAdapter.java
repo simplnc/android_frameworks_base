@@ -54,6 +54,7 @@ import com.android.systemui.flags.Flags;
 import com.android.systemui.qs.QSEditEvent;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.TileLayout;
+import com.android.systemui.qs.TileUtils;
 import com.android.systemui.qs.customize.TileAdapter.Holder;
 import com.android.systemui.qs.customize.TileQueryHelper.TileInfo;
 import com.android.systemui.qs.customize.TileQueryHelper.TileStateListener;
@@ -923,7 +924,9 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
             buttonMinWidth = t.getDimensionPixelSize(android.R.styleable.View_minWidth, 0);
             t.recycle();
         }
-        return res.getDimensionPixelSize(R.dimen.qs_panel_padding_top)
+        return res.getDimensionPixelSize(TileUtils.canShowQsWidgets(context) 
+                    ? R.dimen.qs_controls_padding_top 
+                    : R.dimen.qs_panel_padding_top)
                 + res.getDimensionPixelSize(R.dimen.brightness_mirror_height)
                 + res.getDimensionPixelSize(R.dimen.qs_brightness_margin_top)
                 + res.getDimensionPixelSize(R.dimen.qs_brightness_margin_bottom)
