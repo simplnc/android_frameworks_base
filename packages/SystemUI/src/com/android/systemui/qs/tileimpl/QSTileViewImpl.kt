@@ -16,6 +16,7 @@
 
 package com.android.systemui.qs.tileimpl
 
+import android.animation.AnimatorSet
 import android.animation.ArgbEvaluator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
@@ -32,6 +33,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.StateListDrawable
 import android.os.Trace
 import android.service.quicksettings.Tile
 import android.text.TextUtils
@@ -71,6 +73,7 @@ import com.android.systemui.plugins.qs.QSTileView
 import com.android.systemui.qs.logging.QSLogger
 import com.android.systemui.qs.tileimpl.QSIconViewImpl.QS_ANIM_LENGTH
 import com.android.systemui.res.R
+import com.android.wm.shell.animation.Interpolators
 import java.util.Objects
 
 private const val TAG = "QSTileViewImpl"
@@ -91,10 +94,9 @@ constructor(
         private const val CHEVRON_NAME = "chevron"
         private const val OVERLAY_NAME = "overlay"
         const val UNAVAILABLE_ALPHA = 0.3f
-        @VisibleForTesting internal const val TILE_STATE_RES_PREFIX = "tile_states_"
-        @VisibleForTesting internal const val LONG_PRESS_EFFECT_WIDTH_SCALE = 1.1f
-        @VisibleForTesting internal const val LONG_PRESS_EFFECT_HEIGHT_SCALE = 1.2f
-        internal val EMPTY_RECT = Rect()
+        const val INACTIVE_ALPHA = 0.8f
+        @VisibleForTesting
+        internal const val TILE_STATE_RES_PREFIX = "tile_states_"
     }
 
     private val icon: QSIconViewImpl = QSIconViewImpl(context)
@@ -147,6 +149,7 @@ constructor(
     private val colorSecondaryLabelUnavailable =
         Utils.getColorAttrDefaultColor(context, R.attr.outline)
 
+    private lateinit var iconContainer: LinearLayout
     private lateinit var label: TextView
     protected lateinit var secondaryLabel: TextView
     private lateinit var labelContainer: IgnorableChildLinearLayout
@@ -158,30 +161,40 @@ constructor(
     /** Controls if tile background is set to a [RippleDrawable] see [setClickable] */
     protected var showRippleEffect = true
 
-    private lateinit var qsTileBackground: RippleDrawable
-    private lateinit var qsTileFocusBackground: Drawable
-    private lateinit var backgroundDrawable: LayerDrawable
-    protected lateinit var backgroundBaseDrawable: Drawable
+    private lateinit var ripple: RippleDrawable
+    private lateinit var backgroundDrawable: Drawable
+    private lateinit var backgroundBaseDrawable: Drawable
     private lateinit var backgroundOverlayDrawable: Drawable
 
     private var backgroundColor: Int = 0
     private var backgroundOverlayColor: Int = 0
-
-    private val singleAnimator: ValueAnimator =
-        ValueAnimator().apply {
-            setDuration(QS_ANIM_LENGTH)
-            addUpdateListener { animation ->
-                setAllColors(
-                    // These casts will throw an exception if some property is missing. We should
-                    // always have all properties.
-                    animation.getAnimatedValue(BACKGROUND_NAME) as Int,
-                    animation.getAnimatedValue(LABEL_NAME) as Int,
-                    animation.getAnimatedValue(SECONDARY_LABEL_NAME) as Int,
-                    animation.getAnimatedValue(CHEVRON_NAME) as Int,
-                    animation.getAnimatedValue(OVERLAY_NAME) as Int,
-                )
-            }
+    private var paintColor: Int = 0
+    private var radiusActive: Float = 0f
+    private var radiusInactive: Float = 0f
+    private val shapeAnimator: ValueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+        duration = QS_ANIM_LENGTH
+        interpolator = Interpolators.FAST_OUT_SLOW_IN
+        addUpdateListener { animation ->
+            setCornerRadius(animation.animatedValue as Float)
         }
+    }
+    private val singleAnimator: ValueAnimator = ValueAnimator().apply {
+        duration = QS_ANIM_LENGTH
+        addUpdateListener { animation ->
+            setAllColors(
+                // These casts will throw an exception if some property is missing. We should
+                // always have all properties.
+                animation.getAnimatedValue(BACKGROUND_NAME) as Int,
+                animation.getAnimatedValue(LABEL_NAME) as Int,
+                animation.getAnimatedValue(SECONDARY_LABEL_NAME) as Int,
+                animation.getAnimatedValue(CHEVRON_NAME) as Int,
+                animation.getAnimatedValue(OVERLAY_NAME) as Int,
+            )
+        }
+
+    private val tileAnimator = AnimatorSet().apply {
+        playTogether(singleAnimator, shapeAnimator)
+    }
 
     private var accessibilityClass: String? = null
     private var stateDescriptionDeltas: CharSequence? = null
@@ -219,24 +232,33 @@ constructor(
             )
         }
         setId(generateViewId())
-        orientation = LinearLayout.HORIZONTAL
-        gravity = Gravity.CENTER_VERTICAL or Gravity.START
+        orientation = LinearLayout.VERTICAL
+        gravity = Gravity.CENTER
         importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         clipChildren = false
         clipToPadding = false
         isFocusable = true
-        background = createTileBackground()
+        background = null
+
+        val iconContainerSize = context.resources.getDimensionPixelSize(R.dimen.qs_quick_tile_size)
+        radiusActive = iconContainerSize / 2f
+        radiusInactive = iconContainerSize / 4f
+        iconContainer = LinearLayout(context)
+        iconContainer.layoutParams = LayoutParams(iconContainerSize, iconContainerSize)
+        iconContainer.clipChildren = false
+        iconContainer.clipToPadding = false
+        iconContainer.orientation = LinearLayout.VERTICAL
+        iconContainer.gravity = Gravity.CENTER
+        iconContainer.background = createTileBackground()
         setColor(getBackgroundColorForState(QSTile.State.DEFAULT_STATE))
+        setCornerRadius(getCornerRadiusForState(QSTile.State.DEFAULT_STATE))
 
-        val padding = resources.getDimensionPixelSize(R.dimen.qs_tile_padding)
-        val startPadding = resources.getDimensionPixelSize(R.dimen.qs_tile_start_padding)
-        setPaddingRelative(startPadding, padding, padding, padding)
-
-        val iconSize = resources.getDimensionPixelSize(R.dimen.qs_icon_size)
-        addView(icon, LayoutParams(iconSize, iconSize))
-
+        val iconSize = context.resources.getDimensionPixelSize(R.dimen.qs_icon_size)
+        iconContainer.addView(icon, LayoutParams(iconSize, iconSize))
+        addView(iconContainer, 0)
         createAndAddLabels()
         createAndAddSideView()
+        updateResources()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -263,29 +285,30 @@ constructor(
         FontSizeUtils.updateFontSize(label, R.dimen.qs_tile_text_size)
         FontSizeUtils.updateFontSize(secondaryLabel, R.dimen.qs_tile_text_size)
 
+        labelContainer.invalidate()
+        labelContainer.apply {
+            ignoreLastView = collapsed
+            forceUnspecifiedMeasure = collapsed
+        }
+        secondaryLabel.alpha = if (collapsed) 0f else 1f
+
+        val iconContainerSize = context.resources.getDimensionPixelSize(R.dimen.qs_quick_tile_size)
+
+        iconContainer.layoutParams.apply {
+            height = iconContainerSize
+            width = iconContainerSize
+        }
+
+        val padding = resources.getDimensionPixelSize(R.dimen.qs_tile_padding)
         val iconSize = context.resources.getDimensionPixelSize(R.dimen.qs_icon_size)
         icon.layoutParams.apply {
             height = iconSize
             width = iconSize
         }
 
-        val padding = resources.getDimensionPixelSize(R.dimen.qs_tile_padding)
-        val startPadding = resources.getDimensionPixelSize(R.dimen.qs_tile_start_padding)
-        setPaddingRelative(startPadding, padding, padding, padding)
-
-        val labelMargin = resources.getDimensionPixelSize(R.dimen.qs_label_container_margin)
-        (labelContainer.layoutParams as MarginLayoutParams).apply { marginStart = labelMargin }
-
-        (sideView.layoutParams as MarginLayoutParams).apply { marginStart = labelMargin }
-        (chevronView.layoutParams as MarginLayoutParams).apply {
-            height = iconSize
-            width = iconSize
-        }
-
-        val endMargin = resources.getDimensionPixelSize(R.dimen.qs_drawable_end_margin)
-        (customDrawableView.layoutParams as MarginLayoutParams).apply {
-            height = iconSize
-            marginEnd = endMargin
+        iconContainer.setPaddingRelative(padding, padding, padding, padding)
+        (labelContainer.layoutParams as MarginLayoutParams).apply {
+            topMargin = padding / 2
         }
 
         background = createTileBackground()
@@ -299,15 +322,12 @@ constructor(
                 as IgnorableChildLinearLayout
         label = labelContainer.requireViewById(R.id.tile_label)
         secondaryLabel = labelContainer.requireViewById(R.id.app_label)
-        if (collapsed) {
-            labelContainer.ignoreLastView = true
-            // Ideally, it'd be great if the parent could set this up when measuring just this child
-            // instead of the View class having to support this. However, due to the mysteries of
-            // LinearLayout's double measure pass, we cannot overwrite `measureChild` or any of its
-            // sibling methods to have special behavior for labelContainer.
-            labelContainer.forceUnspecifiedMeasure = true
-            secondaryLabel.alpha = 0f
+        labelContainer.invalidate()
+        labelContainer.apply {
+            ignoreLastView = collapsed
+            forceUnspecifiedMeasure = collapsed
         }
+        secondaryLabel.alpha = if (collapsed) 0f else 1f
         setLabelColor(getLabelColorForState(QSTile.State.DEFAULT_STATE))
         setSecondaryLabelColor(getSecondaryLabelColorForState(QSTile.State.DEFAULT_STATE))
 
@@ -331,22 +351,15 @@ constructor(
         addView(sideView)
     }
 
-    private fun createTileBackground(): Drawable {
-        qsTileBackground =
-            if (Flags.qsTileFocusState()) {
-                mContext.getDrawable(R.drawable.qs_tile_background_flagged) as RippleDrawable
-            } else {
-                mContext.getDrawable(R.drawable.qs_tile_background) as RippleDrawable
-            }
-        qsTileFocusBackground = mContext.getDrawable(R.drawable.qs_tile_focused_background)!!
-        backgroundDrawable =
-            qsTileBackground.findDrawableByLayerId(R.id.background) as LayerDrawable
-        backgroundBaseDrawable =
-            backgroundDrawable.findDrawableByLayerId(R.id.qs_tile_background_base)
-        backgroundOverlayDrawable =
-            backgroundDrawable.findDrawableByLayerId(R.id.qs_tile_background_overlay)
-        backgroundOverlayDrawable.mutate().setTintMode(PorterDuff.Mode.SRC)
-        return qsTileBackground
+    fun createTileBackground(): Drawable {
+        ripple = mContext.getDrawable(R.drawable.qs_tile_background) as RippleDrawable
+            backgroundDrawable = ripple.findDrawableByLayerId(R.id.background) as LayerDrawable
+            backgroundBaseDrawable =
+            (backgroundDrawable as LayerDrawable).findDrawableByLayerId(R.id.qs_tile_background_base)
+            backgroundOverlayDrawable =
+            (backgroundDrawable as LayerDrawable).findDrawableByLayerId(R.id.qs_tile_background_overlay)
+            backgroundOverlayDrawable.mutate().setTintMode(PorterDuff.Mode.SRC)
+        return ripple
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -414,7 +427,7 @@ constructor(
     }
 
     override fun getIconWithBackground(): View {
-        return icon
+        return iconContainer
     }
 
     override fun init(tile: QSTile) {
@@ -522,18 +535,14 @@ constructor(
 
     override fun setClickable(clickable: Boolean) {
         super.setClickable(clickable)
-        if (!Flags.qsTileFocusState()) {
-            background =
-                if (clickable && showRippleEffect) {
-                    qsTileBackground.also {
-                        // In case that the colorBackgroundDrawable was used as the background, make
-                        // sure
-                        // it has the correct callback instead of null
-                        backgroundDrawable.callback = it
-                    }
-                } else {
-                    backgroundDrawable
-                }
+        iconContainer.background = if (clickable && showRippleEffect) {
+            ripple.also {
+                // In case that the colorBackgroundDrawable was used as the background, make sure
+                // it has the correct callback instead of null
+                backgroundDrawable.callback = it
+            }
+        } else {
+            backgroundDrawable
         }
     }
 
@@ -711,17 +720,16 @@ constructor(
         }
         if (!Objects.equals(secondaryLabel.text, state.secondaryLabel)) {
             secondaryLabel.text = state.secondaryLabel
-            secondaryLabel.visibility =
-                if (TextUtils.isEmpty(state.secondaryLabel)) {
-                    GONE
-                } else {
-                    VISIBLE
-                }
+            secondaryLabel.visibility = if (TextUtils.isEmpty(state.secondaryLabel)) {
+                INVISIBLE
+            } else {
+                VISIBLE
+            }
         }
 
         // Colors
         if (state.state != lastState || state.disabledByPolicy != lastDisabledByPolicy) {
-            singleAnimator.cancel()
+            tileAnimator.cancel()
             mQsLogger?.logTileBackgroundColorUpdateIfInternetTile(
                 state.spec,
                 state.state,
@@ -729,34 +737,39 @@ constructor(
                 getBackgroundColorForState(state.state, state.disabledByPolicy),
             )
             if (allowAnimations) {
+                for (i in 0 until backgroundOverlayDrawable.getStateCount()) {
+                    shapeAnimator.setFloatValues(
+                        (backgroundOverlayDrawable.getStateDrawable(i) as GradientDrawable).cornerRadius,
+                        getCornerRadiusForState(state.state))
+                }
                 singleAnimator.setValues(
-                    colorValuesHolder(
-                        BACKGROUND_NAME,
-                        backgroundColor,
-                        getBackgroundColorForState(state.state, state.disabledByPolicy),
-                    ),
-                    colorValuesHolder(
-                        LABEL_NAME,
-                        label.currentTextColor,
-                        getLabelColorForState(state.state, state.disabledByPolicy),
-                    ),
-                    colorValuesHolder(
-                        SECONDARY_LABEL_NAME,
-                        secondaryLabel.currentTextColor,
-                        getSecondaryLabelColorForState(state.state, state.disabledByPolicy),
-                    ),
-                    colorValuesHolder(
-                        CHEVRON_NAME,
-                        chevronView.imageTintList?.defaultColor ?: 0,
-                        getChevronColorForState(state.state, state.disabledByPolicy),
-                    ),
-                    colorValuesHolder(
-                        OVERLAY_NAME,
-                        backgroundOverlayColor,
-                        getOverlayColorForState(state.state),
-                    ),
+                        colorValuesHolder(
+                                BACKGROUND_NAME,
+                                backgroundColor,
+                                getBackgroundColorForState(state.state, state.disabledByPolicy)
+                        ),
+                        colorValuesHolder(
+                                LABEL_NAME,
+                                label.currentTextColor,
+                                getLabelColorForState(state.state, state.disabledByPolicy)
+                        ),
+                        colorValuesHolder(
+                                SECONDARY_LABEL_NAME,
+                                secondaryLabel.currentTextColor,
+                                getSecondaryLabelColorForState(state.state, state.disabledByPolicy)
+                        ),
+                        colorValuesHolder(
+                                CHEVRON_NAME,
+                                chevronView.imageTintList?.defaultColor ?: 0,
+                                getChevronColorForState(state.state, state.disabledByPolicy)
+                        ),
+                        colorValuesHolder(
+                                OVERLAY_NAME,
+                                backgroundOverlayColor,
+                                getOverlayColorForState(state.state)
+                    )
                 )
-                singleAnimator.start()
+                tileAnimator.start()
             } else {
                 setAllColors(
                     getBackgroundColorForState(state.state, state.disabledByPolicy),
@@ -765,6 +778,7 @@ constructor(
                     getChevronColorForState(state.state, state.disabledByPolicy),
                     getOverlayColorForState(state.state),
                 )
+                setCornerRadius(getCornerRadiusForState(state.state))
             }
         }
 
@@ -854,6 +868,21 @@ constructor(
     private fun getUnavailableText(spec: String?): String {
         val arrayResId = SubtitleArrayMapping.getSubtitleId(spec)
         return resources.getStringArray(arrayResId)[Tile.STATE_UNAVAILABLE]
+    }
+
+    private fun setCornerRadius(cornerRadius: Float) {
+        for (i in 0 until backgroundOverlayDrawable.getStateCount()) {
+            (backgroundOverlayDrawable.getStateDrawable(i) as GradientDrawable).cornerRadius = cornerRadius
+        }
+    }
+
+    private fun getCornerRadiusForState(state: Int): Float {
+        return when (state) {
+            Tile.STATE_ACTIVE -> radiusActive
+            Tile.STATE_INACTIVE -> radiusInactive
+            Tile.STATE_UNAVAILABLE -> radiusInactive
+            else -> radiusInactive
+        }
     }
 
     /*

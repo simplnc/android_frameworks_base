@@ -16,7 +16,7 @@
   -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="28dp" />
+    <corners android:radius="100dp" />
     <!-- Enhanced surface with subtle gradient for polish -->
     <gradient
         android:startColor="#FFFFFF"
