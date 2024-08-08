@@ -23,6 +23,8 @@ import static com.android.wm.shell.windowdecor.DragResizeWindowGeometry.getLarge
 import static com.android.wm.shell.windowdecor.DragResizeWindowGeometry.getResizeEdgeHandleSize;
 import static com.android.wm.shell.windowdecor.DragResizeWindowGeometry.getResizeHandleEdgeInset;
 
+import static com.android.launcher3.icons.BaseIconFactory.MODE_DEFAULT;
+
 import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -30,17 +32,26 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.WindowConfiguration;
 import android.app.WindowConfiguration.WindowingMode;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
+import android.util.Log;
 import android.util.Size;
 import android.view.Choreographer;
+import android.view.Display;
 import android.view.InsetsState;
 import android.view.MotionEvent;
 import android.view.SurfaceControl;
@@ -50,7 +61,9 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.window.WindowContainerTransaction;
 
+import com.android.internal.policy.ScreenDecorationsUtils;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.policy.ScreenDecorationsUtils;
 import com.android.wm.shell.R;
 import com.android.wm.shell.ShellTaskOrganizer;
 import com.android.wm.shell.common.DisplayController;
@@ -68,6 +81,8 @@ import com.android.wm.shell.windowdecor.extension.TaskInfoKt;
  * maximize button and close button.
  */
 public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearLayout> {
+    private static final String TAG = "CaptionWindowDecoration";
+
     private final Handler mHandler;
     private final @ShellBackgroundThread ShellExecutor mBgExecutor;
     private final Choreographer mChoreographer;
@@ -81,6 +96,9 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
     private RelayoutParams mRelayoutParams = new RelayoutParams();
     private final RelayoutResult<WindowDecorLinearLayout> mResult =
             new RelayoutResult<>();
+
+    private ResizeVeil mResizeVeil;
+    private Bitmap mResizeVeilBitmap;
 
     CaptionWindowDecoration(
             Context context,
@@ -100,6 +118,8 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
         mBgExecutor = bgExecutor;
         mChoreographer = choreographer;
         mSyncQueue = syncQueue;
+        
+        loadAppInfo();
     }
 
     void setCaptionListeners(
@@ -204,9 +224,10 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
             boolean shouldSetTaskVisibilityPositionAndCrop,
             boolean isStatusBarVisible,
             boolean isKeyguardVisibleAndOccluded,
-            InsetsState displayInsetsState,
+            DisplayController displayController,
             boolean hasGlobalFocus,
-            @NonNull Region globalExclusionRegion) {
+            @NonNull Region globalExclusionRegion,
+            int cornerRadius) {
         relayoutParams.reset();
         relayoutParams.mRunningTaskInfo = taskInfo;
         relayoutParams.mLayoutResId = R.layout.caption_window_decor;
@@ -221,6 +242,7 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
         relayoutParams.mIsCaptionVisible = taskInfo.isFreeform()
                 || (isStatusBarVisible && !isKeyguardVisibleAndOccluded);
         relayoutParams.mDisplayExclusionRegion.set(globalExclusionRegion);
+        relayoutParams.mCornerRadius = cornerRadius;
 
         if (TaskInfoKt.isTransparentCaptionBarAppearance(taskInfo)) {
             // If the app is requesting to customize the caption bar, allow input to fall
@@ -240,7 +262,8 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
         controlsElement.mAlignment = RelayoutParams.OccludingCaptionElement.Alignment.END;
         relayoutParams.mOccludingCaptionElements.add(controlsElement);
         relayoutParams.mCaptionTopPadding = getTopPadding(relayoutParams,
-                taskInfo.getConfiguration().windowConfiguration.getBounds(), displayInsetsState);
+                taskInfo.getConfiguration().windowConfiguration.getBounds(),
+                displayController.getInsetsState(taskInfo.displayId));
     }
 
     @SuppressLint("MissingPermission")
@@ -257,12 +280,14 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
         final WindowDecorLinearLayout oldRootView = mResult.mRootView;
         final SurfaceControl oldDecorationSurface = mDecorationContainerSurface;
         final WindowContainerTransaction wct = new WindowContainerTransaction();
+        
+        final int cornerRadius = (int) ScreenDecorationsUtils.getWindowCornerRadius(mContext);
 
         updateRelayoutParams(mRelayoutParams, mContext, taskInfo, applyStartTransactionOnDraw,
                 shouldSetTaskVisibilityPositionAndCrop, mIsStatusBarVisible,
                 mIsKeyguardVisibleAndOccluded,
                 mDisplayController.getInsetsState(taskInfo.displayId), hasGlobalFocus,
-                globalExclusionRegion);
+                globalExclusionRegion, cornerRadius);
 
         relayout(mRelayoutParams, startT, finishT, wct, oldRootView, mResult);
         // After this line, mTaskInfo is up-to-date and should be used instead of taskInfo
@@ -304,12 +329,25 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
                 .getScaledTouchSlop();
 
         final Resources res = mResult.mRootView.getResources();
-        mDragResizeListener.setGeometry(new DragResizeWindowGeometry(0 /* taskCornerRadius */,
+        mDragResizeListener.setGeometry(new DragResizeWindowGeometry(cornerRadius /* taskCornerRadius */,
                         new Size(mResult.mWidth, mResult.mHeight),
                         getResizeEdgeHandleSize(res),
                         getResizeHandleEdgeInset(res), getFineResizeCornerSize(res),
                         getLargeResizeCornerSize(res), DragResizeWindowGeometry.DisabledEdge.NONE),
                 touchSlop);
+    }
+
+    private static int getCornerRadius(Context context, Display display) {
+        // Show rounded corners only on the internal display as we can't get rounded corners for
+        // external displays.
+        if (display.getType() != Display.TYPE_INTERNAL) {
+            return 0;
+        }
+        final TypedArray ta = context.obtainStyledAttributes(
+                new int[]{android.R.attr.dialogCornerRadius});
+        final int cornerRadius = ta.getDimensionPixelSize(0, 0);
+        ta.recycle();
+        return cornerRadius;
     }
 
     /**
@@ -389,6 +427,65 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
         mDragResizeListener = null;
     }
 
+    private void loadAppInfo() {
+        String packageName = mTaskInfo.realActivity.getPackageName();
+        PackageManager pm = mContext.getApplicationContext().getPackageManager();
+        try {
+            IconProvider provider = new IconProvider(mContext);
+            Drawable appIcon = provider.getIcon(pm.getActivityInfo(mTaskInfo.baseActivity,
+                    PackageManager.ComponentInfoFlags.of(0)));
+            final BaseIconFactory resizeVeilIconFactory = createIconFactory(mContext,
+                    R.dimen.desktop_mode_resize_veil_icon_size);
+            mResizeVeilBitmap = resizeVeilIconFactory
+                    .createScaledBitmap(appIcon, MODE_DEFAULT);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Package not found: " + packageName, e);
+        }
+    }
+
+    private BaseIconFactory createIconFactory(Context context, int dimensions) {
+        final Resources resources = context.getResources();
+        final int densityDpi = resources.getDisplayMetrics().densityDpi;
+        final int iconSize = resources.getDimensionPixelSize(dimensions);
+        return new BaseIconFactory(context, densityDpi, iconSize);
+    }
+
+    /**
+     * Create the resize veil for this task. Note the veil's visibility is View.GONE by default
+     * until a resize event calls showResizeVeil below.
+     */
+    void createResizeVeil() {
+        mResizeVeil = new ResizeVeil(mContext, mDisplayController, mResizeVeilBitmap,
+                mTaskSurface, mSurfaceControlTransactionSupplier, mTaskInfo);
+    }
+
+    /**
+     * Fade in the resize veil
+     */
+    void showResizeVeil(Rect taskBounds) {
+        mResizeVeil.showVeil(mTaskSurface, taskBounds, mTaskInfo);
+    }
+
+    /**
+     * Set new bounds for the resize veil
+     */
+    void updateResizeVeil(Rect newBounds) {
+        mResizeVeil.updateResizeVeil(newBounds);
+    }
+
+    /**
+     * Fade the resize veil out.
+     */
+    void hideResizeVeil() {
+        mResizeVeil.hideVeil();
+    }
+
+    private void disposeResizeVeil() {
+        if (mResizeVeil == null) return;
+        mResizeVeil.dispose();
+        mResizeVeil = null;
+    }
+
     private static int getTopPadding(RelayoutParams params, Rect taskBounds,
             InsetsState insetsState) {
         if (!params.mRunningTaskInfo.isFreeform()) {
@@ -415,6 +512,7 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
     @Override
     public void close() {
         closeDragResizeListener();
+        disposeResizeVeil();
         super.close();
     }
 
