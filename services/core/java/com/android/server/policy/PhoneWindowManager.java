@@ -249,6 +249,7 @@ import com.android.internal.widget.LockPatternUtils;
 import com.android.server.AccessibilityManagerInternal;
 import com.android.server.ExtconStateObserver;
 import com.android.server.ExtconUEventObserver;
+import com.android.server.gesture.shake.ShakeGestureImpl;
 import com.android.server.GestureLauncherService;
 import com.android.server.LocalServices;
 import com.android.server.SystemServiceManager;
@@ -690,7 +691,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     Intent mVrHeadsetHomeIntent;
     boolean mPendingMetaAction;
     boolean mPendingCapsLockToggle;
-
+    
     // Tracks user-customisable behavior for certain key events
     private Action mBackLongPressAction;
     private Action mHomeLongPressAction;
@@ -702,6 +703,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private Action mAppSwitchPressAction;
     private Action mAppSwitchLongPressAction;
     private Action mEdgeLongSwipeAction;
+    private Action mShakeAction;
 
     // support for activating the lock screen while the screen is on
     private HashSet<Integer> mAllowLockscreenWhenOnDisplays = new HashSet<>();
@@ -798,6 +800,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private SingleKeyGestureDetector mSingleKeyGestureDetector;
     private GestureLauncherService mGestureLauncherService;
     private ButtonOverridePermissionChecker mButtonOverridePermissionChecker;
+    private ShakeGestureImpl mShakeGestureImpl;
 
     private boolean mLockNowPending = false;
 
@@ -1129,6 +1132,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_ENABLE_POWER_MENU), true, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    "shake_gestures_action"), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -3354,6 +3360,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mEdgeLongSwipeAction = Action.fromSettings(resolver,
                 LineageSettings.System.KEY_EDGE_LONG_SWIPE_ACTION,
                 mEdgeLongSwipeAction);
+
+        mShakeAction = Action.fromIntSafe(Settings.Secure.getIntForUser(
+                resolver, "shake_gestures_action", 
+                0, UserHandle.USER_CURRENT));
 
         mShortPressOnWindowBehavior = SHORT_PRESS_WINDOW_NOTHING;
         if (mPackageManager.hasSystemFeature(FEATURE_PICTURE_IN_PICTURE)) {
@@ -6876,6 +6886,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mSettingsObserver.onChange(false);
                 mDefaultDisplayRotation.onUserSwitch();
                 mWindowManagerFuncs.onUserSwitched();
+                mShakeGestureImpl.onUserSwitching();
             }
         }
     };
@@ -7461,6 +7472,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVrManagerInternal.addPersistentVrModeStateListener(mPersistentVrModeListener);
         }
 
+        mDockObserverInternal = LocalServices.getService(DockObserverInternal.class);
+        if (mDockObserverInternal != null) {
+            // Get initial state from DockObserverInternal, DockObserver starts after WM.
+            int dockMode = mDockObserverInternal.getActualDockState();
+            mDefaultDisplayPolicy.setDockMode(dockMode);
+        }
+
         readCameraLensCoverState();
         updateUiMode();
         mDefaultDisplayRotation.updateOrientationListener();
@@ -7476,6 +7494,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
         mGestureLauncherService = LocalServices.getService(GestureLauncherService.class);
+        
+        mShakeGestureImpl = new ShakeGestureImpl(new ShakeGestureImpl.Callbacks() {
+            @Override
+            public void onShake() {
+                if (mShakeAction == Action.NOTHING)
+                    return;
+                long now = SystemClock.uptimeMillis();
+                KeyEvent event = new KeyEvent(now, now, KeyEvent.ACTION_DOWN,
+                        KeyEvent.KEYCODE_SYSRQ, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                        KeyEvent.FLAG_FROM_SYSTEM, InputDevice.SOURCE_TOUCHSCREEN);
+                performKeyAction(mShakeAction, event);
+                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, "Shake Gesture");
+            }
+        });
     }
 
     /** {@inheritDoc} */
