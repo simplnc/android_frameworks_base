@@ -33,7 +33,7 @@ object MigrateClocksToBlueprint {
     /** Is the refactor enabled */
     @JvmStatic
     inline val isEnabled
-        get() = Flags.migrateClocksToBlueprint()
+        get() = false // Forced off to enable legacy ClockStyle system
 
     /**
      * Called to ensure code is only run when the flag is enabled. This protects users from the

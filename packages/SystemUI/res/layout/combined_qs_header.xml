@@ -96,6 +96,8 @@ frame when animating QS <-> QQS transition
         android:transformPivotY="24dp"
         android:scaleX="1"
         android:scaleY="1"
+        android:alpha="0.95"
+        android:elevation="2dp"
     />
 
     <com.android.systemui.statusbar.policy.Clock

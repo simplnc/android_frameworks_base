@@ -4,5 +4,7 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
+    <!-- Summary line under weekday in custom lock clock presentation -->
+    <string name="lock_clock_summary">bASHA mOBILE</string>
 
 </resources>
