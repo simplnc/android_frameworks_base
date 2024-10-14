@@ -163,6 +163,12 @@ public class KeyguardSliceView extends LinearLayout {
             RowContent rc = (RowContent) subItems.get(i);
             SliceItem item = rc.getSliceItem();
             final Uri itemTag = item.getSlice().getUri();
+            
+            // Hide AOSP date when custom clock is enabled
+            if (KeyguardSliceProvider.KEYGUARD_DATE_URI.equals(itemTag.toString())) {
+                continue;
+            }
+            
             // Try to reuse the view if already exists in the layout
             KeyguardSliceTextView button = mRow.findViewWithTag(itemTag);
             if (button == null) {

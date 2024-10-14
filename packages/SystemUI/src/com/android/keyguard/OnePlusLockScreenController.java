@@ -116,18 +116,19 @@ public class OnePlusLockScreenController {
     }
     
     private void initViews(View rootView) {
-        mClockView = rootView.findViewById(R.id.oneplus_clock);
-        mDateView = rootView.findViewById(R.id.oneplus_date);
-        mWeatherView = rootView.findViewById(R.id.oneplus_weather);
-        mSeparatorView = rootView.findViewById(R.id.oneplus_separator);
-        mBatteryView = rootView.findViewById(R.id.oneplus_battery);
-        mNotificationsView = rootView.findViewById(R.id.oneplus_notifications);
-        mInfoSeparatorView = rootView.findViewById(R.id.oneplus_info_separator);
-        mFlashlightButton = rootView.findViewById(R.id.oneplus_flashlight);
-        mCameraButton = rootView.findViewById(R.id.oneplus_camera);
-        mDateWeatherContainer = rootView.findViewById(R.id.oneplus_date_weather_container);
-        mInfoContainer = rootView.findViewById(R.id.oneplus_info_container);
-        mQuickActionsContainer = rootView.findViewById(R.id.oneplus_quick_actions);
+        // Map to new layout IDs - some views may not exist in new layout
+        mClockView = rootView.findViewById(R.id.oos_date); // Use date TextClock as main clock
+        mDateView = rootView.findViewById(R.id.oos_date);
+        mWeatherView = rootView.findViewById(R.id.weather_text);
+        mSeparatorView = null; // Not present in new layout
+        mBatteryView = null; // Not present in new layout
+        mNotificationsView = null; // Not present in new layout
+        mInfoSeparatorView = null; // Not present in new layout
+        mFlashlightButton = null; // Not present in new layout
+        mCameraButton = null; // Not present in new layout
+        mDateWeatherContainer = null; // Not present in new layout
+        mInfoContainer = null; // Not present in new layout
+        mQuickActionsContainer = null; // Not present in new layout
     }
     
     private void updateSettings() {
@@ -166,44 +167,8 @@ public class OnePlusLockScreenController {
     }
     
     private void setupClickListeners() {
-        if (mFlashlightButton != null) {
-            mFlashlightButton.setOnClickListener(v -> {
-                try {
-                    Intent flashlightIntent = new Intent("android.intent.action.FLASHLIGHT");
-                    flashlightIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(flashlightIntent);
-                } catch (Exception e) {
-                    Log.w(TAG, "Could not start flashlight: " + e.getMessage());
-                    // Fallback - try to toggle flashlight via broadcast
-                    try {
-                        Intent toggleIntent = new Intent("com.android.systemui.action.TOGGLE_FLASHLIGHT");
-                        mContext.sendBroadcast(toggleIntent);
-                    } catch (Exception ex) {
-                        Log.e(TAG, "Flashlight toggle failed: " + ex.getMessage());
-                    }
-                }
-            });
-        }
-        
-        if (mCameraButton != null) {
-            mCameraButton.setOnClickListener(v -> {
-                try {
-                    Intent cameraIntent = new Intent("android.media.action.STILL_IMAGE_CAMERA_SECURE");
-                    cameraIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mContext.startActivity(cameraIntent);
-                } catch (Exception e) {
-                    Log.w(TAG, "Could not start camera: " + e.getMessage());
-                    // Fallback to regular camera intent
-                    try {
-                        Intent fallbackIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-                        fallbackIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(fallbackIntent);
-                    } catch (Exception ex) {
-                        Log.e(TAG, "Camera launch failed: " + ex.getMessage());
-                    }
-                }
-            });
-        }
+        // Flashlight and camera buttons are not present in new layout
+        // This method is kept for compatibility but does nothing
     }
     
     private void updateVisibility() {
@@ -213,60 +178,23 @@ public class OnePlusLockScreenController {
             return;
         }
         
-        // Show/hide date
+        // Show/hide date (oos_date is the main date display)
         if (mDateView != null) {
             mDateView.setVisibility(mShowDate ? View.VISIBLE : View.GONE);
         }
         
-        // Show/hide weather and separator
-        if (mWeatherView != null && mSeparatorView != null) {
-            if (mShowWeather && mShowDate) {
-                mWeatherView.setVisibility(View.VISIBLE);
-                mSeparatorView.setVisibility(View.VISIBLE);
-            } else if (mShowWeather && !mShowDate) {
-                mWeatherView.setVisibility(View.VISIBLE);
-                mSeparatorView.setVisibility(View.GONE);
-            } else {
-                mWeatherView.setVisibility(View.GONE);
-                mSeparatorView.setVisibility(View.GONE);
-            }
+        // Show/hide weather
+        if (mWeatherView != null) {
+            mWeatherView.setVisibility(mShowWeather ? View.VISIBLE : View.GONE);
         }
         
-        // Show/hide battery
-        if (mBatteryView != null) {
-            mBatteryView.setVisibility(mShowBattery ? View.VISIBLE : View.GONE);
-        }
-        
-        // Show/hide notifications and info separator
-        if (mNotificationsView != null && mInfoSeparatorView != null) {
-            if (mShowNotifications && mShowBattery) {
-                mNotificationsView.setVisibility(View.VISIBLE);
-                mInfoSeparatorView.setVisibility(View.VISIBLE);
-            } else if (mShowNotifications && !mShowBattery) {
-                mNotificationsView.setVisibility(View.VISIBLE);
-                mInfoSeparatorView.setVisibility(View.GONE);
-            } else {
-                mNotificationsView.setVisibility(View.GONE);
-                mInfoSeparatorView.setVisibility(View.GONE);
-            }
-        }
-        
-        // Hide entire containers if no content
-        if (mDateWeatherContainer != null) {
-            boolean hasContent = mShowDate || mShowWeather;
-            mDateWeatherContainer.setVisibility(hasContent ? View.VISIBLE : View.GONE);
-        }
-        
-        if (mInfoContainer != null) {
-            boolean hasContent = mShowBattery || mShowNotifications;
-            mInfoContainer.setVisibility(hasContent ? View.VISIBLE : View.GONE);
-        }
+        // Other components are not present in new layout, so no visibility changes needed
     }
     
     private void hideAllComponents() {
-        if (mDateWeatherContainer != null) mDateWeatherContainer.setVisibility(View.GONE);
-        if (mInfoContainer != null) mInfoContainer.setVisibility(View.GONE);
-        if (mQuickActionsContainer != null) mQuickActionsContainer.setVisibility(View.GONE);
+        // Most components are not present in new layout, so minimal hiding needed
+        if (mDateView != null) mDateView.setVisibility(View.GONE);
+        if (mWeatherView != null) mWeatherView.setVisibility(View.GONE);
     }
     
     private void updateDisplays() {
@@ -279,12 +207,11 @@ public class OnePlusLockScreenController {
     private void updateDateDisplay() {
         if (mDateView != null && mShowDate) {
             try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd", Locale.getDefault());
-                String dateString = dateFormat.format(new Date());
-                mDateView.setText(dateString);
+                // The oos_date TextClock handles its own formatting, so we don't need to set text
+                // Just ensure it's visible
+                mDateView.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 Log.e(TAG, "Error updating date: " + e.getMessage());
-                mDateView.setText("Today");
             }
         }
     }
@@ -294,40 +221,18 @@ public class OnePlusLockScreenController {
             // Placeholder for weather integration
             // In a real implementation, this would connect to a weather service
             mWeatherView.setText("22°C");
+            mWeatherView.setVisibility(View.VISIBLE);
         }
     }
     
     private void updateBatteryDisplay() {
-        if (mBatteryView != null && mShowBattery) {
-            try {
-                String batteryText = mBatteryLevel + "%";
-                if (mBatteryCharging) {
-                    batteryText += " ⚡";
-                }
-                mBatteryView.setText(batteryText);
-            } catch (Exception e) {
-                Log.e(TAG, "Error updating battery: " + e.getMessage());
-                mBatteryView.setText("Battery");
-            }
-        }
+        // Battery display not present in new layout
+        // This method is kept for compatibility but does nothing
     }
     
     private void updateNotificationDisplay() {
-        if (mNotificationsView != null && mShowNotifications) {
-            try {
-                if (mNotificationCount > 0) {
-                    mNotificationsView.setText(String.valueOf(mNotificationCount));
-                    mNotificationsView.setVisibility(View.VISIBLE);
-                } else {
-                    mNotificationsView.setVisibility(View.GONE);
-                    if (mInfoSeparatorView != null) {
-                        mInfoSeparatorView.setVisibility(View.GONE);
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error updating notifications: " + e.getMessage());
-            }
-        }
+        // Notification display not present in new layout
+        // This method is kept for compatibility but does nothing
     }
     
     public void setNotificationCount(int count) {
