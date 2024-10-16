@@ -87,6 +87,7 @@ import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.scene.domain.interactor.SceneInteractor;
 import com.android.systemui.scene.shared.flag.SceneContainerFlag;
 import com.android.systemui.scene.shared.model.Scenes;
+import com.android.systemui.shade.NotificationPanelViewController;
 import com.android.systemui.shade.ShadeController;
 import com.android.systemui.shade.ShadeExpansionChangeEvent;
 import com.android.systemui.shade.ShadeExpansionListener;
@@ -180,6 +181,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
     // Local cache of expansion events, to avoid duplicates
     private float mFraction = -1f;
     private boolean mTracking = false;
+    private boolean mIsFromBiometric = false;
     private boolean mBouncerShowingOverDream;
     private int mAttemptsToShowBouncer = 0;
     private DelayableExecutor mExecutor;
@@ -302,6 +304,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
     private boolean mCentralSurfacesRegistered;
 
     private View mNotificationContainer;
+    private NotificationPanelViewController mNotificationPanelVC;
 
     protected boolean mRemoteInputActive;
     private boolean mGlobalActionsVisible = false;
@@ -830,6 +833,10 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
                 );
             } else {
                 mPrimaryBouncerInteractor.show(scrimmed);
+            }
+            if (mNotificationPanelVC != null && mIsFromBiometric) {
+                mNotificationPanelVC.resetHeightForBouncerShowing();
+                mIsFromBiometric = false;
             }
         }
         updateStates();
@@ -1839,6 +1846,15 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
                 mSelectedUserInteractor.getSelectedUserId());
         return mode == KeyguardSecurityModel.SecurityMode.SimPin
                 || mode == KeyguardSecurityModel.SecurityMode.SimPuk;
+    }
+
+    public void setNotificationPanelViewController(NotificationPanelViewController notificationPanelViewController) {
+        mNotificationPanelVC = notificationPanelViewController;
+    }
+
+    @Override
+    public void setIsFromBiometric(boolean isFromBiometric) {
+        mIsFromBiometric = isFromBiometric;
     }
 
     @VisibleForTesting
