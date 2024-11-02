@@ -112,8 +112,8 @@ public enum ScrimState {
             mNotifTint = previousState.mNotifTint;
             mNotifAlpha = previousState.mNotifAlpha;
 
-            mBehindTint = previousState.mBehindTint;
-            mBehindAlpha = previousState.mBehindAlpha;
+            mBehindTint = mBackgroundColor;
+            mBehindAlpha = 1f;
 
             mFrontTint = mBackgroundColor;
             mFrontAlpha = .66f;
@@ -368,7 +368,7 @@ public enum ScrimState {
 
     public void init(ScrimView scrimInFront, ScrimView scrimBehind, DozeParameters dozeParameters,
             DockManager dockManager) {
-        mBackgroundColor = scrimBehind.getContext().getColor(R.color.shade_scrim_background_dark);
+        mBackgroundColor = scrimBehind.getContext().getColor(R.color.shade_scrim_background);
         mScrimInFront = scrimInFront;
         mScrimBehind = scrimBehind;
 
