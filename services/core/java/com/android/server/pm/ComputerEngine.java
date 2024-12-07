@@ -2565,6 +2565,33 @@ public class ComputerEngine implements Computer {
         }
     }
 
+  
+
+    private final boolean shouldFilterApplicationCustom(
+            @Nullable PackageStateInternal ps, int callingUid, int userId) {
+        if (!isBootCompleted()) return false;
+        if (ps == null) return false;
+
+        final String packageName = ps.getPackageName();
+        if (packageName == null) return false;
+
+        // if the target and caller are the same application, skip
+        if (isCallerSameApp(packageName, callingUid)
+                // if the caller is system, root, shell, or updated system app, skip
+                || isCallerSystem(callingUid)
+                // if the caller is the current default home, skip
+                || isCallerHome(callingUid, userId)) {
+            return false;
+        }
+        // if the target is included in Settings.Secure.HIDE_APPLIST, do filter
+        if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
+                mContext, packageName)) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Returns whether or not access to the application should be filtered.
      * <p>
