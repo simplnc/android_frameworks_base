@@ -28,6 +28,8 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Insets
 import android.os.Bundle
+import android.os.UserHandle
+import android.provider.Settings
 import android.os.Trace
 import android.os.Trace.TRACE_TAG_APP
 import android.provider.AlarmClock
@@ -122,6 +124,10 @@ constructor(
 
         @VisibleForTesting internal val DEFAULT_CLOCK_INTENT = Intent(AlarmClock.ACTION_SHOW_ALARMS)
 
+      
+        internal val QS_HEADER_CLOCK_STYLE =
+            "system:" + "qs_header_clock_style"
+
         private fun Int.stateToString() =
             when (this) {
                 QQS_HEADER_CONSTRAINT -> "QQS Header"
@@ -132,6 +138,9 @@ constructor(
     }
 
     var shadeCollapseAction: Runnable? = null
+
+   
+    private var qsClockStyle = 0
 
     private lateinit var iconManager: TintedIconManager
     private lateinit var carrierIconSlots: List<String>
@@ -290,6 +299,7 @@ constructor(
             override fun onDensityOrFontScaleChanged() {
                 clock.setTextAppearance(R.style.TextAppearance_QS_Status)
                 date.setTextAppearance(R.style.TextAppearance_QS_Status)
+                updateQsHeaderClockDateVisibility()
                 mShadeCarrierGroup.updateTextAppearance(R.style.TextAppearance_QS_Status_Carriers)
                 loadConstraints()
                 header.minHeight =
@@ -307,6 +317,7 @@ constructor(
             override fun onThemeChanged() {
                 clock.setTextAppearance(R.style.TextAppearance_QS_Status)
                 date.setTextAppearance(R.style.TextAppearance_QS_Status)
+                updateQsHeaderClockDateVisibility()
                 mShadeCarrierGroup.updateTextAppearance(R.style.TextAppearance_QS_Status_Carriers)
             }
         }
@@ -315,6 +326,27 @@ constructor(
         NextAlarmController.NextAlarmChangeCallback { nextAlarm ->
             nextAlarmIntent = nextAlarm?.showIntent
         }
+
+
+    fun updateQsHeaderClockDateVisibility() {
+        // Check current custom clock style setting
+        val currentClockStyle = Settings.System.getIntForUser(
+            context.contentResolver, "qs_header_clock_style", 2, UserHandle.USER_CURRENT
+        )
+        
+        if (currentClockStyle != 0) {
+            // Hide default clock and date when custom clock is enabled
+            clock.visibility = View.GONE
+            date.visibility = View.GONE
+        } else {
+            // Show default clock and date when custom clock is disabled
+            clock.visibility = View.VISIBLE
+            date.visibility = View.VISIBLE
+            val colorStateList = ColorStateList.valueOf(Color.WHITE)
+            clock.setTextColor(colorStateList)
+            date.setTextColor(colorStateList)
+        }
+    }
 
     override fun onInit() {
         variableDateViewControllerFactory.create(date as VariableDateView).init()
@@ -374,6 +406,10 @@ constructor(
         systemIconsHoverContainer.setOnHoverListener(
             statusOverlayHoverListenerFactory.createListener(systemIconsHoverContainer)
         )
+
+
+        // tunerService.addTunable(this, QS_HEADER_CLOCK_STYLE) // Disabled - TunerService not available
+        updateQsHeaderClockDateVisibility() // Update clock/date visibility based on custom clock setting
     }
 
     override fun onViewDetached() {
@@ -385,7 +421,19 @@ constructor(
         statusBarIconController.removeIconGroup(iconManager)
         nextAlarmController.removeCallback(nextAlarmCallback)
         systemIconsHoverContainer.setOnHoverListener(null)
+        // tunerService.removeTunable(this) // Disabled - TunerService not available
     }
+
+    // Disabled TunerService functionality
+    // override fun onTuningChanged(key: String?, value: String?) {
+    //     when (key) {
+    //         QS_HEADER_CLOCK_STYLE -> {
+    //             qsClockStyle = TunerService.parseInteger(value, 0)
+    //             updateQsHeaderClockDateVisibility()
+    //         }
+    //         else -> return
+    //     }
+    // }
 
     fun disable(state1: Int, state2: Int, animate: Boolean) {
         val disabled = state2 and StatusBarManager.DISABLE2_QUICK_SETTINGS != 0
