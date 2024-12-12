@@ -230,10 +230,15 @@ public class KeyguardClockSwitch extends RelativeLayout {
         // Initialize OnePlus lockscreen controller
         try {
             View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+            Log.d(TAG, "OnePlus container found in initialization: " + (onePlusContainer != null));
             if (onePlusContainer != null) {
                 mOnePlusController = new OnePlusLockScreenController(mContext, onePlusContainer);
+                Log.d(TAG, "OnePlus controller initialized successfully");
+            } else {
+                Log.e(TAG, "OnePlus container not found in layout!");
             }
         } catch (Exception e) {
+            Log.e(TAG, "Error initializing OnePlus lockscreen controller", e);
             // OnePlus lockscreen not available, continue with normal keyguard
         }
 
@@ -251,6 +256,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mSettingsObserver = new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
+                Log.d(TAG, "OnePlus style setting changed, updating visibility");
                 updateOnePlusLockScreenVisibility();
             }
         };
@@ -259,6 +265,10 @@ public class KeyguardClockSwitch extends RelativeLayout {
             false, 
             mSettingsObserver, 
             UserHandle.USER_CURRENT);
+        Log.d(TAG, "OnePlus settings observer registered");
+        
+        // Update OnePlus lockscreen visibility on initialization
+        updateOnePlusLockScreenVisibility();
         
         onConfigChanged();
     }
@@ -562,56 +572,73 @@ public class KeyguardClockSwitch extends RelativeLayout {
      * Update OnePlus lockscreen visibility based on settings
      */
     public void updateOnePlusLockScreenVisibility() {
-        if (mOnePlusController != null) {
-            try {
-                int onePlusEnabled = android.provider.Settings.System.getInt(mContext.getContentResolver(),
-                    "lockscreen_oneplus_style", 1);
-                if (onePlusEnabled == 1) {
+        Log.d(TAG, "updateOnePlusLockScreenVisibility called");
+        try {
+            int onePlusEnabled = android.provider.Settings.System.getInt(mContext.getContentResolver(),
+                "lockscreen_oneplus_style", 1);
+            Log.d(TAG, "OnePlus style setting: " + onePlusEnabled);
+            
+            View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+            Log.d(TAG, "OnePlus container found: " + (onePlusContainer != null));
+            
+            if (onePlusEnabled == 1) {
                 // OnePlus style enabled - show OnePlus lockscreen, hide default clocks
-                View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+                Log.d(TAG, "Enabling OnePlus lockscreen");
                 if (onePlusContainer != null) {
                     onePlusContainer.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "OnePlus container set to VISIBLE");
+                } else {
+                    Log.e(TAG, "OnePlus container is null!");
                 }
+                
                 if (mSmallClockFrame != null) {
                     mSmallClockFrame.setVisibility(View.GONE);
+                    Log.d(TAG, "Small clock frame hidden");
                 }
                 if (mLargeClockFrame != null) {
                     mLargeClockFrame.setVisibility(View.GONE);
+                    Log.d(TAG, "Large clock frame hidden");
                 }
                 if (mStatusArea != null) {
                     mStatusArea.setVisibility(View.GONE);
+                    Log.d(TAG, "Status area hidden");
                 }
-                } else {
-                    // OnePlus style disabled - show default clocks, hide OnePlus lockscreen
-                    View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
-                    if (onePlusContainer != null) {
-                        onePlusContainer.setVisibility(View.GONE);
-                    }
-                    if (mSmallClockFrame != null) {
-                        mSmallClockFrame.setVisibility(View.VISIBLE);
-                    }
-                    if (mLargeClockFrame != null) {
-                        mLargeClockFrame.setVisibility(View.VISIBLE);
-                    }
-                    if (mStatusArea != null) {
-                        mStatusArea.setVisibility(View.VISIBLE);
-                    }
-                }
-            } catch (Exception e) {
-                // Error reading settings - default to disabled state
-                View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+            } else {
+                // OnePlus style disabled - show default clocks, hide OnePlus lockscreen
+                Log.d(TAG, "Disabling OnePlus lockscreen");
                 if (onePlusContainer != null) {
                     onePlusContainer.setVisibility(View.GONE);
+                    Log.d(TAG, "OnePlus container set to GONE");
                 }
+                
                 if (mSmallClockFrame != null) {
                     mSmallClockFrame.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "Small clock frame shown");
                 }
                 if (mLargeClockFrame != null) {
                     mLargeClockFrame.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "Large clock frame shown");
                 }
                 if (mStatusArea != null) {
                     mStatusArea.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "Status area shown");
                 }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in updateOnePlusLockScreenVisibility", e);
+            // Error reading settings - default to disabled state
+            View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+            if (onePlusContainer != null) {
+                onePlusContainer.setVisibility(View.GONE);
+            }
+            if (mSmallClockFrame != null) {
+                mSmallClockFrame.setVisibility(View.VISIBLE);
+            }
+            if (mLargeClockFrame != null) {
+                mLargeClockFrame.setVisibility(View.VISIBLE);
+            }
+            if (mStatusArea != null) {
+                mStatusArea.setVisibility(View.VISIBLE);
             }
         }
     }
