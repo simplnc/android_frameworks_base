@@ -20,7 +20,9 @@ import static com.android.systemui.statusbar.StatusBarState.KEYGUARD;
 import android.content.Context;
 import android.os.Handler;
 
+import com.android.keyguard.NowBarController;
 import com.android.systemui.Dependency;
+import com.android.systemui.notifications.ui.PeekDisplayViewController;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.phone.ScrimController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
@@ -38,6 +40,10 @@ public class ScrimUtils {
     private final ScrimController mScrimController;
     private final StatusBarStateController mStatusBarStateController;
     private final KeyguardStateController mKeyguardStateController;
+    private final WallpaperDepthUtils mWallpaperDepthUtils;
+    private final MediaArtUtils mMediaArtUtils;
+    private final PeekDisplayViewController mPeekDisplayViewController;
+    private final NowBarController mNowBarController;
     
     private ExpansionState mExpansionState = ExpansionState.QS_NOT_EXPANDED;
 
@@ -70,6 +76,10 @@ public class ScrimUtils {
         mHandler = new Handler();
         mScrimController = Dependency.get(ScrimController.class);
         mStatusBarStateController = Dependency.get(StatusBarStateController.class);
+        mWallpaperDepthUtils = WallpaperDepthUtils.getInstance(mContext);
+        mMediaArtUtils = MediaArtUtils.getInstance(mContext);
+        mPeekDisplayViewController = PeekDisplayViewController.Companion.getInstance();
+        mNowBarController = NowBarController.getInstance(mContext);
         mStatusBarStateController.addCallback(mStatusBarStateListener);
         mStatusBarStateListener.onDozingChanged(mStatusBarStateController.isDozing());
         
@@ -85,6 +95,10 @@ public class ScrimUtils {
     }
     
     public void setViewAlpha(float subjectAlpha) {
+        mWallpaperDepthUtils.setSubjectAlpha(subjectAlpha);
+        mMediaArtUtils.setSubjectAlpha(subjectAlpha);
+        mPeekDisplayViewController.setAlpha(subjectAlpha); 
+        mNowBarController.setAlpha(subjectAlpha);
     }
 
     public void setQsExpansion(float expansion) {
@@ -96,27 +110,49 @@ public class ScrimUtils {
         }
         mExpansionState = state;
         if (mExpansionState == ExpansionState.QS_NOT_EXPANDED) {
+            mWallpaperDepthUtils.updateDepthWallpaper();
+            mMediaArtUtils.updateMediaArtVisibility();
+            mPeekDisplayViewController.showPeekDisplayView();
+            mNowBarController.show();
         } else if (mExpansionState == ExpansionState.QS_FULLY_EXPANDED) {
+            mMediaArtUtils.hideMediaArt();
+            mWallpaperDepthUtils.hideDepthWallpaper();
+            mPeekDisplayViewController.hidePeekDisplayView();
+            mNowBarController.hide();
         }
     }
     
     public void onScreenStateChange() {
         updateNotifContainerElements();
+        mHandler.postDelayed(() -> {
+            updateNotifContainerElements();
+        }, 250);
+        mPeekDisplayViewController.resetShelves();
     }
     
     private void updateNotifContainerElements() {
+        mMediaArtUtils.updateMediaArtVisibility();
+        mWallpaperDepthUtils.updateDepthWallpaperVisibility();
     }
 
     public void onScrimDispatched() {
+        mMediaArtUtils.updateMediaArtVisibility();
+        mWallpaperDepthUtils.updateDepthWallpaper();
     }
 
     private void onDozeChanged(boolean dozing) {
+        mMediaArtUtils.onDozingChanged(dozing);
+        mWallpaperDepthUtils.onDozingChanged(dozing);
     }
 
     private void onKgFadingAwayChanged() {
+        mMediaArtUtils.hideMediaArt();
+        mWallpaperDepthUtils.hideDepthWallpaper();
     }
 
     private void onKgGoingAwayChanged() {
+        mMediaArtUtils.hideMediaArt();
+        mWallpaperDepthUtils.hideDepthWallpaper();
     }
 
     public float getScrimBehindAlphaKeyguard() {
