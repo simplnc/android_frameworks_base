@@ -307,6 +307,10 @@ public class SecureSettings {
         Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS,
         Settings.Secure.DOZE_FOR_NOTIFICATIONS,
         Settings.Secure.DOZE_PICK_UP_GESTURE_AMBIENT,
-        Settings.Secure.DOZE_TAP_GESTURE_AMBIENT
+        Settings.Secure.DOZE_TAP_GESTURE_AMBIENT,
+        Settings.Secure.UI_NIGHT_MODE_DIM_WALL,
+        Settings.Secure.UI_NIGHT_MODE_DIM_WALL_AMOUNT,
+        Settings.Secure.UI_NIGHT_LIGHT_DIM_WALL,
+        Settings.Secure.UI_NIGHT_LIGHT_DIM_WALL_AMOUNT,
     };
 }
