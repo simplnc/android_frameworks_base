@@ -3081,6 +3081,10 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
                 WallpaperData wallpaper = mWallpaperMap.get(userId);
                 WallpaperData lockWallpaper = mLockWallpaperMap.get(userId);
 
+                if (wallpaper == null || wallpaper.mUidToDimAmount == null) {
+                    return;
+                }
+
                 if (dimAmount == 0.0f) {
                     wallpaper.mUidToDimAmount.remove(uid);
                 } else {
