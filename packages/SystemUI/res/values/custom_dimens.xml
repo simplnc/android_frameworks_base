@@ -6,4 +6,7 @@
 <resources>
   <!-- The height of the WiFi toggle layout in Internet panel -->
     <dimen name="internet_dialog_wifi_toggle_height">56dp</dimen>
+
+    <!-- Ringer QS tile -->
+    <dimen name="qs_ringer_tile_dot_radius">2dp</dimen>
 </resources>

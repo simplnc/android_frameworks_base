@@ -16,11 +16,11 @@ import android.content.Context
 class QSTileAdvancedPhysicsHandler(private val targetView: View) {
 
     // Enhanced depression parameters for realistic button feel
-    private val pressScale: Float = 0.88f  // More pronounced depression
-    private val pressAlpha: Float = 0.85f  // More noticeable fade
-    private val pressElevation: Float = -4f  // Push down effect
-    private val releaseDurationMs: Long = 200L
-    private val pressDurationMs: Long = 100L
+    private val pressScale: Float = 0.92f  // More pronounced depression
+    private val pressAlpha: Float = 0.88f  // More noticeable fade
+    private val pressElevation: Float = -6f  // Stronger push down effect
+    private val releaseDurationMs: Long = 250L  // Slightly longer release
+    private val pressDurationMs: Long = 120L   // Slightly longer press
     private val vibrator: Vibrator? = targetView.context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
     
     // Track animation state to prevent conflicts
@@ -75,7 +75,7 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
         targetView.translationY = pressElevation
         
         // Strong haptic feedback for immediate response
-        vibrator?.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE))
+        vibrator?.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
     fun animatePress() {

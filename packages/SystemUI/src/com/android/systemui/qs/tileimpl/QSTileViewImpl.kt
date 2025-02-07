@@ -192,6 +192,7 @@ constructor(
     private var tileState = false
     private var lastState = INVALID
     private var lastIconTint = 0
+    private var lastSpec: String? = null
     private val launchableViewDelegate =
         LaunchableViewDelegate(this, superSetVisibility = { super.setVisibility(it) })
     private var lastDisabledByPolicy = false
@@ -359,7 +360,19 @@ constructor(
         backgroundOverlayDrawable =
             backgroundDrawable.findDrawableByLayerId(R.id.qs_tile_background_overlay)
         backgroundOverlayDrawable.mutate().setTintMode(PorterDuff.Mode.SRC)
+        enforceUniformCornerRadius()
         return qsTileBackground
+    }
+
+    private fun enforceUniformCornerRadius() {
+        val radius = resources.getDimensionPixelSize(R.dimen.qs_corner_radius).toFloat()
+        // Apply on base and overlay layers if they are GradientDrawables
+        if (backgroundBaseDrawable is GradientDrawable) {
+            (backgroundBaseDrawable as GradientDrawable).cornerRadius = radius
+        }
+        if (backgroundOverlayDrawable is GradientDrawable) {
+            (backgroundOverlayDrawable as GradientDrawable).cornerRadius = radius
+        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -769,14 +782,14 @@ constructor(
                 state.spec,
                 state.state,
                 state.disabledByPolicy,
-                getBackgroundColorForState(state.state, state.disabledByPolicy),
+                getBackgroundColorForState(state.state, state.disabledByPolicy, state.spec),
             )
             if (allowAnimations) {
                 singleAnimator.setValues(
                     colorValuesHolder(
                         BACKGROUND_NAME,
                         backgroundColor,
-                        getBackgroundColorForState(state.state, state.disabledByPolicy),
+                        getBackgroundColorForState(state.state, state.disabledByPolicy, state.spec),
                     ),
                     colorValuesHolder(
                         LABEL_NAME,
@@ -802,7 +815,7 @@ constructor(
                 singleAnimator.start()
             } else {
                 setAllColors(
-                    getBackgroundColorForState(state.state, state.disabledByPolicy),
+                    getBackgroundColorForState(state.state, state.disabledByPolicy, state.spec),
                     getLabelColorForState(state.state, state.disabledByPolicy),
                     getSecondaryLabelColorForState(state.state, state.disabledByPolicy),
                     getChevronColorForState(state.state, state.disabledByPolicy),
@@ -817,6 +830,7 @@ constructor(
         label.isEnabled = !state.disabledByPolicy
 
         lastState = state.state
+        lastSpec = state.spec
         lastDisabledByPolicy = state.disabledByPolicy
         lastIconTint = icon.getColor(state)
 
@@ -913,16 +927,32 @@ constructor(
         return locInScreen.get(1) >= -height
     }
 
-    protected open fun getBackgroundColorForState(state: Int, disabledByPolicy: Boolean = false): Int {
-        return when {
-            state == Tile.STATE_UNAVAILABLE || disabledByPolicy -> colorUnavailable
-            state == Tile.STATE_ACTIVE -> colorActive
-            state == Tile.STATE_INACTIVE -> colorInactive
-            else -> {
-                Log.e(TAG, "Invalid state $state")
-                0
+    protected open fun getBackgroundColorForState(
+        state: Int,
+        disabledByPolicy: Boolean = false,
+        spec: String? = null,
+    ): Int {
+        if (state == Tile.STATE_UNAVAILABLE || disabledByPolicy) return colorUnavailable
+        if (state == Tile.STATE_INACTIVE) return colorInactive
+        if (state == Tile.STATE_ACTIVE) {
+            val pastelOrange = Color.parseColor("#c99a20")
+            val pastelRed = Color.parseColor("#e6294f")
+            val pastelBlue = Color.parseColor("#0e67ab")
+
+            when (spec) {
+                // Flashlight
+                "flashlight" -> return pastelOrange
+
+                // Privacy tiles
+                "mictoggle", "cameratoggle", "location" -> return pastelRed
+
+                // Connectivity tiles
+                "sync", "cell", "internet", "wifi", "mobile_data" -> return pastelBlue
             }
+            return colorActive
         }
+        Log.e(TAG, "Invalid state $state")
+        return 0
     }
 
     private fun getLabelColorForState(state: Int, disabledByPolicy: Boolean = false): Int {

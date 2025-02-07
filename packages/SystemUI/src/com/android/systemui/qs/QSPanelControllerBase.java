@@ -41,7 +41,11 @@ import com.android.systemui.qs.customize.QSCustomizerController;
 import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tiles.FlashlightStrengthTile;
+import com.android.systemui.qs.tiles.RingerModeTile;
+import com.android.systemui.qs.tiles.SoundTile;
+import com.android.systemui.qs.tiles.VolumeControlTile;
 import com.android.systemui.qs.tileimpl.QSTileViewImpl;
+import com.android.systemui.qs.tileimpl.RingerQSTileViewImpl;
 import com.android.systemui.qs.tileimpl.SliderQSTileViewImpl;
 import com.android.systemui.qs.tileimpl.SlideableQSTile;
 import com.android.systemui.scene.shared.flag.SceneContainerFlag;
@@ -301,6 +305,8 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
     /** */
     public void setTiles(Collection<QSTile> tiles, boolean collapsedView) {
         if (mDestroyed) return;
+        // Filter duplicates: if both legacy Sound and new Ringer tiles exist, keep only Ringer
+        tiles = filterDuplicateRingerTiles(tiles);
         // TODO(b/168904199): move this logic into QSPanelController.
         if (!collapsedView && mQsTileRevealController != null) {
             mQsTileRevealController.updateRevealedTiles(tiles);
@@ -354,6 +360,25 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         }
     }
 
+    private Collection<QSTile> filterDuplicateRingerTiles(Collection<QSTile> tiles) {
+        boolean hasRinger = false;
+        boolean hasSound = false;
+        for (QSTile t : tiles) {
+            String spec = t.getTileSpec();
+            if (RingerModeTile.TILE_SPEC.equals(spec)) hasRinger = true;
+            if (SoundTile.TILE_SPEC.equals(spec)) hasSound = true;
+        }
+        if (hasRinger && hasSound) {
+            List<QSTile> filtered = new ArrayList<>();
+            for (QSTile t : tiles) {
+                if (SoundTile.TILE_SPEC.equals(t.getTileSpec())) continue; // drop legacy
+                filtered.add(t);
+            }
+            return filtered;
+        }
+        return tiles;
+    }
+
     /** */
     public void refreshAllTiles() {
         for (QSPanelControllerBase.TileRecord r : mRecords) {
@@ -373,18 +398,7 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         } else {
             longPressEffect = null;
         }
-        final QSTileViewImpl tileView;
-        if (FlashlightStrengthTile.TILE_SPEC.equals(tile.getTileSpec())
-            || VolumeControlTile.TILE_SPEC.equals(tile.getTileSpec())) {
-            SlideableQSTile slideableQSTile = (SlideableQSTile) tile;
-            tileView = new SliderQSTileViewImpl(
-                    getContext(),
-                    collapsedView,
-                    slideableQSTile);
-        } else {
-            tileView = new QSTileViewImpl(
-                    getContext(), collapsedView, longPressEffect);
-        }
+        final QSTileView tileView = createTileView(tile, collapsedView, longPressEffect);
         final TileRecord r = new TileRecord(tile, tileView);
         // TODO(b/250618218): Remove the QSLogger in QSTileViewImpl once we know the root cause of
         // b/250618218.
@@ -394,11 +408,30 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
                 qsTileView.setQsLogger(mQSLogger);
             }
         } catch (ClassCastException e) {
-            Log.e(TAG, "Failed to cast QSTileView to QSTileViewImpl", e);
+            // Log.e(TAG, "Failed to cast QSTileView to QSTileViewImpl", e);
         }
         mView.addTile(r);
         mRecords.add(r);
         mCachedSpecs = getTilesSpecs();
+    }
+
+    private QSTileView createTileView(final QSTile tile, boolean collapsedView,
+            QSLongPressEffect longPressEffect) {
+        switch (tile.getTileSpec()) {
+            case FlashlightStrengthTile.TILE_SPEC:
+            case VolumeControlTile.TILE_SPEC:
+                SlideableQSTile slideableQSTile = (SlideableQSTile) tile;
+                return new SliderQSTileViewImpl(
+                        getContext(),
+                        collapsedView,
+                        slideableQSTile);
+            case RingerModeTile.TILE_SPEC:
+            case SoundTile.TILE_SPEC:
+                return new RingerQSTileViewImpl(getContext());
+            default:
+                return new QSTileViewImpl(
+                        getContext(), collapsedView, longPressEffect);
+        }
     }
 
     /** */
