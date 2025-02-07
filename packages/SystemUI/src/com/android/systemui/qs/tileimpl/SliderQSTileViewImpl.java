@@ -34,6 +34,8 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
@@ -56,6 +58,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     private SettingObserver mSettingObserver;
     private float mCurrentPercent;
     private int mWarnColor;
+    private Vibrator mVibrator;
 
     private final int ACTIVE_STATE_PERCENTAGE_ALPHA;
     private final int INACTIVE_STATE_PERCENTAGE_ALPHA;
@@ -70,6 +73,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         mSlideableQSTile = slideableQSTile;
         mSettingsKey = slideableQSTile.getSettingsSystemKey();
         mWarnColor = Utils.getColorErrorDefaultColor(context);
+        mVibrator = context.getSystemService(Vibrator.class);
         percentageDrawable = new PercentageDrawable();
         percentageDrawable.setTint(context.getResources().getColor(R.color.tile_percentage_color));
         updatePercentBackground(STATE_INACTIVE); // default
@@ -92,12 +96,12 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     }
 
     @Override
-    public int getBackgroundColorForState(int state, boolean disabledByPolicy) {
+    public int getBackgroundColorForState(int state, boolean disabledByPolicy, String tileSpec) {
         if (mSlideableQSTile != null && mSlideableQSTile.isSlideable()
                 && state == STATE_ACTIVE && mCurrentPercent >= 0.90f) {
             return mWarnColor;
         } else {
-            return super.getBackgroundColorForState(state, disabledByPolicy);
+            return super.getBackgroundColorForState(state, disabledByPolicy, tileSpec);
         }
     }
 
@@ -114,7 +118,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         percentageDrawable.setAlpha(isActive ? ACTIVE_STATE_PERCENTAGE_ALPHA
                 : INACTIVE_STATE_PERCENTAGE_ALPHA);
         if (isActive) {
-            setColor(getBackgroundColorForState(state, false));
+            setColor(getBackgroundColorForState(state, false, null));
         }
         LayerDrawable layerDrawable =
                 new LayerDrawable(new Drawable[] {backgroundBaseDrawable, percentageDrawable});
@@ -130,6 +134,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             percentageDrawable.updatePercent();
+            performHapticForProgress();
         }
     }
 
@@ -194,6 +199,16 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         @Override
         public void setTint(int t) {
             shape.setTint(t);
+        }
+    }
+
+    private void performHapticForProgress() {
+        if (mVibrator == null) return;
+        // Light tick per update; stronger on warning threshold
+        if (mCurrentPercent >= 0.90f) {
+            mVibrator.vibrate(VibrationEffect.createOneShot(25, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            mVibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
         }
     }
 }
