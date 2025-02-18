@@ -236,6 +236,16 @@ public class KeyguardClockSwitch extends RelativeLayout {
         } catch (Exception e) {
             // OnePlus lockscreen not available, continue with normal keyguard
         }
+
+        // Initialize LockScreenWidgets
+        try {
+            View lockscreenWidgets = findViewById(R.id.lockscreen_widgets);
+            if (lockscreenWidgets instanceof com.android.systemui.lockscreen.LockScreenWidgets) {
+                ((com.android.systemui.lockscreen.LockScreenWidgets) lockscreenWidgets).init();
+            }
+        } catch (Exception e) {
+            // LockScreenWidgets not available, continue with normal keyguard
+        }
         
         // Initialize settings observer for OnePlus lock screen style
         mSettingsObserver = new ContentObserver(new Handler()) {
@@ -616,6 +626,15 @@ public class KeyguardClockSwitch extends RelativeLayout {
         if (mSettingsObserver != null) {
             mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
             mSettingsObserver = null;
+        }
+        // Cleanup LockScreenWidgets
+        try {
+            View lockscreenWidgets = findViewById(R.id.lockscreen_widgets);
+            if (lockscreenWidgets instanceof com.android.systemui.lockscreen.LockScreenWidgets) {
+                ((com.android.systemui.lockscreen.LockScreenWidgets) lockscreenWidgets).deInit();
+            }
+        } catch (Exception e) {
+            // LockScreenWidgets cleanup failed, continue
         }
     }
 }
