@@ -52,6 +52,7 @@ import android.app.KeyguardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -1355,6 +1356,19 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
                 mMediaOutputDialogManager.dismiss();
                 mVolumeNavigator.openVolumePanel(
                         mVolumePanelNavigationInteractor.getVolumePanelRoute());
+            });
+            mSettingsIcon.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mMediaOutputDialogManager.dismiss();
+                    if (mDialog != null) {
+                        mDialog.dismiss();
+                    }
+                    Intent intent = new Intent(Settings.ACTION_SOUND_SETTINGS);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    v.getContext().startActivity(intent);
+                    return true;
+                }
             });
         }
     }
