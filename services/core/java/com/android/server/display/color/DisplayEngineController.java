@@ -40,8 +40,8 @@ final class DisplayEngineController extends TintController {
 
     // Mode presets {r ,g ,b ,sat, cont, val}
     private static final int[] X_REALITY_MODE = {252, 227, 228, 278, 260, 264};
-    private static final int[] TRILUMINOUS_MODE = {255, 250, 251, 291, 260, 264};
-    private static final int[] VIVID_MODE = {240, 240, 225, 281, 251, 262};
+    private static final int[] TRILUMINOUS_PRO_MODE = {250, 235, 255, 260, 255, 280};
+    private static final int[] VIVID_MODE = {240, 240, 225, 281, 255, 262};
 
     @Override
     public void setUp(Context context, boolean needsLinear) {
