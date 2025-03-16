@@ -27,8 +27,8 @@
         android:theme="@style/Theme.Material3.Light"
         android:orientation="vertical"
         app:thumbHeight="52dp"
-        app:trackCornerSize="12dp"
+        app:trackCornerSize="@dimen/qs_corner_radius"
         app:trackHeight="40dp"
         app:trackStopIndicatorSize="6dp"
-        app:trackInsideCornerSize="2dp" />
+        app:trackInsideCornerSize="4dp" />
 </FrameLayout>
