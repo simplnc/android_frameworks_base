@@ -19,6 +19,7 @@ package com.android.systemui.volume.dialog.sliders.ui
 import android.view.View
 import com.android.systemui.haptics.slider.HapticSlider
 import com.android.systemui.haptics.slider.HapticSliderPlugin
+import com.android.systemui.haptics.slider.SliderHapticFeedbackConfig
 import com.android.systemui.res.R
 import com.android.systemui.statusbar.VibratorHelper
 import com.android.systemui.util.time.SystemClock
@@ -51,6 +52,17 @@ constructor(
                 vibratorHelper = vibratorHelper,
                 msdlPlayer = msdlPlayer,
                 systemClock = systemClock,
+                sliderHapticFeedbackConfig = SliderHapticFeedbackConfig(
+                    // Gentle haptic feedback configuration
+                    progressBasedDragMinScale = 0.1f,        // Reduced from 0f
+                    progressBasedDragMaxScale = 0.3f,        // Reduced from 0.2f
+                    additionalVelocityMaxBump = 0.1f,        // Reduced from 0.15f
+                    upperBookendScale = 0.6f,                // Reduced from 1f
+                    lowerBookendScale = 0.3f,                // Reduced from 0.05f
+                    deltaProgressForDragThreshold = 0.02f,   // Increased from 0.015f for less frequent haptics
+                    velocityInterpolatorFactor = 0.8f,       // Reduced from 1f
+                    progressInterpolatorFactor = 0.8f,       // Reduced from 1f
+                ),
             )
         hapticSliderPlugin.startInScope(this)
 
