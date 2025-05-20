@@ -714,9 +714,13 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
         };
     }
     
-   private boolean getShowNavBarIme() {
-    return false; // Always hidden under keyboard
-}
+    private boolean getShowNavBarIme() {
+        return Settings.Secure.getIntForUser(
+            mContext.getContentResolver(), 
+            "sysui_show_nav_bar_ime", 1, 
+            UserHandle.USER_CURRENT) == 1;
+    }
+    
 
     public NavigationBarView getView() {
         return mView;
