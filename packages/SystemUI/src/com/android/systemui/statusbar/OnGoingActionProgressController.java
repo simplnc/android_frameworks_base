@@ -205,27 +205,113 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         }
     }
 
-    /** Updates UI for media playback progress */
-    private void updateMediaProgress() {
-        mProgressRootView.setVisibility(View.VISIBLE);
-        mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
-        mMediaProgressHandler.post(mMediaProgressRunnable);
+private void updateMediaProgressOnly() {
+    if (!mIsViewAttached) return;
+    
+    long totalDuration = mMediaSessionHelper.getTotalDuration();
+    
+    android.media.session.PlaybackState playbackState = mMediaSessionHelper.getMediaControllerPlaybackState();
+    long currentProgress = 0;
+    
+    if (playbackState != null) {
+        currentProgress = playbackState.getPosition();
+    }
+            
+    // Update the standard progress bar if visible
+    if (mProgressRootView.getVisibility() == View.VISIBLE && mProgressBar != null && totalDuration > 0) {
+        mProgressBar.setMax((int) totalDuration);
+        mProgressBar.setProgress((int) currentProgress);
+    }
+    
+    // Also update the circular progress bar for compact mode
+    if (mCompactRootView.getVisibility() == View.VISIBLE && mCircularProgressBar != null && totalDuration > 0) {
+        mCircularProgressBar.setMax((int) totalDuration);
+        mCircularProgressBar.setProgress((int) currentProgress);
+    }
+}
 
-        Drawable mediaAppIcon = mMediaSessionHelper.getMediaAppIcon();
-        mIconView.setImageDrawable(mediaAppIcon != null ? mediaAppIcon : mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
+private void updateMediaProgressFull() {
+    if (!mIsViewAttached) return;
+    
+    mProgressRootView.setVisibility(View.VISIBLE);
+    mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
+    mMediaProgressHandler.post(mMediaProgressRunnable);
 
-        long totalDuration = mMediaSessionHelper.getTotalDuration();
-        long currentProgress = mMediaSessionHelper.getMediaControllerPlaybackState() != null
-                ? mMediaSessionHelper.getMediaControllerPlaybackState().getPosition() : 0;
-        if (totalDuration > 0) {
-            mProgressBar.setMax((int) totalDuration);
-            mProgressBar.setProgress((int) currentProgress);
+    Drawable mediaAppIcon = mMediaSessionHelper.getMediaAppIcon();
+    
+    if (mediaAppIcon != null) {
+        mIconView.setImageDrawable(mediaAppIcon);
+    } else {
+        String packageName = null;
+        
+        // Add null check for playback state before accessing extras
+        android.media.session.PlaybackState playbackState = mMediaSessionHelper.getMediaControllerPlaybackState();
+        if (playbackState != null && playbackState.getExtras() != null) {
+            packageName = playbackState.getExtras().getString("package");
         }
-
-        mProgressRootView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
+        
+        if (packageName != null) {
+            loadIconInBackground(packageName, drawable -> {
+                if (mIconView != null && drawable != null) {
+                    mIconView.setImageDrawable(drawable);
+                } else if (mIconView != null) {
+                    mIconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
+                }
+            });
+        } else if (mIconView != null) {
+            mIconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
+        }
     }
 
-    /** Updates UI for notification progress */
+    updateMediaProgressOnly();
+}
+
+private void updateMediaProgressCompact() {
+    if (!mIsViewAttached) return;
+    
+    mCompactRootView.setVisibility(View.VISIBLE);
+    mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
+    mMediaProgressHandler.post(mMediaProgressRunnable);
+
+    long totalDuration = mMediaSessionHelper.getTotalDuration();
+    
+    // Add null check for playback state before accessing position
+    android.media.session.PlaybackState playbackState = mMediaSessionHelper.getMediaControllerPlaybackState();
+    long currentProgress = 0;
+    
+    if (playbackState != null) {
+        currentProgress = playbackState.getPosition();
+    }
+            
+    if (totalDuration > 0 && mCircularProgressBar != null) {
+        mCircularProgressBar.setMax((int) totalDuration);
+        mCircularProgressBar.setProgress((int) currentProgress);
+    }
+
+    Drawable mediaAppIcon = mMediaSessionHelper.getMediaAppIcon();
+    
+    if (mediaAppIcon != null) {
+        mCompactIconView.setImageDrawable(mediaAppIcon);
+    } else {
+        String packageName = null;
+        if (playbackState != null && playbackState.getExtras() != null) {
+            packageName = playbackState.getExtras().getString("package");
+        }
+        
+        if (packageName != null) {
+            loadIconInBackground(packageName, drawable -> {
+                if (mCompactIconView != null && drawable != null) {
+                    mCompactIconView.setImageDrawable(drawable);
+                } else if (mCompactIconView != null) {
+                    mCompactIconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
+                }
+            });
+        } else if (mCompactIconView != null) {
+            mCompactIconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
+        }
+    }
+}
+
     private void updateNotificationProgress() {
         if (!mIsEnabled || !mIsTrackingProgress) {
             mProgressRootView.setVisibility(View.GONE);
