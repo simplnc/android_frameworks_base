@@ -25,6 +25,12 @@ import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.net.Uri;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -33,7 +39,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.Space;
 
 import com.android.systemui.android.header.StatusBarHeaderMachine;
 import com.android.systemui.res.R;
@@ -41,6 +49,16 @@ import com.android.systemui.shade.LargeScreenHeaderHelper;
 import com.android.systemui.util.LargeScreenUtils;
 
 import com.bosphere.fadingedgelayout.FadingEdgeLayout;
+import com.android.internal.graphics.ColorUtils;
+import com.android.internal.policy.SystemBarUtils;
+import com.android.settingslib.Utils;
+import com.android.systemui.battery.BatteryMeterView;
+import com.android.systemui.Dependency;
+import com.android.systemui.plugins.ActivityStarter;
+import com.android.systemui.statusbar.phone.StatusBarContentInsetsProvider;
+import com.android.systemui.statusbar.policy.Clock;
+import com.android.systemui.statusbar.policy.VariableDateView;
+import com.android.systemui.tuner.TunerService;
 
 import java.lang.Math;
 
@@ -50,6 +68,8 @@ import java.lang.Math;
  */
 public class QuickStatusBarHeader extends FrameLayout
             implements StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
+
+    // No QS_HEADER_IMAGE in AOSP; feature uses StatusBarHeaderMachine providers
 
     private boolean mExpanded;
     private boolean mQsDisabled;
@@ -112,6 +132,7 @@ public class QuickStatusBarHeader extends FrameLayout
         if (mSceneContainerEnabled) {
             updateResources();
         }
+        // updateAnimators() not present in this tree
     }
 
     @Override
@@ -171,7 +192,8 @@ public class QuickStatusBarHeader extends FrameLayout
 
         Configuration config = mContext.getResources().getConfiguration();
         if (config.orientation != Configuration.ORIENTATION_LANDSCAPE) {
-            mQsHeaderLayout.setVisibility(mHeaderImageEnabled ? View.VISIBLE : View.GONE);
+            final boolean hasDrawable = mQsHeaderImageView != null && mQsHeaderImageView.getDrawable() != null;
+            mQsHeaderLayout.setVisibility((mHeaderImageEnabled || hasDrawable) ? View.VISIBLE : View.GONE);
         } else {
             mQsHeaderLayout.setVisibility(View.GONE);
         }
@@ -226,9 +248,24 @@ public class QuickStatusBarHeader extends FrameLayout
     public void disableHeader() {
         post(new Runnable() {
             public void run() {
-                mCurrentBackground = null;
-                mQsHeaderImageView.setVisibility(View.GONE);
-                mHeaderImageEnabled = false;
+                // When custom header is disabled, show a default/fallback header instead of hiding
+                try {
+                    mCurrentBackground = getContext().getDrawable(com.android.systemui.res.R.drawable.qs_header_image_1);
+                } catch (Exception ignored) {
+                    try {
+                        mCurrentBackground = getContext().getDrawable(com.android.systemui.res.R.drawable.default_qs_header);
+                    } catch (Exception e) {
+                        mCurrentBackground = null;
+                    }
+                }
+                if (mCurrentBackground != null) {
+                    mQsHeaderImageView.setImageDrawable(mCurrentBackground);
+                    mQsHeaderImageView.setVisibility(View.VISIBLE);
+                } else {
+                    mQsHeaderImageView.setVisibility(View.GONE);
+                }
+                // Keep header visible when we have a fallback drawable
+                mHeaderImageEnabled = (mCurrentBackground != null);
                 updateResources();
             }
         });

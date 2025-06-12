@@ -173,6 +173,15 @@ public class StatusBarHeaderMachine {
                 // just in case
             }
         }
+        // Fallbacks for testing when provider not set
+        try {
+            // Prefer a project-provided image if present
+            return mContext.getDrawable(com.android.systemui.res.R.drawable.qs_header_image_1);
+        } catch (Exception ignored) { }
+        try {
+            // Otherwise use a built-in gradient
+            return mContext.getDrawable(com.android.systemui.res.R.drawable.default_qs_header);
+        } catch (Exception ignored) { }
         return null;
     }
 
