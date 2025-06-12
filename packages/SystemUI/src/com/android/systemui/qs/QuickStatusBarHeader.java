@@ -25,6 +25,12 @@ import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.net.Uri;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -33,7 +39,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.Space;
 
 import com.android.systemui.android.header.StatusBarHeaderMachine;
 import com.android.systemui.res.R;
@@ -41,6 +49,21 @@ import com.android.systemui.shade.LargeScreenHeaderHelper;
 import com.android.systemui.util.LargeScreenUtils;
 
 import com.bosphere.fadingedgelayout.FadingEdgeLayout;
+import com.android.internal.graphics.ColorUtils;
+import com.android.internal.policy.SystemBarUtils;
+import com.android.settingslib.Utils;
+import com.android.systemui.R;
+import com.android.systemui.battery.BatteryMeterView;
+import com.android.systemui.Dependency;
+import com.android.systemui.plugins.ActivityStarter;
+import com.android.systemui.qs.QSDetail.Callback;
+import com.android.systemui.statusbar.phone.StatusBarContentInsetsProvider;
+import com.android.systemui.statusbar.phone.StatusBarIconController;
+import com.android.systemui.statusbar.phone.StatusBarIconController.TintedIconManager;
+import com.android.systemui.statusbar.phone.StatusIconContainer;
+import com.android.systemui.statusbar.policy.Clock;
+import com.android.systemui.statusbar.policy.VariableDateView;
+import com.android.systemui.tuner.TunerService;
 
 import java.lang.Math;
 
@@ -50,6 +73,9 @@ import java.lang.Math;
  */
 public class QuickStatusBarHeader extends FrameLayout
             implements StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
+
+    private static final String QS_HEADER_IMAGE =
+            "system:" + Settings.System.QS_HEADER_IMAGE;
 
     private boolean mExpanded;
     private boolean mQsDisabled;
@@ -112,6 +138,7 @@ public class QuickStatusBarHeader extends FrameLayout
         if (mSceneContainerEnabled) {
             updateResources();
         }
+        updateAnimators();
     }
 
     @Override
