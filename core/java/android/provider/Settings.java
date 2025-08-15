@@ -12909,6 +12909,28 @@ public final class Settings {
         public static final String CLIPBOARD_AUTO_CLEAR_ON_SCREEN_OFF =
                 "clipboard_auto_clear_on_screen_off";
 
+        /**
+         * If set to a non-zero value, enables a per-user allowlist for signature spoofing in
+         * PackageManager signature checks. When enabled, the list of allowed pairs is read from
+         * {@link #SIGNATURE_SPOOFING_ALLOWLIST}.
+         *
+         * <p>WARNING: This weakens the platform signature trust model and should only be enabled on
+         * development builds or explicitly trusted devices.
+         *
+         * @hide
+         */
+        public static final String SIGNATURE_SPOOFING_ENABLED = "signature_spoofing_enabled";
+
+        /**
+         * Comma-separated package pairs allowlist for signature spoofing when
+         * {@link #SIGNATURE_SPOOFING_ENABLED} is enabled. Each pair is formatted as
+         * "pkgA=pkgB"; comparison is symmetric.
+         *
+         * @hide
+         */
+        public static final String SIGNATURE_SPOOFING_ALLOWLIST =
+                "signature_spoofing_allowlist";
+
         /** @hide */
         public static final int PRIVATE_SPACE_AUTO_LOCK_ON_DEVICE_LOCK = 0;
         /** @hide */
