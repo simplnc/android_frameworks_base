@@ -12931,6 +12931,14 @@ public final class Settings {
         public static final String SIGNATURE_SPOOFING_ALLOWLIST =
                 "signature_spoofing_allowlist";
 
+        /**
+         * Material theme color style. Recognized values include: tonal_spot, expressive, vibrant,
+         * spritz.
+         *
+         * @hide
+         */
+        public static final String THEME_STYLE = "theme_style";
+
         /** @hide */
         public static final int PRIVATE_SPACE_AUTO_LOCK_ON_DEVICE_LOCK = 0;
         /** @hide */
