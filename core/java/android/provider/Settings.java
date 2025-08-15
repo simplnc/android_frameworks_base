@@ -12939,6 +12939,11 @@ public final class Settings {
          */
         public static final String THEME_STYLE = "theme_style";
 
+        /** Enable floating toolbar/dual status bar */
+        public static final String FLOATING_TOOLBAR_ENABLED = "floating_toolbar_enabled";
+        /** Position for secondary bar: "top" or "bottom" */
+        public static final String DUAL_STATUS_BAR_POSITION = "dual_status_bar_position";
+
         /** @hide */
         public static final int PRIVATE_SPACE_AUTO_LOCK_ON_DEVICE_LOCK = 0;
         /** @hide */

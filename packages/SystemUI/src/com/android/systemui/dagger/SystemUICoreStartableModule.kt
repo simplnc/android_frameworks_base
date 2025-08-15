@@ -61,6 +61,7 @@ import com.android.systemui.temporarydisplay.chipbar.ChipbarCoordinator
 import com.android.systemui.theme.ThemeOverlayController
 import com.android.systemui.unfold.DisplaySwitchLatencyTracker
 import com.android.systemui.usb.StorageNotification
+import com.android.systemui.statusbar.floating.FloatingToolbarController
 import com.android.systemui.util.NotificationChannels
 import com.android.systemui.util.StartBinderLoggerModule
 import com.android.systemui.wallpapers.dagger.WallpaperModule
@@ -190,6 +191,12 @@ abstract class SystemUICoreStartableModule {
     @IntoMap
     @ClassKey(ShortcutKeyDispatcher::class)
     abstract fun bindShortcutKeyDispatcher(sysui: ShortcutKeyDispatcher): CoreStartable
+
+    /** Inject floating toolbar controller. */
+    @Binds
+    @IntoMap
+    @ClassKey(FloatingToolbarController::class)
+    abstract fun bindFloatingToolbarController(sysui: FloatingToolbarController): CoreStartable
 
     /** Inject into SliceBroadcastRelayHandler. */
     @Binds
