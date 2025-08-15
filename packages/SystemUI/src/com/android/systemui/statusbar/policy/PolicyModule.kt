@@ -37,6 +37,7 @@ import com.android.systemui.qs.tiles.UiModeNightTile
 import com.android.systemui.qs.tiles.WorkModeTile
 import com.android.systemui.qs.tiles.AnimationsTile
 import com.android.systemui.qs.tiles.SensorsOffTile
+import com.android.systemui.qs.tiles.ChatAiTile
 import com.android.systemui.qs.tiles.base.interactor.QSTileAvailabilityInteractor
 import com.android.systemui.qs.tiles.base.viewmodel.QSTileViewModelFactory
 import com.android.systemui.qs.tiles.impl.alarm.domain.AlarmTileMapper
@@ -482,6 +483,12 @@ interface PolicyModule {
     @IntoMap
     @StringKey(AnimationsTile.TILE_SPEC)
     fun bindAnimationsTile(animationsTile: AnimationsTile): QSTileImpl<*>
+
+    /** Inject ChatAiTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(ChatAiTile.TILE_SPEC)
+    fun bindChatAiTile(chatAiTile: ChatAiTile): QSTileImpl<*>
 
     /** Inject AlarmTile into tileMap in QSModule */
     @Binds

@@ -687,6 +687,8 @@
 
     <!-- Label for the QS tile that toggles system animations on/off [CHAR LIMIT=30] -->
     <string name="quick_settings_anim_scale_label">Animations</string>
+    <!-- Label for Chat AI QS tile -->
+    <string name="quick_settings_chat_ai_label">Chat AI</string>
 
     <!-- Content description of the clear button in the notification panel for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_clear_all">Clear all notifications.</string>
