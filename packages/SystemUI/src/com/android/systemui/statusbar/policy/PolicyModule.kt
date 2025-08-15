@@ -35,6 +35,8 @@ import com.android.systemui.qs.tiles.MicrophoneToggleTile
 import com.android.systemui.qs.tiles.ModesTile
 import com.android.systemui.qs.tiles.UiModeNightTile
 import com.android.systemui.qs.tiles.WorkModeTile
+import com.android.systemui.qs.tiles.AnimationsTile
+import com.android.systemui.qs.tiles.SensorsOffTile
 import com.android.systemui.qs.tiles.base.interactor.QSTileAvailabilityInteractor
 import com.android.systemui.qs.tiles.base.viewmodel.QSTileViewModelFactory
 import com.android.systemui.qs.tiles.impl.alarm.domain.AlarmTileMapper
@@ -475,11 +477,23 @@ interface PolicyModule {
     @StringKey(MicrophoneToggleTile.TILE_SPEC)
     fun bindMicrophoneToggleTile(microphoneToggleTile: MicrophoneToggleTile): QSTileImpl<*>
 
+    /** Inject AnimationsTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(AnimationsTile.TILE_SPEC)
+    fun bindAnimationsTile(animationsTile: AnimationsTile): QSTileImpl<*>
+
     /** Inject AlarmTile into tileMap in QSModule */
     @Binds
     @IntoMap
     @StringKey(AlarmTile.TILE_SPEC)
     fun bindAlarmTile(alarmTile: AlarmTile): QSTileImpl<*>
+
+    /** Inject SensorsOffTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(SensorsOffTile.TILE_SPEC)
+    fun bindSensorsOffTile(tile: SensorsOffTile): QSTileImpl<*>
 
     @Binds
     @IntoMap

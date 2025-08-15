@@ -12891,6 +12891,24 @@ public final class Settings {
          */
         public static final String DISABLE_SECURE_WINDOWS = "disable_secure_windows";
 
+        /**
+         * If set to a non-zero value, disables user-initiated screenshots for the current user.
+         *
+         * <p>When enabled, requests to take screenshots via System UI (hardware chord, power menu,
+         * etc.) will be ignored.
+         *
+         * @hide
+         */
+        public static final String SCREENSHOT_DISABLED = "screenshot_disabled";
+
+        /**
+         * If set to a non-zero value, clears the primary clipboard when the screen turns off.
+         *
+         * @hide
+         */
+        public static final String CLIPBOARD_AUTO_CLEAR_ON_SCREEN_OFF =
+                "clipboard_auto_clear_on_screen_off";
+
         /** @hide */
         public static final int PRIVATE_SPACE_AUTO_LOCK_ON_DEVICE_LOCK = 0;
         /** @hide */

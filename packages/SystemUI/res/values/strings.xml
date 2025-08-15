@@ -682,6 +682,11 @@
 
     <!-- Accessibility text describing sensors off active. [CHAR LIMIT=NONE] -->
     <string name="accessibility_sensors_off_active">Sensors off active</string>
+    <!-- Label for Sensors Off QS tile -->
+    <string name="quick_settings_sensors_off_label">Sensors off</string>
+
+    <!-- Label for the QS tile that toggles system animations on/off [CHAR LIMIT=30] -->
+    <string name="quick_settings_anim_scale_label">Animations</string>
 
     <!-- Content description of the clear button in the notification panel for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_clear_all">Clear all notifications.</string>

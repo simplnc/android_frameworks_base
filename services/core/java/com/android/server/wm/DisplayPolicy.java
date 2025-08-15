@@ -102,6 +102,7 @@ import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Trace;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.Slog;
 import android.util.SparseArray;
@@ -2863,6 +2864,14 @@ public class DisplayPolicy {
      */
     public void takeScreenshot(int screenshotType, int source) {
         if (mScreenshotHelper != null) {
+            // Check user setting to disable screenshots for the current user
+            final int userId = mService.mCurrentUserId;
+            final boolean disabled = Settings.Secure.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.Secure.SCREENSHOT_DISABLED, 0, userId) != 0;
+            if (disabled) {
+                return;
+            }
             ScreenshotRequest request =
                     new ScreenshotRequest.Builder(screenshotType, source).build();
             mScreenshotHelper.takeScreenshot(request, mHandler, null /* completionConsumer */);
