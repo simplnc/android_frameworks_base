@@ -533,6 +533,28 @@ public class DisplayPolicy {
                     }
                 }
 
+                // Additional touch boosts for smoother scroll/fling, adapted from EpicROM-AOSP
+                public void onVerticalFling(int duration) {
+                    if (mService.mPowerManagerInternal != null) {
+                        mService.mPowerManagerInternal.setPowerBoost(
+                                Boost.INTERACTION, duration + 320);
+                    }
+                }
+
+                public void onHorizontalFling(int duration) {
+                    if (mService.mPowerManagerInternal != null) {
+                        mService.mPowerManagerInternal.setPowerBoost(
+                                Boost.INTERACTION, duration + 160);
+                    }
+                }
+
+                public void onScroll(boolean started) {
+                    if (started && mService.mPowerManagerInternal != null) {
+                        mService.mPowerManagerInternal.setPowerBoost(
+                                Boost.DISPLAY_UPDATE_IMMINENT, 500);
+                    }
+                }
+
                 @Override
                 public void onDebug() {
                     // no-op
