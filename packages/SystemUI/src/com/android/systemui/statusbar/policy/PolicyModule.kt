@@ -38,6 +38,7 @@ import com.android.systemui.qs.tiles.WorkModeTile
 import com.android.systemui.qs.tiles.AnimationsTile
 import com.android.systemui.qs.tiles.SensorsOffTile
 import com.android.systemui.qs.tiles.ChatAiTile
+import com.android.systemui.qs.tiles.BlurToggleTile
 import com.android.systemui.qs.tiles.base.interactor.QSTileAvailabilityInteractor
 import com.android.systemui.qs.tiles.base.viewmodel.QSTileViewModelFactory
 import com.android.systemui.qs.tiles.impl.alarm.domain.AlarmTileMapper
@@ -489,6 +490,12 @@ interface PolicyModule {
     @IntoMap
     @StringKey(ChatAiTile.TILE_SPEC)
     fun bindChatAiTile(chatAiTile: ChatAiTile): QSTileImpl<*>
+
+    /** Inject BlurToggleTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(BlurToggleTile.TILE_SPEC)
+    fun bindBlurToggleTile(blurToggleTile: BlurToggleTile): QSTileImpl<*>
 
     /** Inject AlarmTile into tileMap in QSModule */
     @Binds
