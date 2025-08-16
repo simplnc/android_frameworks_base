@@ -49,6 +49,8 @@ import com.android.systemui.statusbar.policy.BatteryController;
 
 import vendor.lineage.powershare.IPowerShare;
 
+import java.util.NoSuchElementException;
+
 import javax.inject.Inject;
 
 public class PowerShareTile extends QSTileImpl<BooleanState>
