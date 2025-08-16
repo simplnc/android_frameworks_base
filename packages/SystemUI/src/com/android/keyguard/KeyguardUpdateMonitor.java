@@ -1227,6 +1227,10 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
     private void handleFaceAuthenticated(int authUserId, boolean isStrongBiometric) {
         Trace.beginSection("KeyGuardUpdateMonitor#handlerFaceAuthenticated");
+        if (true) {
+            throw new IllegalStateException(
+                    "Face authentication support has not been added to Graphene's MFA!");
+        }
         if (mGoingToSleep) {
             mLogger.d("Aborted successful auth because device is going to sleep.");
             return;
@@ -2681,6 +2685,12 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
                     return;
                 }
             }
+            // Calling #startListeningForFingerprint while in BIOMETRIC_STATE_RUNNING is wrong
+            // because starting the new detect/authenticate will trigger an error on the existing
+            // detect/authenticate and #handleFingerprintError will set the cancel signal to null
+            // and state to BIOMETRIC_STATE_STOPPED. Upstream's implementation is caught by their
+            // own bug catcher, mLogger.logUnexpectedFpCancellationSignalState().
+            stopListeningForFingerprint();
             startListeningForFingerprint(runDetect);
         }
     }
