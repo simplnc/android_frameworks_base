@@ -54,6 +54,7 @@ import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.sign
 import com.android.systemui.Flags.notificationShadeBlur
+import android.provider.Settings
 
 /**
  * Responsible for blurring the notification shade window, and applying a zoom effect to the
@@ -186,6 +187,8 @@ constructor(
             scheduleUpdate()
         }
 
+    private var blurDisabled: Boolean = false
+
     private fun computeBlurAndZoomOut(): Pair<Int, Float> {
         val animationRadius =
             MathUtils.constrain(
@@ -226,7 +229,10 @@ constructor(
             }
             zoomOut = 0f
         }
-
+        // Global blur disable toggle
+        if (blurDisabled) {
+            blur = 0
+        }
         if (!blurUtils.supportsBlursOnWindows()) {
             blur = 0
         }
@@ -350,6 +356,16 @@ constructor(
                 }
             }
         )
+        // Observe blur toggle
+        val resolver = context.contentResolver
+        val uri = Settings.Secure.getUriFor(Settings.Secure.BLUR_EFFECTS_DISABLED)
+        resolver.registerContentObserver(uri, false, object : android.database.ContentObserver(android.os.Handler(android.os.Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                blurDisabled = Settings.Secure.getInt(resolver, Settings.Secure.BLUR_EFFECTS_DISABLED, 0) == 1
+                scheduleUpdate()
+            }
+        })
+        blurDisabled = Settings.Secure.getInt(resolver, Settings.Secure.BLUR_EFFECTS_DISABLED, 0) == 1
     }
 
     private fun updateResources() {

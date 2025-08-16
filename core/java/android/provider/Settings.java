@@ -12944,6 +12944,9 @@ public final class Settings {
         /** Position for secondary bar: "top" or "bottom" */
         public static final String DUAL_STATUS_BAR_POSITION = "dual_status_bar_position";
 
+        /** Disable SystemUI blur effects to reduce GPU composition cost */
+        public static final String BLUR_EFFECTS_DISABLED = "blur_effects_disabled";
+
         /** @hide */
         public static final int PRIVATE_SPACE_AUTO_LOCK_ON_DEVICE_LOCK = 0;
         /** @hide */
