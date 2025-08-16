@@ -471,6 +471,20 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
                     @Override
                     public void onChange(boolean selfChange, Collection<Uri> collection, int flags,
                             int userId) {
+                        super.onChange(selfChange, collection, flags, userId);
+                        reevaluateSystemTheme(true /* forceReload */);
+                    }
+                },
+                UserHandle.USER_ALL);
+
+        // Observe theme style changes (tonal_spot, expressive, vibrant, spritz)
+        mSecureSettings.registerContentObserverForUserSync(
+                Settings.Secure.getUriFor(Settings.Secure.THEME_STYLE),
+                false,
+                new ContentObserver(mBgHandler) {
+                    @Override
+                    public void onChange(boolean selfChange, Collection<Uri> collection, int flags,
+                            int userId) {
                         if (DEBUG) Log.d(TAG, "Overlay changed for user: " + userId);
                         if (mUserTracker.getUserId() != userId) {
                             return;
@@ -663,6 +677,29 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
     }
 
     private void createOverlays(int color) {
+        // Read user-selected style from secure setting if provided
+        try {
+            final int userId = mUserTracker.getUserId();
+            final String style = Settings.Secure.getStringForUser(
+                    mContext.getContentResolver(), Settings.Secure.THEME_STYLE, userId);
+            if (style != null) {
+                switch (style) {
+                    case "expressive":
+                        mThemeStyle = Style.EXPRESSIVE;
+                        break;
+                    case "vibrant":
+                        mThemeStyle = Style.VIBRANT;
+                        break;
+                    case "spritz":
+                        mThemeStyle = Style.SPRITZ;
+                        break;
+                    case "tonal_spot":
+                        mThemeStyle = Style.TONAL_SPOT;
+                        break;
+                }
+            }
+        } catch (Throwable ignored) { }
+
         mDarkColorScheme = new ColorScheme(color, true /* isDark */, mThemeStyle, mContrast);
         mLightColorScheme = new ColorScheme(color, false /* isDark */, mThemeStyle, mContrast);
         mColorScheme = isNightMode() ? mDarkColorScheme : mLightColorScheme;

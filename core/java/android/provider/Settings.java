@@ -12891,6 +12891,62 @@ public final class Settings {
          */
         public static final String DISABLE_SECURE_WINDOWS = "disable_secure_windows";
 
+        /**
+         * If set to a non-zero value, disables user-initiated screenshots for the current user.
+         *
+         * <p>When enabled, requests to take screenshots via System UI (hardware chord, power menu,
+         * etc.) will be ignored.
+         *
+         * @hide
+         */
+        public static final String SCREENSHOT_DISABLED = "screenshot_disabled";
+
+        /**
+         * If set to a non-zero value, clears the primary clipboard when the screen turns off.
+         *
+         * @hide
+         */
+        public static final String CLIPBOARD_AUTO_CLEAR_ON_SCREEN_OFF =
+                "clipboard_auto_clear_on_screen_off";
+
+        /**
+         * If set to a non-zero value, enables a per-user allowlist for signature spoofing in
+         * PackageManager signature checks. When enabled, the list of allowed pairs is read from
+         * {@link #SIGNATURE_SPOOFING_ALLOWLIST}.
+         *
+         * <p>WARNING: This weakens the platform signature trust model and should only be enabled on
+         * development builds or explicitly trusted devices.
+         *
+         * @hide
+         */
+        public static final String SIGNATURE_SPOOFING_ENABLED = "signature_spoofing_enabled";
+
+        /**
+         * Comma-separated package pairs allowlist for signature spoofing when
+         * {@link #SIGNATURE_SPOOFING_ENABLED} is enabled. Each pair is formatted as
+         * "pkgA=pkgB"; comparison is symmetric.
+         *
+         * @hide
+         */
+        public static final String SIGNATURE_SPOOFING_ALLOWLIST =
+                "signature_spoofing_allowlist";
+
+        /**
+         * Material theme color style. Recognized values include: tonal_spot, expressive, vibrant,
+         * spritz.
+         *
+         * @hide
+         */
+        public static final String THEME_STYLE = "theme_style";
+
+        /** Enable floating toolbar/dual status bar */
+        public static final String FLOATING_TOOLBAR_ENABLED = "floating_toolbar_enabled";
+        /** Position for secondary bar: "top" or "bottom" */
+        public static final String DUAL_STATUS_BAR_POSITION = "dual_status_bar_position";
+
+        /** Disable SystemUI blur effects to reduce GPU composition cost */
+        public static final String BLUR_EFFECTS_DISABLED = "blur_effects_disabled";
+
         /** @hide */
         public static final int PRIVATE_SPACE_AUTO_LOCK_ON_DEVICE_LOCK = 0;
         /** @hide */

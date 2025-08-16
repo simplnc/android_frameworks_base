@@ -224,6 +224,35 @@ public class ClipboardService extends SystemService {
         } else if (android.companion.virtual.flags.Flags.vdmPublicApis() && mVdm != null) {
             registerVirtualDeviceListener();
         }
+
+        // Register to clear clipboard on screen off if enabled via secure setting
+        IntentFilter screenFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        getContext().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) return;
+                final int userId = UserHandle.myUserId();
+                if (Settings.Secure.getIntForUser(
+                        context.getContentResolver(),
+                        Settings.Secure.CLIPBOARD_AUTO_CLEAR_ON_SCREEN_OFF, 0, userId) == 0) {
+                    return;
+                }
+                synchronized (mLock) {
+                    // Iterate all device clipboards for the user and clear
+                    final int userIdx = mClipboards.indexOfKey(userId);
+                    if (userIdx >= 0) {
+                        final int numDevices = mClipboards.numElementsForKeyAt(userIdx);
+                        for (int i = numDevices - 1; i >= 0; i--) {
+                            Clipboard cb = mClipboards.valueAt(userIdx, i);
+                            if (cb != null && cb.primaryClip != null) {
+                                setPrimaryClipInternalLocked(cb, null, android.os.Process.SYSTEM_UID,
+                                        null);
+                            }
+                        }
+                    }
+                }
+            }
+        }, screenFilter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     private void registerVirtualDeviceBroadcastReceiver() {
