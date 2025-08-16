@@ -1229,7 +1229,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         Trace.beginSection("KeyGuardUpdateMonitor#handlerFaceAuthenticated");
         if (true) {
             throw new IllegalStateException(
-                    "Face authentication support has not been added to Graphene's MFA!");
+                    "Face authentication support has not been added to Our OS");
         }
         if (mGoingToSleep) {
             mLogger.d("Aborted successful auth because device is going to sleep.");
