@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.clover
+package com.android.systemui.lineage
 
 import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.android.systemui.qs.tiles.AmbientDisplayTile
@@ -36,7 +36,7 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
 @Module
-interface CloverModule {
+interface LineageModule {
     /** Inject AmbientDisplayTile into tileMap in QSModule */
     @Binds
     @IntoMap
