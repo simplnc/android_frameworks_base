@@ -3998,7 +3998,7 @@ public class SettingsProvider extends ContentProvider {
         }
 
         private final class UpgradeController {
-            private static final int SETTINGS_VERSION = 226;
+            private static final int SETTINGS_VERSION = 227;
 
             private final int mUserId;
 
@@ -6192,6 +6192,28 @@ public class SettingsProvider extends ContentProvider {
                         }
                     }
                     currentVersion = 226;
+                }
+
+                if (currentVersion == 226) {
+                    // Version 227: Set web search defaults for store queries to avoid Play-only URIs.
+                    final SettingsState secureSettings = getSecureSettingsLocked(userId);
+                    final Setting printSearch = secureSettings.getSettingLocked(
+                            Settings.Secure.PRINT_SERVICE_SEARCH_URI);
+                    if (printSearch.isNull()) {
+                        secureSettings.insertSettingOverrideableByRestoreLocked(
+                                Settings.Secure.PRINT_SERVICE_SEARCH_URI,
+                                "https://f-droid.org/packages/?q=%s",
+                                null, true, SettingsState.SYSTEM_PACKAGE_NAME);
+                    }
+                    final Setting paySearch = secureSettings.getSettingLocked(
+                            Settings.Secure.PAYMENT_SERVICE_SEARCH_URI);
+                    if (paySearch.isNull()) {
+                        secureSettings.insertSettingOverrideableByRestoreLocked(
+                                Settings.Secure.PAYMENT_SERVICE_SEARCH_URI,
+                                "https://f-droid.org/packages/?q=%s",
+                                null, true, SettingsState.SYSTEM_PACKAGE_NAME);
+                    }
+                    currentVersion = 227;
                 }
 
                 // vXXX: Add new settings above this point.
