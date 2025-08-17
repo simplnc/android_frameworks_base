@@ -42,10 +42,15 @@ public final class CallRecordingController {
 
     private volatile boolean recording;
     @Nullable private Thread recordingThread;
+    private RecordingConfig config = RecordingConfig.newBuilder().build();
 
     public CallRecordingController(@NonNull Context context, @NonNull Listener listener) {
         this.applicationContext = context.getApplicationContext();
         this.listener = listener;
+    }
+
+    public void setConfig(@NonNull RecordingConfig config) {
+        this.config = config;
     }
 
     public boolean hasRequiredPermissions() {
@@ -123,15 +128,13 @@ public final class CallRecordingController {
     }
 
     private void doRecord(File output) {
-        // Note: Capturing uplink+downlink audio requires device/ROM-side allowances. This basic
-        // implementation records from MIC as a baseline. Advanced strategies would leverage
-        // VOICE_COMMUNICATION or vendor-specific policies if available.
-        int sampleRate = 16000;
-        int channelConfig = AudioFormat.CHANNEL_IN_MONO;
-        int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+        int sampleRate = config.sampleRateHz;
+        int channelConfig = config.channelConfig;
+        int audioFormat = config.audioFormat;
+        int source = config.audioSource;
         int minBuffer = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
         AudioRecord recorder = new AudioRecord(
-                MediaRecorder.AudioSource.MIC,
+                source,
                 sampleRate,
                 channelConfig,
                 audioFormat,
@@ -139,7 +142,16 @@ public final class CallRecordingController {
         );
         ByteBuffer buffer = ByteBuffer.allocateDirect(Math.max(minBuffer, 4096));
 
-        try (FileOutputStream fos = new FileOutputStream(output)) {
+        try {
+            java.io.OutputStream out;
+            java.io.FileOutputStream fallback = null;
+            java.io.OutputStream mediaOut = MediaStoreWriter.openOutputStream(applicationContext, output);
+            if (mediaOut != null) {
+                out = mediaOut;
+            } else {
+                fallback = new FileOutputStream(output);
+                out = fallback;
+            }
             recorder.startRecording();
             while (recording) {
                 int read = recorder.read(buffer, buffer.capacity());
@@ -147,12 +159,13 @@ public final class CallRecordingController {
                     byte[] tmp = new byte[read];
                     buffer.rewind();
                     buffer.get(tmp, 0, read);
-                    fos.write(tmp);
+                    out.write(tmp);
                     buffer.clear();
                 }
             }
             recorder.stop();
             clearOngoingNotification();
+            out.close();
             listener.onRecordingFinished(output);
         } catch (IOException ioe) {
             listener.onRecordingError("I/O error: " + ioe.getMessage());

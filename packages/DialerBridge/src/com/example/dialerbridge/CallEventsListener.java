@@ -11,19 +11,27 @@ import androidx.annotation.Nullable;
  */
 public final class CallEventsListener {
     private final CallRecordingController controller;
+    @Nullable private final AutoRecordRules autoRules;
 
     @Nullable private Call currentCall;
     private boolean isIncoming;
 
     public CallEventsListener(@NonNull CallRecordingController controller) {
+        this(controller, null);
+    }
+
+    public CallEventsListener(@NonNull CallRecordingController controller, @Nullable AutoRecordRules rules) {
         this.controller = controller;
+        this.autoRules = rules;
     }
 
     public void onCallAdded(@NonNull InCallService service, @NonNull Call call) {
         this.currentCall = call;
         this.isIncoming = call.getDetails() != null && call.getDetails().getCallDirection() == Call.Details.DIRECTION_INCOMING;
         String number = CallNumberExtractor.getDisplayNumber(call);
-        controller.startRecording(number, isIncoming);
+        if (autoRules == null || autoRules.shouldRecord(number, isIncoming)) {
+            controller.startRecording(number, isIncoming);
+        }
     }
 
     public void onCallRemoved(@NonNull InCallService service, @NonNull Call call) {
