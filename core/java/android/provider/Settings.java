@@ -123,6 +123,8 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
+import com.android.internal.util.epic.DeviceConfigUtils;
+
 /**
  * The Settings provider contains global system-level device preferences.
  */
@@ -6467,6 +6469,44 @@ public final class Settings {
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
          * the setting value. See an example above.
          */
+
+        /**
+         * Stores the array name of the values currently used for SpoofBuildGms
+         * @hide
+         */
+        public static final String PPU_SPOOF_BUILD_GMS_ARRAY = "ppu_spoof_build_gms_array";
+
+        /**
+         * Enable/disable Bluetooth Battery bar
+         * @hide
+         */
+        public static final String BLUETOOTH_SHOW_BATTERY = "bluetooth_show_battery";
+
+        /**
+         * Whether to disable qs on secure lockscreen.
+         * @hide
+         */
+        public static final String SECURE_LOCKSCREEN_QS_DISABLED = "secure_lockscreen_qs_disabled";
+
+        /**
+         * Whether to enable the ripple animation on fingerprint unlock
+         * @hide
+         */
+        public static final String ENABLE_RIPPLE_EFFECT = "enable_ripple_effect";
+
+        /**
+         * Whether to play notification sound and vibration if screen is ON
+         * 0 - never
+         * 1 - always
+         * @hide
+         */
+        public static final String NOTIFICATION_SOUND_VIB_SCREEN_ON = "notification_sound_vib_screen_on";
+
+        /**
+         * Stores the array name of the values currently used for SpoofBuildGms
+         * @hide
+         */
+        public static final String PPU_SPOOF_BUILD_GMS_ARRAY = "ppu_spoof_build_gms_array";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
@@ -20821,6 +20861,9 @@ public final class Settings {
         @RequiresPermission(Manifest.permission.WRITE_DEVICE_CONFIG)
         public static boolean putString(@NonNull String namespace,
                 @NonNull String name, @Nullable String value, boolean makeDefault) {
+            if (DeviceConfigUtils.shouldDenyDeviceConfigControl(namespace, name)) {
+                return true;
+            }
             ContentResolver resolver = getContentResolver();
             return sNameValueCache.putStringForUser(resolver, createCompositeName(namespace, name),
                     value, null, makeDefault, resolver.getUserId(),
@@ -20842,7 +20885,9 @@ public final class Settings {
         public static boolean setStrings(@NonNull String namespace,
                 @NonNull Map<String, String> keyValues)
                 throws DeviceConfig.BadConfigException {
-            return setStrings(getContentResolver(), namespace, keyValues);
+            boolean result = setStrings(getContentResolver(), namespace, keyValues);
+            DeviceConfigUtils.setDefaultProperties(namespace, null);
+            return result;
         }
 
         /**
@@ -20892,6 +20937,9 @@ public final class Settings {
         @RequiresPermission(Manifest.permission.WRITE_DEVICE_CONFIG)
         public static boolean deleteString(@NonNull String namespace,
                 @NonNull String name) {
+            if (DeviceConfigUtils.shouldDenyDeviceConfigControl(namespace, name)) {
+                return true;
+            }
             ContentResolver resolver = getContentResolver();
             return sNameValueCache.deleteStringForUser(resolver,
                     createCompositeName(namespace, name), resolver.getUserId());
@@ -20928,6 +20976,7 @@ public final class Settings {
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't reset to defaults for " + CONTENT_URI, e);
             }
+            DeviceConfigUtils.setDefaultProperties(null, null);
         }
 
         /**
