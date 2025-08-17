@@ -112,7 +112,17 @@ public class AddPrinterActivity extends ListActivity implements AdapterView.OnIt
             getPackageManager().getPackageInfo(PKG_NAME_VENDING, 0);
             mHasVending = true;
         } catch (PackageManager.NameNotFoundException e) {
-            mHasVending = false;
+            try {
+                getPackageManager().getPackageInfo("org.fdroid.fdroid", 0);
+                mHasVending = true;
+            } catch (PackageManager.NameNotFoundException e1) {
+                try {
+                    getPackageManager().getPackageInfo("com.aurora.store", 0);
+                    mHasVending = true;
+                } catch (PackageManager.NameNotFoundException e2) {
+                    mHasVending = false;
+                }
+            }
         }
         mEnabledServicesAdapter = new EnabledServicesAdapter();
         mDisabledServicesAdapter = new DisabledServicesAdapter();
@@ -733,7 +743,13 @@ public class AddPrinterActivity extends ListActivity implements AdapterView.OnIt
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(searchUri)));
                     } catch (ActivityNotFoundException e) {
-                        Log.e(LOG_TAG, "Cannot start market", e);
+                        try {
+                            String q = Uri.parse(searchUri).getQueryParameter("q");
+                            String fallback = "https://f-droid.org/packages/?q=" + Uri.encode(q != null ? q : "");
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(fallback)));
+                        } catch (Exception e2) {
+                            Log.e(LOG_TAG, "Cannot start app store or fallback", e2);
+                        }
                     }
                 }
             } else {
@@ -747,7 +763,12 @@ public class AddPrinterActivity extends ListActivity implements AdapterView.OnIt
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(
                             R.string.uri_package_details, recommendation.getPackageName()))));
                 } catch (ActivityNotFoundException e) {
-                    Log.e(LOG_TAG, "Cannot start market", e);
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://f-droid.org/packages/" + recommendation.getPackageName())));
+                    } catch (Exception ex) {
+                        Log.e(LOG_TAG, "Cannot open fallback store", ex);
+                    }
                 }
             }
         }
