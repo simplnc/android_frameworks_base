@@ -1,0 +1,7 @@
+// In your Dialer app Android.bp
+android_app {
+	// ... existing code ...
+	static_libs: [
+		"DialerBridge",
+	],
+}

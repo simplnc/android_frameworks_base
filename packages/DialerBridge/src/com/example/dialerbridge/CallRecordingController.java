@@ -43,6 +43,7 @@ public final class CallRecordingController {
     private volatile boolean recording;
     @Nullable private Thread recordingThread;
     private RecordingConfig config = RecordingConfig.newBuilder().build();
+    private boolean manageNotification = true;
 
     public CallRecordingController(@NonNull Context context, @NonNull Listener listener) {
         this.applicationContext = context.getApplicationContext();
@@ -51,6 +52,10 @@ public final class CallRecordingController {
 
     public void setConfig(@NonNull RecordingConfig config) {
         this.config = config;
+    }
+
+    public void setManageNotification(boolean value) {
+        this.manageNotification = value;
     }
 
     public boolean hasRequiredPermissions() {
@@ -75,7 +80,9 @@ public final class CallRecordingController {
         }
 
         File outputFile = buildOutputFile(phoneNumber, isIncoming);
-        ensureOngoingNotification();
+        if (manageNotification) {
+            ensureOngoingNotification();
+        }
 
         recording = true;
         recordingThread = new Thread(() -> doRecord(outputFile), "DialerBridge-Recorder");
@@ -164,7 +171,9 @@ public final class CallRecordingController {
                 }
             }
             recorder.stop();
-            clearOngoingNotification();
+            if (manageNotification) {
+                clearOngoingNotification();
+            }
             out.close();
             listener.onRecordingFinished(output);
         } catch (IOException ioe) {

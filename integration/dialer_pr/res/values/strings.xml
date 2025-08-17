@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="recording_settings_title">Call recording</string>
+	<string name="pref_auto_incoming">Auto record incoming</string>
+	<string name="pref_auto_outgoing">Auto record outgoing</string>
+	<string name="pref_audio_source">Audio source</string>
+	<string name="audio_source_mic">Microphone</string>
+	<string name="audio_source_voice_comm">Voice communication</string>
+</resources>

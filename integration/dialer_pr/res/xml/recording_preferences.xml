@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<SwitchPreferenceCompat
+		android:key="pref_auto_incoming"
+		android:title="Auto record incoming"
+		android:defaultValue="false" />
+
+	<SwitchPreferenceCompat
+		android:key="pref_auto_outgoing"
+		android:title="Auto record outgoing"
+		android:defaultValue="false" />
+
+	<ListPreference
+		android:key="pref_audio_source"
+		android:title="Audio source"
+		android:defaultValue="mic" />
+</PreferenceScreen>
