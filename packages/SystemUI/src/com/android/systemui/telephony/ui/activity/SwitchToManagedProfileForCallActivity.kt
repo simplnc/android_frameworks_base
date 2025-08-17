@@ -103,6 +103,6 @@ constructor(
 
     companion object {
         private const val TAG = "SwitchToManagedProfileForCallActivity"
-        private const val APP_STORE_DIALER_QUERY = "market://search?q=dialer"
+        private const val APP_STORE_DIALER_QUERY = "https://f-droid.org/packages/?q=dialer"
     }
 }
