@@ -945,6 +945,17 @@
                   android:visibleToInstantApps="true">
         </activity>
 
+        <activity android:name=".statusbar.phone.DualStatusBarSettingsActivity"
+                  android:label="@string/dual_status_bar_settings_title"
+                  android:theme="@*android:style/Theme.DeviceDefault.Settings"
+                  android:excludeFromRecents="false"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <receiver android:name=".controls.management.ControlsRequestReceiver"
             android:exported="true">
             <intent-filter>

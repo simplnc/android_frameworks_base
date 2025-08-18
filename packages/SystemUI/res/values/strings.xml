@@ -1863,6 +1863,20 @@
     <!-- Name of status bar -->
     <string name="status_bar">Status bar</string>
 
+    <!-- Name of secondary status bar -->
+    <string name="status_bar_secondary">Secondary status bar</string>
+
+    <!-- Dual Status Bar Settings -->
+    <string name="dual_status_bar_settings_title">Dual Status Bar</string>
+    <string name="dual_status_bar_enabled_title">Enable Dual Status Bar</string>
+    <string name="dual_status_bar_enabled_summary">Show two status bars for enhanced information display</string>
+    <string name="dual_status_bar_layout_title">Layout Style</string>
+    <string name="dual_status_bar_layout_summary">Choose how the dual status bars are arranged</string>
+    <string name="dual_status_bar_show_network_traffic_title">Show Network Traffic</string>
+    <string name="dual_status_bar_show_network_traffic_summary">Display network traffic information in secondary status bar</string>
+    <string name="dual_status_bar_show_clock_secondary_title">Show Clock in Secondary</string>
+    <string name="dual_status_bar_show_clock_secondary_summary">Display clock in the secondary status bar</string>
+
     <!-- Name of System UI demo mode (mode with preset icons for screenshots) -->
     <string name="demo_mode">System UI demo mode</string>
 

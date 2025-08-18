@@ -147,6 +147,12 @@
     <!-- Height of the system icons container view in the status bar -->
     <dimen name="status_bar_system_icons_height">@dimen/status_bar_icon_size_sp</dimen>
 
+    <!-- Dual Status Bar dimensions -->
+    <dimen name="dual_status_bar_height">48dp</dimen>
+    <dimen name="dual_status_bar_spacing">2dp</dimen>
+    <dimen name="dual_status_bar_primary_height">@dimen/status_bar_height</dimen>
+    <dimen name="dual_status_bar_secondary_height">@dimen/status_bar_height</dimen>
+
     <!-- New sp height of notification icons in the status bar -->
     <dimen name="status_bar_icon_size_sp">@*android:dimen/status_bar_icon_size_sp</dimen>
     <!-- Original dp height of notification icons in the status bar -->

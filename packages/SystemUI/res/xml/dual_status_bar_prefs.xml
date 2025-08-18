@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+**
+** Copyright 2025 Zeus-OS
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+
+-->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:settings="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="@string/dual_status_bar_settings_title"
+        android:key="dual_status_bar_category">
+
+        <SwitchPreference
+            android:key="dual_status_bar_enabled"
+            android:title="@string/dual_status_bar_enabled_title"
+            android:summary="@string/dual_status_bar_enabled_summary"
+            android:defaultValue="false" />
+
+        <ListPreference
+            android:key="dual_status_bar_layout"
+            android:title="@string/dual_status_bar_layout_title"
+            android:summary="@string/dual_status_bar_layout_summary"
+            android:entries="@array/dual_status_bar_layout_entries"
+            android:entryValues="@array/dual_status_bar_layout_values"
+            android:defaultValue="standard"
+            android:dependency="dual_status_bar_enabled" />
+
+        <SwitchPreference
+            android:key="dual_status_bar_show_network_traffic"
+            android:title="@string/dual_status_bar_show_network_traffic_title"
+            android:summary="@string/dual_status_bar_show_network_traffic_summary"
+            android:defaultValue="true"
+            android:dependency="dual_status_bar_enabled" />
+
+        <SwitchPreference
+            android:key="dual_status_bar_show_clock_secondary"
+            android:title="@string/dual_status_bar_show_clock_secondary_title"
+            android:summary="@string/dual_status_bar_show_clock_secondary_summary"
+            android:defaultValue="true"
+            android:dependency="dual_status_bar_enabled" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
