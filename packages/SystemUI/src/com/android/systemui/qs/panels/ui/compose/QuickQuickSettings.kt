@@ -61,7 +61,7 @@ fun SceneScope.QuickQuickSettings(
         VerticalSpannedGrid(
             columns = columns,
             rowSpacing = QuickSettingsShade.QSVerticalPadding(),
-            spans = sizedTiles.fastMap { it.width },
+            spans = spans,
             modifier = Modifier.sysuiResTag("qqs_tile_layout"),
         ) { spanIndex ->
             val it = sizedTiles[spanIndex]
