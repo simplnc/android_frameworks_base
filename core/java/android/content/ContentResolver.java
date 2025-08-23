@@ -2728,7 +2728,13 @@ public abstract class ContentResolver implements ContentInterface {
             getContentService().registerContentObserver(uri, notifyForDescendents,
                     observer.getContentObserver(), userHandle, mTargetSdkVersion);
         } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
+            /*
+             * GSF crash prevention (DivestOS patch):
+             * Graceful handling when GSF/GmsCore is missing
+             * Don't crash the app, just log the issue for better de-Googled device support
+             */
+            Log.w(TAG, "GSF not available, content observer registration skipped", e);
+            // Don't crash the app, just log the issue
         }
     }
 

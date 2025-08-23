@@ -48,7 +48,12 @@ public class LockoutFrameworkImpl implements LockoutTracker {
     private static final String ACTION_LOCKOUT_RESET =
             "com.android.server.biometrics.sensors.fingerprint.ACTION_LOCKOUT_RESET";
     private static final int MAX_FAILED_ATTEMPTS_LOCKOUT_TIMED = 5;
-    private static final int MAX_FAILED_ATTEMPTS_LOCKOUT_PERMANENT = 20;
+    /*
+     * Enhanced fingerprint security (DivestOS patch):
+     * Reduced from 20 to 5 attempts for permanent lockout
+     * This provides stronger security against brute force attacks
+     */
+    private static final int MAX_FAILED_ATTEMPTS_LOCKOUT_PERMANENT = 5; // Reduced from 20
     private static final long FAIL_LOCKOUT_TIMEOUT_MS = 30 * 1000;
     private static final String KEY_LOCKOUT_RESET_USER = "lockout_reset_user";
 
@@ -133,12 +138,25 @@ public class LockoutFrameworkImpl implements LockoutTracker {
 
     @Override
     public void addFailedAttemptForUser(int userId) {
-        mFailedAttempts.put(userId, mFailedAttempts.get(userId, 0) + 1);
+        int currentAttempts = mFailedAttempts.get(userId, 0);
+        mFailedAttempts.put(userId, currentAttempts + 1);
         mTimedLockoutCleared.put(userId, false);
+
+        // Enhanced security logging for audit purposes (DivestOS security enhancement)
+        logSecurityEvent("Fingerprint failed attempt for user " + userId + 
+                         ", total attempts: " + (currentAttempts + 1));
 
         if (getLockoutModeForUser(userId) != LOCKOUT_NONE) {
             scheduleLockoutResetForUser(userId);
+            logSecurityEvent("Fingerprint lockout triggered for user " + userId + 
+                           ", lockout mode: " + getLockoutModeForUser(userId));
         }
+    }
+
+    // Enhanced security logging method (DivestOS security enhancement)
+    private void logSecurityEvent(String event) {
+        Slog.w(TAG, "Security event: " + event);
+        // Additional security logging for audit purposes
     }
 
     @Override

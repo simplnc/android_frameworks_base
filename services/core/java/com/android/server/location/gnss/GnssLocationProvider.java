@@ -1818,39 +1818,23 @@ public class GnssLocationProvider extends AbstractLocationProvider implements
         TelephonyManager phone = (TelephonyManager)
                 mContext.getSystemService(Context.TELEPHONY_SERVICE);
         int type = AGPS_SETID_TYPE_NONE;
-        String setId = null;
+        String setId = "";
         final Boolean isEmergency = mNIHandler.getInEmergency();
 
-        // Unless we are in an emergency, do not provide sensitive subscriber information
-        // to SUPL servers.
-        if (!isEmergency) {
-            mGnssNative.setAgpsSetId(type, "");
-            return;
+        /*
+         * Enhanced privacy: Don't send IMSI or phone number to SUPL servers
+         * This prevents tracking and improves user privacy (DivestOS patch)
+         * Original code allowed IMSI/phone transmission during emergencies,
+         * but for maximum privacy we block it entirely.
+         */
+        if (flags != AGPS_SETID_TYPE_NONE) {
+            Log.i(TAG, "Privacy mode: Not sending IMSI/phone to SUPL server");
+            type = AGPS_SETID_TYPE_NONE;
+            setId = "";
         }
 
-        int subId = SubscriptionManager.getDefaultDataSubscriptionId();
-        if (mGnssConfiguration.isActiveSimEmergencySuplEnabled() && isEmergency
-                && mNetworkConnectivityHandler.getActiveSubId() >= 0) {
-            subId = mNetworkConnectivityHandler.getActiveSubId();
-        }
-        if (SubscriptionManager.isValidSubscriptionId(subId)) {
-            phone = phone.createForSubscriptionId(subId);
-        }
-        if ((flags & AGPS_REQUEST_SETID_IMSI) == AGPS_REQUEST_SETID_IMSI) {
-            setId = phone.getSubscriberId();
-            if (setId != null) {
-                // This means the framework has the SIM card.
-                type = AGPS_SETID_TYPE_IMSI;
-            }
-        } else if ((flags & AGPS_REQUEST_SETID_MSISDN) == AGPS_REQUEST_SETID_MSISDN) {
-            setId = phone.getLine1Number();
-            if (setId != null) {
-                // This means the framework has the SIM card.
-                type = AGPS_SETID_TYPE_MSISDN;
-            }
-        }
-
-        mGnssNative.setAgpsSetId(type, (setId == null) ? "" : setId);
+        // Always use empty setId to protect user privacy
+        mGnssNative.setAgpsSetId(type, setId);
     }
 
     @Override

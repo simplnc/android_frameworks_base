@@ -802,8 +802,17 @@ final class DefaultPermissionGrantPolicy {
                 browserPackage = null;
             }
         }
-        grantPermissionsToPackage(pm, browserPackage, userId, false /* ignoreSystemPackage */,
-                true /*whitelistRestrictedPermissions*/, FOREGROUND_LOCATION_PERMISSIONS);
+        /*
+         * Privacy enhancement: Browser should request location permission explicitly
+         * Don't grant location by default for privacy (DivestOS patch)
+         * Users should control location access explicitly for better privacy
+         */
+        if (browserPackage != null) {
+            Log.i(TAG, "Privacy mode: Browser location permission not auto-granted for package: " + browserPackage);
+        }
+        // Removed automatic location permission grant:
+        // grantPermissionsToPackage(pm, browserPackage, userId, false /* ignoreSystemPackage */,
+        //         true /*whitelistRestrictedPermissions*/, FOREGROUND_LOCATION_PERMISSIONS);
 
         // Voice interaction
         if (voiceInteractPackageNames != null) {
