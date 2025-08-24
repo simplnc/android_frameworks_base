@@ -92,12 +92,15 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.app.animation.Interpolators;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.MetricsLogger;
+import com.android.systemui.R;
+import com.android.systemui.RetickerAnimations;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.policy.SystemBarUtils;
 import com.android.internal.statusbar.IStatusBarService;
@@ -3345,6 +3348,10 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         public void setHeadsUpAppearanceController(
                 HeadsUpAppearanceController headsUpAppearanceController) {
             mHeadsUpAppearanceController = headsUpAppearanceController;
+            // Set the reverse reference for reTicker functionality
+            if (headsUpAppearanceController != null) {
+                headsUpAppearanceController.setNotificationPanelViewController(this);
+            }
         }
 
         @Override
@@ -4224,6 +4231,14 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     /** Update the visibility of {@link NotificationPanelView} if necessary. */
     private void updateVisibility() {
         mView.setVisibility(shouldPanelBeVisible() ? VISIBLE : INVISIBLE);
+        
+        // Hide reTicker when panel is expanded
+        if (isExpanded()) {
+            View retickerView = mView.findViewById(R.id.reticker_view);
+            if (retickerView != null && retickerView.getVisibility() == View.VISIBLE) {
+                retickerView.setVisibility(View.GONE);
+            }
+        }
     }
 
 
@@ -5401,5 +5416,33 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             return super.performAccessibilityAction(host, action, args);
         }
     }
-}
 
+    /**
+     * Shows or hides the reTicker view based on heads up state
+     * @param show true to show reTicker, false to hide
+     * @param notificationText optional text to display in the reTicker
+     */
+    public void reTickerView(boolean show, String notificationText) {
+        View retickerView = mView.findViewById(R.id.reticker_view);
+        if (retickerView != null) {
+            if (show) {
+                retickerView.setVisibility(View.VISIBLE);
+                if (notificationText != null && retickerView instanceof TextView) {
+                    ((TextView) retickerView).setText(notificationText);
+                }
+                RetickerAnimations.doBounceAnimationIn(retickerView);
+            } else {
+                retickerView.setVisibility(View.GONE);
+                RetickerAnimations.doBounceAnimationOut(retickerView, mView.findViewById(R.id.notification_stack_scroll_layout));
+            }
+        }
+    }
+
+    /**
+     * Shows or hides the reTicker view based on heads up state
+     * @param show true to show reTicker, false to hide
+     */
+    public void reTickerView(boolean show) {
+        reTickerView(show, null);
+    }
+}

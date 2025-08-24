@@ -84,6 +84,21 @@
             systemui:layout_constraintGuide_percent="0.5"
             android:orientation="vertical"/>
 
+        <!-- reTicker view for notification ticker display -->
+        <TextView
+            android:id="@+id/reticker_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/reticker_background"
+            android:padding="12dp"
+            android:textAppearance="@style/TextAppearance.Notifications.reTicker"
+            android:visibility="gone"
+            android:gravity="center_vertical"
+            android:drawableStart="@drawable/qs_alike_top"
+            android:drawablePadding="8dp" />
+
         <!-- This layout should always include a version of
              NotificationStackScrollLayout, as it is expected from
              NotificationPanelViewController. -->

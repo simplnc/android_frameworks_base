@@ -33,6 +33,7 @@ import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.res.R;
 import com.android.systemui.shade.ShadeHeadsUpTracker;
 import com.android.systemui.shade.ShadeViewController;
+import com.android.systemui.shade.NotificationPanelViewController;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.CrossFadeHelper;
 import com.android.systemui.statusbar.HeadsUpStatusBarView;
@@ -79,6 +80,7 @@ public class HeadsUpAppearanceController extends ViewController<HeadsUpStatusBar
     private static final SourceType PULSING = SourceType.from("Pulsing");
     private final HeadsUpManager mHeadsUpManager;
     private final NotificationStackScrollLayoutController mStackScrollerController;
+    private NotificationPanelViewController mNotificationPanelViewController;
 
     private final ClockController mClockController;
     private final DarkIconDispatcher mDarkIconDispatcher;
@@ -109,6 +111,14 @@ public class HeadsUpAppearanceController extends ViewController<HeadsUpStatusBar
                     return view.getId() == R.id.status_bar;
                 }
             };
+
+    /**
+     * Sets the NotificationPanelViewController for reTicker functionality
+     * @param notificationPanelViewController the controller to set
+     */
+    public void setNotificationPanelViewController(NotificationPanelViewController notificationPanelViewController) {
+        mNotificationPanelViewController = notificationPanelViewController;
+    }
     private boolean mAnimationsEnabled = true;
     private final KeyguardStateController mKeyguardStateController;
     private final HeadsUpNotificationIconInteractor mHeadsUpNotificationIconInteractor;
@@ -231,10 +241,35 @@ public class HeadsUpAppearanceController extends ViewController<HeadsUpStatusBar
         if (newEntry != previousEntry) {
             if (newEntry == null) {
                 // no heads up anymore, lets start the disappear animation
+                if (mNotificationPanelViewController != null) {
+                    mNotificationPanelViewController.reTickerView(false);
+                }
                 setPinnedStatus(PinnedStatus.NotPinned);
             } else if (previousEntry == null) {
                 // We now have a headsUp and didn't have one before. Let's start the disappear
                 // animation
+                if (mNotificationPanelViewController != null) {
+                    String notificationText = null;
+                    try {
+                        // Try to get notification title first
+                        if (newEntry.getRepresentativeEntry() != null && 
+                            newEntry.getRepresentativeEntry().getSbn() != null &&
+                            newEntry.getRepresentativeEntry().getSbn().getNotification() != null) {
+                            
+                            notificationText = newEntry.getRepresentativeEntry().getSbn().getNotification().extras.getString("android.title");
+                            if (notificationText == null || notificationText.isEmpty()) {
+                                notificationText = newEntry.getRepresentativeEntry().getSbn().getNotification().extras.getString("android.text");
+                            }
+                        }
+                        
+                        if (notificationText == null || notificationText.isEmpty()) {
+                            notificationText = "New notification";
+                        }
+                    } catch (Exception e) {
+                        notificationText = "New notification";
+                    }
+                    mNotificationPanelViewController.reTickerView(true, notificationText);
+                }
                 setPinnedStatus(PinnedStatus.PinnedBySystem);
             }
 
