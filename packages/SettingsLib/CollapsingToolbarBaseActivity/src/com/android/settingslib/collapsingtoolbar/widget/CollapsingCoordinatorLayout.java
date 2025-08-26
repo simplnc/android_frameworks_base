@@ -177,7 +177,7 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
             if (SettingsThemeHelper.isExpressiveTheme(getContext())) {
                 actionBar.setHomeAsUpIndicator(R.drawable.settingslib_expressive_icon_back);
             }
@@ -210,7 +210,7 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
             if (SettingsThemeHelper.isExpressiveTheme(getContext())) {
                 actionBar.setHomeAsUpIndicator(R.drawable.settingslib_expressive_icon_back);
             }
