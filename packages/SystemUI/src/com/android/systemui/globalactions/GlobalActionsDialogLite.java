@@ -1533,7 +1533,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     }
 
     private Action getSettingsAction() {
-        return new SinglePressAction(com.android.systemui.R.drawable.ic_lock_settings,
+        return new SinglePressAction(R.drawable.ic_lock_settings,
                 R.string.global_action_settings) {
             @Override
             public void onPress() {
@@ -1629,7 +1629,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     @VisibleForTesting
     class LockDownAction extends SinglePressAction {
         LockDownAction() {
-            super(com.android.systemui.R.drawable.ic_lock_lock, R.string.global_action_lockdown);
+            super(R.drawable.ic_lock_lock, R.string.global_action_lockdown);
         }
 
         @Override
