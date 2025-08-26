@@ -125,6 +125,8 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
             }
             if (!TextUtils.isEmpty(mToolbarTitle)) {
                 mCollapsingToolbarLayout.setTitle(mToolbarTitle);
+                // Hide the title text as per design - keep it disabled
+                mCollapsingToolbarLayout.setTitleEnabled(false);
             }
         }
         autoSetCollapsingToolbarLayoutScrolling();
@@ -230,6 +232,8 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
         if (!TextUtils.isEmpty(title) && mCollapsingToolbarLayout != null) {
             mToolbarTitle = title;
             mCollapsingToolbarLayout.setTitle(mToolbarTitle);
+            // Hide the title text as per design - keep it disabled
+            mCollapsingToolbarLayout.setTitleEnabled(false);
         }
     }
 

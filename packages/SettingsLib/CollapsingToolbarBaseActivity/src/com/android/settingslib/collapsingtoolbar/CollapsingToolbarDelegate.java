@@ -221,6 +221,8 @@ public class CollapsingToolbarDelegate {
     public void setTitle(CharSequence title) {
         if (mCollapsingToolbarLayout != null) {
             mCollapsingToolbarLayout.setTitle(title);
+            // Hide the title text as per design - keep it disabled
+            mCollapsingToolbarLayout.setTitleEnabled(false);
         }
         mHostCallback.setOuterTitle(title);
     }
