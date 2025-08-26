@@ -1137,34 +1137,22 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
                         : HostingRecord.HOSTING_TYPE_ACTIVITY);
     }
 
-boolean checkStartAnyActivityPermission(Intent intent, ActivityInfo aInfo, String resultWho,
-        int requestCode, int callingPid, int callingUid, String callingPackage,
-        @Nullable String callingFeatureId, boolean ignoreTargetSecurity,
-        boolean launchingInTask, WindowProcessController callerApp, ActivityRecord resultRecord,
-        Task resultRootTask) {
-
-    // Independent bypass checks
-    boolean pixelBypass = com.android.internal.util.epic.PixelPropsUtils.shouldBypassTaskPermission(callingUid);
-    boolean baseBypass = com.android.internal.util.android.BypassUtils.shouldBypassTaskPermission(callingUid);
-    if (pixelBypass || baseBypass) {
-        return true; // Caller bypassed permission checks
-    }
-
-    // Check if caller is recents component
-    final boolean isCallerRecents = mService.getRecentTasks() != null
-            && mService.getRecentTasks().isCallerRecents(callingUid);
-
-    // Check START_ANY_ACTIVITY permission
-    final int startAnyPerm = mService.checkPermission(START_ANY_ACTIVITY, callingPid, callingUid);
-    if (startAnyPerm == PERMISSION_GRANTED || (isCallerRecents && launchingInTask)) {
-        // START_ANY_ACTIVITY grants full access, or recents starting in an existing task
-        return true;
-    }
-
-    // Otherwise, permission denied
-    return false;
-}
-
+    boolean checkStartAnyActivityPermission(Intent intent, ActivityInfo aInfo, String resultWho,
+            int requestCode, int callingPid, int callingUid, String callingPackage,
+            @Nullable String callingFeatureId, boolean ignoreTargetSecurity,
+            boolean launchingInTask, WindowProcessController callerApp, ActivityRecord resultRecord,
+            Task resultRootTask) {
+        if (com.android.internal.util.epic.PixelPropsUtils.shouldBypassTaskPermission(callingUid)) return true;
+        final boolean isCallerRecents = mService.getRecentTasks() != null
+                && mService.getRecentTasks().isCallerRecents(callingUid);
+        final int startAnyPerm = mService.checkPermission(START_ANY_ACTIVITY, callingPid,
+                callingUid);
+        if (startAnyPerm == PERMISSION_GRANTED || (isCallerRecents && launchingInTask)) {
+            // If the caller has START_ANY_ACTIVITY, ignore all checks below. In addition, if the
+            // caller is the recents component and we are specifically starting an activity in an
+            // existing task, then also allow the activity to be fully relaunched.
+            return true;
+        }
         final int componentRestriction = getComponentRestrictionForCallingPackage(aInfo,
                 callingPackage, callingFeatureId, callingPid, callingUid, ignoreTargetSecurity);
         final int actionRestriction = getActionRestrictionForCallingPackage(

@@ -54,21 +54,13 @@ public interface ExternalInterfaceBinder {
     default <T> void executeRemoteCallWithTaskPermission(RemoteCallable<T> controllerInstance,
             String log, Consumer<T> callback, boolean blocking) {
         if (controllerInstance == null) return;
-        
-final RemoteCallable<T> controller = controllerInstance;
 
-// Determine if caller is exempted by PixelProps or base bypass
-boolean pixelBypass = com.android.internal.util.epic.PixelPropsUtils
-        .shouldBypassManageActivityTaskPermission(controllerInstance.getContext());
-boolean baseBypass = com.android.internal.util.android.BypassUtils
-        .isSystemLauncher(Binder.getCallingUid());
-
-// Only enforce permission if neither bypass applies
-if (!pixelBypass && !baseBypass) {
-    controllerInstance.getContext().enforceCallingPermission(
-            Manifest.permission.MANAGE_ACTIVITY_TASKS, log);
-}
-
+        final RemoteCallable<T> controller = controllerInstance;
+        if (!com.android.internal.util.epic.PixelPropsUtils.shouldBypassManageActivityTaskPermission(
+                controllerInstance.getContext())) {
+            controllerInstance.getContext().enforceCallingPermission(
+                    Manifest.permission.MANAGE_ACTIVITY_TASKS, log);
+        }
         if (blocking) {
             try {
                 controllerInstance.getRemoteCallExecutor().executeBlocking(() -> {

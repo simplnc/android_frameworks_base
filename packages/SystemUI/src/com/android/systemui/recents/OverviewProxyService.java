@@ -727,9 +727,8 @@ public class OverviewProxyService implements CallbackController<OverviewProxyLis
         mShadeInteractor = shadeInteractor;
         mUserTracker = userTracker;
         mConnectionBackoffAttempts = 0;
-        int defaultLauncher = android.os.SystemProperties.getInt("persist.sys.default_launcher", 0);
-        String[] launcherComponents = context.getResources().getStringArray(com.android.internal.R.array.config_launcherComponents);
-        mRecentsComponentName = ComponentName.unflattenFromString(launcherComponents[defaultLauncher]);
+        mRecentsComponentName = ComponentName.unflattenFromString(context.getString(
+                com.android.internal.R.string.config_recentsComponentName));
         mQuickStepIntent = new Intent(ACTION_QUICKSTEP)
                 .setPackage(mRecentsComponentName.getPackageName());
         mSysUiState = sysUiState;

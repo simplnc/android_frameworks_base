@@ -3162,31 +3162,22 @@ class UserController implements Handler.Callback {
         }
     }
 
-private void checkGetCurrentUserPermissions() {
-    boolean pixelBypass = com.android.internal.util.epic.PixelPropsUtils.isSystemLauncher(Binder.getCallingUid());
-    boolean baseBypass = com.android.internal.util.android.BypassUtils.isSystemLauncher(Binder.getCallingUid());
-
-    // Independent bypass: return if either bypass applies
-    if (pixelBypass || baseBypass) {
-        return;
+    private void checkGetCurrentUserPermissions() {
+        if (com.android.internal.util.epic.PixelPropsUtils.isSystemLauncher(Binder.getCallingUid())) {
+            return;
+        }
+        if ((mInjector.checkCallingPermission(INTERACT_ACROSS_USERS)
+                != PackageManager.PERMISSION_GRANTED) && (
+                mInjector.checkCallingPermission(INTERACT_ACROSS_USERS_FULL)
+                        != PackageManager.PERMISSION_GRANTED)) {
+            String msg = "Permission Denial: getCurrentUser() from pid="
+                    + Binder.getCallingPid()
+                    + ", uid=" + Binder.getCallingUid()
+                    + " requires " + INTERACT_ACROSS_USERS;
+            Slogf.w(TAG, msg);
+            throw new SecurityException(msg);
+        }
     }
-
-    // Normal permission check if no bypass
-    boolean hasInteractAcrossUsers = mInjector.checkCallingPermission(INTERACT_ACROSS_USERS)
-            == PackageManager.PERMISSION_GRANTED;
-    boolean hasInteractAcrossUsersFull = mInjector.checkCallingPermission(INTERACT_ACROSS_USERS_FULL)
-            == PackageManager.PERMISSION_GRANTED;
-
-    if (!hasInteractAcrossUsers && !hasInteractAcrossUsersFull) {
-        String msg = "Permission Denial: getCurrentUser() from pid="
-                + Binder.getCallingPid()
-                + ", uid=" + Binder.getCallingUid()
-                + " requires " + INTERACT_ACROSS_USERS;
-        Slogf.w(TAG, msg);
-        throw new SecurityException(msg);
-    }
-}
-
 
     UserInfo getCurrentUser() {
         checkGetCurrentUserPermissions();

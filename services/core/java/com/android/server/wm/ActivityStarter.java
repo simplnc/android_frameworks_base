@@ -3158,24 +3158,20 @@ class ActivityStarter {
         mIntentDelivered = true;
     }
 
-/** Places {@link #mStartActivity} in {@code task} or an embedded {@link TaskFragment}. */
-private void addOrReparentStartingActivity(@NonNull Task task, String reason) {
-    TaskFragment newParent = task;
-
-    if (mInTaskFragment != null) {
-        int embeddingCheckResult = canEmbedActivity(mInTaskFragment, mStartActivity, task);
-
-        boolean pixelBypass = com.android.internal.util.epic.PixelPropsUtils.isSystemLauncher(mCallingUid);
-        boolean baseBypass = com.android.internal.util.android.BypassUtils.isSystemLauncher(mCallingUid);
-
-        if (embeddingCheckResult == EMBEDDING_ALLOWED || pixelBypass || baseBypass) {
-            // Either embedding allowed or bypass applies → reparent to TaskFragment
-            newParent = mInTaskFragment;
-            mStartActivity.mRequestedLaunchingTaskFragmentToken = mInTaskFragment.getFragmentToken();
-        } else {
-            // Cannot embed → start activity in task instead
-            sendCanNotEmbedActivityError(mInTaskFragment, embeddingCheckResult);
-        }
+    /** Places {@link #mStartActivity} in {@code task} or an embedded {@link TaskFragment}. */
+    private void addOrReparentStartingActivity(@NonNull Task task, String reason) {
+        TaskFragment newParent = task;
+        if (mInTaskFragment != null) {
+            int embeddingCheckResult = canEmbedActivity(mInTaskFragment, mStartActivity, task);
+            if (embeddingCheckResult == EMBEDDING_ALLOWED
+                || com.android.internal.util.epic.PixelPropsUtils.isSystemLauncher(mCallingUid)) {
+                newParent = mInTaskFragment;
+                mStartActivity.mRequestedLaunchingTaskFragmentToken =
+                        mInTaskFragment.getFragmentToken();
+            } else {
+                // Start mStartActivity to task instead if it can't be embedded to mInTaskFragment.
+                sendCanNotEmbedActivityError(mInTaskFragment, embeddingCheckResult);
+            }
         } else {
             TaskFragment candidateTf = mAddingToTaskFragment;
             if (candidateTf == null) {
