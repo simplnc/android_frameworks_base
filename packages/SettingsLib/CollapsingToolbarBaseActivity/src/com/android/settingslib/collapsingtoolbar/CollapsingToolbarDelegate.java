@@ -220,7 +220,8 @@ public class CollapsingToolbarDelegate {
     /** Sets the title on the collapsing layout and delegates to host. */
     public void setTitle(CharSequence title) {
         if (mCollapsingToolbarLayout != null) {
-            mCollapsingToolbarLayout.setTitle(title);
+            // Set title to empty string to completely hide it
+            mCollapsingToolbarLayout.setTitle("");
             // Hide the title text as per design - keep it disabled
             mCollapsingToolbarLayout.setTitleEnabled(false);
         }

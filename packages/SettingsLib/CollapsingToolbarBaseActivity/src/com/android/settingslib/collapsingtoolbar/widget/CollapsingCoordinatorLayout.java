@@ -124,7 +124,8 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
                                         .build()));
             }
             if (!TextUtils.isEmpty(mToolbarTitle)) {
-                mCollapsingToolbarLayout.setTitle(mToolbarTitle);
+                // Set title to empty string to completely hide it
+                mCollapsingToolbarLayout.setTitle("");
                 // Hide the title text as per design - keep it disabled
                 mCollapsingToolbarLayout.setTitleEnabled(false);
             }
@@ -231,7 +232,8 @@ public class CollapsingCoordinatorLayout extends CoordinatorLayout {
         initSettingsStyleToolBar(activity);
         if (!TextUtils.isEmpty(title) && mCollapsingToolbarLayout != null) {
             mToolbarTitle = title;
-            mCollapsingToolbarLayout.setTitle(mToolbarTitle);
+            // Set title to empty string to completely hide it
+            mCollapsingToolbarLayout.setTitle("");
             // Hide the title text as per design - keep it disabled
             mCollapsingToolbarLayout.setTitleEnabled(false);
         }

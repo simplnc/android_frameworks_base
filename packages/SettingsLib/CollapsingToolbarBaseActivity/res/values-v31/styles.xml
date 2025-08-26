@@ -20,12 +20,24 @@
         <item name="android:textSize">0dp</item>
         <item name="android:visibility">gone</item>
         <item name="android:alpha">0</item>
+        <item name="android:maxLines">0</item>
+        <item name="android:minLines">0</item>
+        <item name="android:maxHeight">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:scaleX">0</item>
+        <item name="android:scaleY">0</item>
     </style>
 
     <style name="CollapsingToolbarTitle.Expanded" parent="CollapsingToolbarTitle.Collapsed">
         <item name="android:textSize">0dp</item>
         <item name="android:visibility">gone</item>
         <item name="android:alpha">0</item>
+        <item name="android:maxLines">0</item>
+        <item name="android:minLines">0</item>
+        <item name="android:maxHeight">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:scaleX">0</item>
+        <item name="android:scaleY">0</item>
     </style>
 
     <style name="Base.CollapsingToolbarLayoutStyle.SettingsLib" parent="@style/Widget.Material3.CollapsingToolbar">
@@ -34,13 +46,17 @@
         <item name="expandedTitleMarginStart">@dimen/expanded_title_margin_start</item>
         <item name="expandedTitleMarginEnd">@dimen/expanded_title_margin_end</item>
         <item name="expandedTitleMarginBottom">@dimen/expanded_title_margin_bottom</item>
-        <item name="maxLines">3</item>
+        <item name="maxLines">0</item>
         <item name="scrimVisibleHeightTrigger">@dimen/settingslib_scrim_visible_height_trigger</item>
         <item name="contentScrim">@android:color/transparent</item>
         <item name="statusBarScrim">@android:color/transparent</item>
         <item name="scrimAnimationDuration">50</item>
         <item name="titleEnabled">false</item>
         <item name="title">@null</item>
+        <item name="android:titleTextColor">@android:color/transparent</item>
+        <item name="android:subtitleTextColor">@android:color/transparent</item>
+        <item name="android:titleTextAppearance">@style/CollapsingToolbarTitle.Collapsed</item>
+        <item name="android:subtitleTextAppearance">@style/CollapsingToolbarTitle.Collapsed</item>
     </style>
 
     <style name="CollapsingToolbarLayoutStyle.SettingsLib" parent="@style/Base.CollapsingToolbarLayoutStyle.SettingsLib">

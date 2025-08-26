@@ -16,7 +16,9 @@
 -->
 <resources>
     <style name="CollapsingToolbarLayoutStyle.SettingsLib" parent="@style/Base.CollapsingToolbarLayoutStyle.SettingsLib">
-        <item name="collapsedTitleTextColor">@color/settingslib_materialColorOnSurface</item>
-        <item name="expandedTitleTextColor">@color/settingslib_materialColorOnSurface</item>
+        <item name="collapsedTitleTextColor">@android:color/transparent</item>
+        <item name="expandedTitleTextColor">@android:color/transparent</item>
+        <item name="android:titleTextColor">@android:color/transparent</item>
+        <item name="android:subtitleTextColor">@android:color/transparent</item>
     </style>
 </resources>
