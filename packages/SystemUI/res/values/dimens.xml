@@ -2114,23 +2114,4 @@
     <dimen name="volume_panel_slice_vertical_padding">8dp</dimen>
     <dimen name="volume_panel_slice_horizontal_padding">24dp</dimen>
     <!-- Volume end -->
-
-    <dimen name="status_bar_left_clock_starting_padding">4dp</dimen>
-    <dimen name="status_bar_left_clock_end_padding">6dp</dimen>
-    <dimen name="status_bar_clock_vertical_padding">2dp</dimen>
-    <dimen name="status_bar_clock_horizontal_margin">8dp</dimen>
-
-    <!-- Enhanced System Clock Spacing -->
-    <dimen name="status_bar_clock_left_padding">8dp</dimen>
-    <dimen name="status_bar_clock_right_padding">8dp</dimen>
-    <dimen name="status_bar_clock_top_padding">2dp</dimen>
-    <dimen name="status_bar_clock_bottom_padding">2dp</dimen>
-    <dimen name="status_bar_clock_margin_start">4dp</dimen>
-    <dimen name="status_bar_clock_margin_end">4dp</dimen>
-    
-    <!-- QS Panel Enhanced Spacing -->
-    <dimen name="qs_panel_enhanced_padding">16dp</dimen>
-    <dimen name="qs_panel_enhanced_margin">8dp</dimen>
-    <dimen name="qs_panel_corner_radius_enhanced">24dp</dimen>
-
 </resources>
