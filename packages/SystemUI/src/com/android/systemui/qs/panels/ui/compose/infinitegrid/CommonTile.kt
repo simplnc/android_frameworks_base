@@ -33,8 +33,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -53,7 +51,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -65,7 +62,6 @@ import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.android.compose.modifiers.size
 import com.android.compose.modifiers.thenIf
 import com.android.compose.ui.graphics.painter.rememberDrawablePainter
@@ -76,19 +72,7 @@ import com.android.systemui.common.ui.compose.load
 import com.android.systemui.compose.modifiers.sysuiResTag
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.SideIconHeight
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.SideIconWidth
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TILE_INITIAL_DELAY_MILLIS
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TILE_MARQUEE_ITERATIONS
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileLabelBlurWidth
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.LargeTileIconSize
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.longPressLabel
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.IconEndPadding
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileHeight
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.ToggleTargetSize
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileContentEndPadding
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileContentStartPadding
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileDividerHeight
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileTextSize
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.scaleRatio
 import com.android.systemui.qs.panels.ui.viewmodel.AccessibilityUiState
 import com.android.systemui.qs.ui.compose.borderOnFocus
 import com.android.systemui.res.R
@@ -110,57 +94,54 @@ fun LargeTileContent(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
+        horizontalArrangement = tileHorizontalArrangement(),
     ) {
         // Icon
         val longPressLabel = longPressLabel().takeIf { onLongClick != null }
         val animatedBackgroundColor by
             animateColorAsState(colors.iconBackground, label = "QSTileDualTargetBackgroundColor")
         val focusBorderColor = MaterialTheme.colorScheme.secondary
-        val context = LocalContext.current
         Box(
             modifier =
-                Modifier
-                    .size(width = context.ToggleTargetSize, height = context.TileHeight)
-                    .thenIf(toggleClick != null) {
-                        Modifier.borderOnFocus(color = focusBorderColor, iconShape.topEnd)
-                            .combinedClickable(
-                                onClick = toggleClick!!,
-                                onLongClick = onLongClick,
-                                onLongClickLabel = longPressLabel,
-                                hapticFeedbackEnabled = !Flags.msdlFeedback(),
-                            )
-                    }
+                Modifier.size(CommonTileDefaults.ToggleTargetSize).thenIf(toggleClick != null) {
+                    Modifier.borderOnFocus(color = focusBorderColor, iconShape.topEnd)
+                        .clip(iconShape)
+                        .verticalSquish(squishiness)
+                        .drawBehind { drawRect(animatedBackgroundColor) }
+                        .combinedClickable(
+                            onClick = toggleClick!!,
+                            onLongClick = onLongClick,
+                            onLongClickLabel = longPressLabel,
+                            hapticFeedbackEnabled = !Flags.msdlFeedback(),
+                        )
+                        .thenIf(accessibilityUiState != null) {
+                            Modifier.semantics {
+                                    accessibilityUiState as AccessibilityUiState
+                                    contentDescription = accessibilityUiState.contentDescription
+                                    stateDescription = accessibilityUiState.stateDescription
+                                    accessibilityUiState.toggleableState?.let {
+                                        toggleableState = it
+                                    }
+                                    role = Role.Switch
+                                }
+                                .sysuiResTag(TEST_TAG_TOGGLE)
+                        }
+                }
         ) {
             SmallTileContent(
                 icon = icon,
                 color = colors.icon,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = context.IconEndPadding)
+                size = { CommonTileDefaults.LargeTileIconSize },
+                modifier = Modifier.align(Alignment.Center),
             )
         }
 
-        if (toggleClick != null) {
-            Box(
-                modifier = Modifier
-                    .width(1.dp * context.scaleRatio)
-                    .height(context.TileDividerHeight)
-                    .background(colors.secondaryLabel)
-            )
-        }
-
+        // Labels
         LargeTileLabels(
             label = label,
             secondaryLabel = secondaryLabel,
             colors = colors,
             accessibilityUiState = accessibilityUiState,
-            isVisible = isVisible,
-            modifier = Modifier.weight(1f)
-                        .padding(
-                            start = context.TileContentStartPadding, 
-                            end = context.TileContentEndPadding
-                        ),
         )
 
         if (sideDrawable != null) {
@@ -213,13 +194,14 @@ fun LargeTileLabels(
 @Composable
 fun SmallTileContent(
     modifier: Modifier = Modifier,
+    icon: Icon,
+    color: Color,
+    size: () -> Dp = { CommonTileDefaults.IconSize },
     animateToEnd: Boolean = false,
 ) {
-    val context = LocalContext.current
-    val size = context.LargeTileIconSize
-    val icon = iconProvider(context)
     val animatedColor by animateColorAsState(color, label = "QSTileIconColor")
-    val iconModifier = modifier.size({ size.roundToPx() }, { size.roundToPx() })
+    val iconModifier = modifier.size({ size().roundToPx() }, { size().roundToPx() })
+    val context = LocalContext.current
     val loadedDrawable =
         remember(icon, context) {
             when (icon) {
@@ -267,91 +249,16 @@ fun SmallTileContent(
     }
 }
 
-@Composable
-private fun TileLabel(
-    text: String,
-    color: ColorProducer,
-    style: TextStyle,
-    modifier: Modifier = Modifier,
-    isVisible: () -> Boolean = { true },
-) {
-    var textSize by remember { mutableIntStateOf(0) }
-
-    val iterations = if (isVisible()) TILE_MARQUEE_ITERATIONS else 0
-    
-    val context = LocalContext.current
-    val density = LocalDensity.current
-
-    BasicText(
-        text = text,
-        color = color,
-        style = style.copy(
-            fontSize = with(density) { context.TileTextSize.toSp() }
-        ),
-        maxLines = 1,
-        onTextLayout = { textSize = it.size.width },
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .graphicsLayer {
-                    if (textSize > size.width) {
-                        compositingStrategy = CompositingStrategy.Offscreen
-                    }
-                }
-                .drawWithContent {
-                    drawContent()
-                    if (textSize > size.width) {
-                        // Draw a blur over the end of the text
-                        val edgeWidthPx = context.TileLabelBlurWidth.toPx()
-                        drawRect(
-                            topLeft = Offset(size.width - edgeWidthPx, 0f),
-                            size = Size(edgeWidthPx, size.height),
-                            brush =
-                                Brush.horizontalGradient(
-                                    colors = listOf(Color.Transparent, Color.Black),
-                                    startX = size.width,
-                                    endX = size.width - edgeWidthPx,
-                                ),
-                            blendMode = BlendMode.DstIn,
-                        )
-                    }
-                }
-                .basicMarquee(
-                    iterations = iterations,
-                    initialDelayMillis = TILE_INITIAL_DELAY_MILLIS,
-                ),
-    )
-}
-
 object CommonTileDefaults {
-    val IconSize = 24.dp
+    val IconSize = 32.dp
+    val LargeTileIconSize = 28.dp
     val SideIconWidth = 32.dp
     val SideIconHeight = 20.dp
-    val TileStartPadding = 0.dp
-    val TileEndPadding = 0.dp
-    val TileArrangementPadding = 8.dp
-    val TilePaddingLarge = 10.dp
-    val InactiveCornerRadius = 100.dp
-    val ActiveCornerRadius = 100.dp
-    const val TILE_MARQUEE_ITERATIONS = 1
-    const val TILE_INITIAL_DELAY_MILLIS = 2000
+    val ToggleTargetSize = 56.dp
+    val TileHeight = 72.dp
+    val TilePadding = 8.dp
+    val TileArrangementPadding = 6.dp
+    val InactiveCornerRadius = 50.dp
 
-    val Context.scaleRatio: Float
-        get() {
-            val displayMetrics = resources.displayMetrics
-            val sw = minOf(displayMetrics.widthPixels, displayMetrics.heightPixels) / displayMetrics.density
-            val ratio = sw / 420f
-            return ratio
-        }
-
-    val Context.TileLabelBlurWidth: Dp get() = 20.dp * scaleRatio
-    val Context.TileTextSize: Dp get() = 16.dp * scaleRatio
-    val Context.LargeTileIconSize: Dp get() = 24.dp * scaleRatio
-    val Context.TileContentEndPadding: Dp get() = 20.dp * scaleRatio
-    val Context.IconEndPadding: Dp get() = 12.dp * scaleRatio
-    val Context.TileContentStartPadding: Dp get() = 12.dp * scaleRatio
-    val Context.TileDividerHeight: Dp get() = 18.dp * scaleRatio
-    val Context.ToggleTargetSize: Dp get() = 60.dp * scaleRatio
-    val Context.TileHeight: Dp get() = 72.dp * scaleRatio
     @Composable fun longPressLabel() = stringResource(id = R.string.accessibility_long_click_tile)
 }

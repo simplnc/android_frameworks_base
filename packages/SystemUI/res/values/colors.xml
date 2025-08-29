@@ -23,18 +23,7 @@
     <color name="system_bar_background_transparent">#00000000</color>
     <color name="qs_tile_divider">#29ffffff</color><!-- 16% white -->
     <color name="qs_detail_button_white">#B3FFFFFF</color><!-- 70% white -->
-    <color name="status_bar_clock_color">#FFFFFF</color>
-    <color name="status_bar_clock_color_accent">#FF2196F3</color>
-    <color name="status_bar_clock_color_dark">#FF1976D2</color>
-    <color name="status_bar_clock_shadow_color">#CC000000</color>
-    
-    <!-- QS Panel Background Colors -->
-    <color name="qs_panel_background_transparent">#00000000</color>
-    <color name="qs_panel_background_light">#0AFFFFFF</color>
-    <color name="qs_panel_background_medium">#15FFFFFF</color>
-    <color name="qs_panel_border_light">#12FFFFFF</color>
-    <color name="qs_panel_border_medium">#25FFFFFF</color>
-    <color name="qs_panel_inner_glow">#08FFFFFF</color>
+    <color name="status_bar_clock_color">#FFFFFFFF</color>
     <color name="qs_tile_disabled_color">#9E9E9E</color> <!-- 38% black -->
     <color name="status_bar_icons_hover_color_light">#38FFFFFF</color> <!-- 22% white -->
     <color name="status_bar_icons_hover_color_dark">#38000000</color> <!-- 22% black -->

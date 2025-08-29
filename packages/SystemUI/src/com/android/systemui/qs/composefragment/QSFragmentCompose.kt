@@ -1109,12 +1109,8 @@ fun QuickSettingsLayout(
             verticalArrangement = spacedBy(QuickSettingsShade.Dimensions.Padding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            tiles()
-            spacerLayout(height = QuickSettingsShade.QSVerticalPadding() / 2)
             brightness()
-            if (mediaVisible) {
-                spacerLayout(height = QuickSettingsShade.QSVerticalPadding() / 2)
-            }
+            tiles()
             media()
         }
     }

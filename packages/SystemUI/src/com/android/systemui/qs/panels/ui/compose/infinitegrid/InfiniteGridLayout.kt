@@ -43,7 +43,6 @@ import com.android.systemui.qs.panels.ui.viewmodel.InfiniteGridViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.TileViewModel
 import com.android.systemui.qs.pipeline.shared.TileSpec
 import com.android.systemui.qs.shared.ui.ElementKeys.toElementKey
-import com.android.systemui.qs.ui.composable.QuickSettingsShade
 import com.android.systemui.res.R
 import javax.inject.Inject
 
@@ -88,10 +87,10 @@ constructor(
 
         VerticalSpannedGrid(
             columns = columns,
-            rowSpacing = QuickSettingsShade.QSVerticalPadding(),
-            spans = spans,
-            keys = { sizedTiles[it].tile.spec },
-        ) { spanIndex, column, isFirstInColumn, isLastInColumn ->
+            columnSpacing = dimensionResource(R.dimen.qs_tile_margin_horizontal),
+            rowSpacing = dimensionResource(R.dimen.qs_tile_margin_vertical),
+            spans = sizedTiles.fastMap { it.width },
+        ) { spanIndex ->
             val it = sizedTiles[spanIndex]
             val column = cellIndex % columns
             cellIndex += it.width
