@@ -31,7 +31,7 @@
     android:paddingTop="0dp"
     android:paddingEnd="0dp"
     android:paddingStart="0dp"
-    android:elevation="4dp" >
+    android:elevation="6dp" >
 
     <com.android.systemui.qs.QuickQSPanel
         android:id="@+id/quick_qs_panel"

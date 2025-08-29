@@ -18,4 +18,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="28dp" />
     <solid android:color="#FFFFFF" />
+    <!-- Slight surface tint to emulate layered surfaces in dark mode will be applied via tint -->
+    <size android:width="0dp" android:height="0dp" />
 </shape>
