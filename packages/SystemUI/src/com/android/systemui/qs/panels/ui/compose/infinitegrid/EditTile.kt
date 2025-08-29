@@ -18,6 +18,7 @@
 
 package com.android.systemui.qs.panels.ui.compose.infinitegrid
 
+import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -87,6 +88,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -120,6 +122,10 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileArrangementPadding
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileHeight
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.ToggleTargetSize
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.LargeTileIconSize
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.EditModeTileDefaults.AUTO_SCROLL_DISTANCE
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.EditModeTileDefaults.AUTO_SCROLL_SPEED
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.EditModeTileDefaults.AvailableTilesGridMinHeight
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.EditModeTileDefaults.CurrentTilesGridPadding
 import com.android.systemui.qs.panels.ui.compose.selection.MutableSelectionState
 import com.android.systemui.qs.panels.ui.compose.selection.ResizableTileContainer
@@ -319,7 +325,7 @@ private fun CurrentTilesGrid(
     val totalRows = listState.tiles.lastOrNull()?.row ?: 0
     val totalHeight by
         animateDpAsState(
-            gridHeight(totalRows + 1, TileHeight, TileArrangementPadding, CurrentTilesGridPadding),
+            gridHeight(totalRows + 1, LocalContext.current.TileHeight, TileArrangementPadding, CurrentTilesGridPadding),
             label = "QSEditCurrentTilesGridHeight",
         )
     val gridState = rememberLazyGridState()
@@ -556,24 +562,20 @@ private fun TileGridCell(
         selectionAlpha = { selectionAlpha },
         selectionColor = selectionColor,
         modifier =
-            modifier
-                .height(TileHeight)
-                .fillMaxWidth()
-                .onSizeChanged {
-                    // Grab the size before the bounceable to get the idle width
-                    val min =
-                        if (cell.isIcon) it.width else (it.width - totalPadding) / largeTilesSpan
-                    val max =
-                        if (cell.isIcon) (it.width * largeTilesSpan) + totalPadding else it.width
-                    state.updateAnchors(min.toFloat(), max.toFloat())
-                }
-                .bounceable(
-                    bounceable = currentBounceableInfo.bounceable,
-                    previousBounceable = currentBounceableInfo.previousTile,
-                    nextBounceable = currentBounceableInfo.nextTile,
-                    orientation = Orientation.Horizontal,
-                    bounceEnd = currentBounceableInfo.bounceEnd,
-                ),
+            modifier.height(LocalContext.current.TileHeight).fillMaxWidth().onSizeChanged {
+                // Calculate the min/max width from the idle size
+                val min = if (cell.isIcon) it.width else (it.width - totalPadding) / largeTilesSpan
+                val max = if (cell.isIcon) (it.width * largeTilesSpan) + totalPadding else it.width
+                resizingState.updateAnchors(min.toFloat(), max.toFloat())
+            },
+        onClick = {
+            if (tileState == TileState.Removable) {
+                onRemoveTile(cell.tile.tileSpec)
+            } else if (tileState == TileState.Selected) {
+                coroutineScope.launch { resizingState.toggleCurrentValue() }
+            }
+        },
+        onClickLabel = decorationClickLabel,
     ) {
         Box(
             modifier
@@ -623,13 +625,18 @@ private fun AvailableTileGridCell(
         verticalArrangement = spacedBy(CommonTileDefaults.TilePadding, Alignment.Top),
         modifier = modifier,
     ) {
-        Box(
-            Modifier.fillMaxWidth()
-                .height(TileHeight)
-                .clearSelectionTile(selectionState)
-                .semantics(mergeDescendants = true) {
-                    onClick(onClickActionName) { false }
-                    this.stateDescription = stateDescription
+        Box(Modifier.fillMaxWidth().height(LocalContext.current.TileHeight)) {
+            val draggableModifier =
+                if (cell.isAvailable) {
+                    Modifier.dragAndDropTileSource(
+                        SizedTileImpl(cell.tile, cell.width),
+                        dragAndDropState,
+                        DragType.Add,
+                    ) {
+                        selectionState.unSelect()
+                    }
+                } else {
+                    Modifier
                 }
                 .dragAndDropTileSource(SizedTileImpl(cell.tile, cell.width), dragAndDropState) {
                     selectionState.unSelect()
@@ -661,7 +668,7 @@ private fun AvailableTileGridCell(
 @Composable
 private fun SpacerGridCell(modifier: Modifier = Modifier) {
     // By default, spacers are invisible and exist purely to catch drag movements
-    Box(modifier.height(TileHeight).fillMaxWidth())
+    Box(modifier.height(LocalContext.current.TileHeight).fillMaxWidth())
 }
 
 @Composable
@@ -671,7 +678,9 @@ fun EditTile(
     progress: () -> Float,
     colors: TileColors = EditModeTileDefaults.editTileColors(),
 ) {
-    val iconSizeDiff = CommonTileDefaults.IconSize - CommonTileDefaults.LargeTileIconSize
+    val context = LocalContext.current
+    val iconSizeDiff = context.LargeTileIconSize - context.LargeTileIconSize
+    val alpha by animateFloatAsState(if (tileState == TileState.GreyedOut) .4f else 1f)
     Row(
         horizontalArrangement = spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -690,12 +699,12 @@ fun EditTile(
                     val startPadding =
                         if (currentProgress == 0f) {
                             // Find the center of the max width when the tile is icon only
-                            iconHorizontalCenter(constraints.maxWidth)
+                            iconHorizontalCenter(context, constraints.maxWidth)
                         } else {
                             // Find the center of the minimum width to hold the same position as the
                             // tile is resized.
                             val basePadding =
-                                min?.let { iconHorizontalCenter(it.roundToInt()) } ?: 0f
+                                min?.let { iconHorizontalCenter(context, it.roundToInt()) } ?: 0f
                             // Large tiles, represented with a progress of 1f, have a 0.dp padding
                             basePadding * (1f - currentProgress)
                         }
@@ -707,12 +716,11 @@ fun EditTile(
                 .tilePadding(),
     ) {
         // Icon
-        Box(Modifier.size(ToggleTargetSize)) {
+        Box(Modifier.size(LocalContext.current.ToggleTargetSize)) {
             SmallTileContent(
                 icon = tile.icon,
                 color = colors.icon,
                 animateToEnd = true,
-                size = { CommonTileDefaults.IconSize - iconSizeDiff * progress() },
                 modifier = Modifier.align(Alignment.Center),
             )
         }
@@ -727,9 +735,18 @@ fun EditTile(
     }
 }
 
-private fun MeasureScope.iconHorizontalCenter(containerSize: Int): Float {
-    return (containerSize - ToggleTargetSize.roundToPx()) / 2f -
-        CommonTileDefaults.TilePadding.toPx()
+private fun toAvailableTiles(
+    currentTiles: List<GridCell>,
+    otherTiles: List<SizedTile<EditTileViewModel>>,
+): List<AvailableTileGridCell> {
+    return currentTiles.filterIsInstance<TileGridCell>().fastMap {
+        AvailableTileGridCell(it.tile, isAvailable = false)
+    } + otherTiles.fastMap { AvailableTileGridCell(it.tile) }
+}
+
+private fun MeasureScope.iconHorizontalCenter(context: Context, containerSize: Int): Float {
+    return (containerSize - context.ToggleTargetSize.roundToPx()) / 2f -
+        CommonTileDefaults.TileStartPadding.toPx()
 }
 
 private fun Modifier.tileBackground(color: Color): Modifier {

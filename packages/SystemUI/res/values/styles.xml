@@ -20,7 +20,32 @@
     <style name="TextAppearance.StatusBar.Clock" parent="@*android:style/TextAppearance.StatusBar.Icon">
         <item name="android:textSize">@dimen/status_bar_clock_size</item>
         <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
-        <item name="android:textColor">@color/status_bar_clock_color</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowColor">@color/status_bar_clock_shadow_color</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">2</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:lineSpacingExtra">0sp</item>
+        <item name="android:lineSpacingMultiplier">1.0</item>
+    </style>
+
+    <!-- Enhanced Clock Style with Dynamic Colors -->
+    <style name="TextAppearance.StatusBar.Clock.Enhanced" parent="@style/TextAppearance.StatusBar.Clock">
+        <item name="android:textColor">?android:attr/colorAccent</item>
+        <item name="android:shadowColor">?android:attr/colorAccent</item>
+        <item name="android:shadowRadius">3</item>
+        <item name="android:shadowDx">1.5</item>
+        <item name="android:shadowDy">1.5</item>
+        <item name="android:letterSpacing">0.03</item>
+    </style>
+
+    <!-- Clock Style for Dark Themes -->
+    <style name="TextAppearance.StatusBar.Clock.Dark" parent="@style/TextAppearance.StatusBar.Clock">
+        <item name="android:textColor">@color/status_bar_clock_color_accent</item>
+        <item name="android:shadowColor">@color/status_bar_clock_shadow_color</item>
+        <item name="android:shadowRadius">2.5</item>
     </style>
 
     <style name="TextAppearance.StatusBar.UserChip" parent="@*android:style/TextAppearance.StatusBar.Icon">

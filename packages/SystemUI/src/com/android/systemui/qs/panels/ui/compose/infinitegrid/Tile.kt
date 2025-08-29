@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -81,7 +82,10 @@ import com.android.systemui.plugins.qs.QSTile
 import com.android.systemui.qs.flags.QsDetailedView
 import com.android.systemui.qs.panels.ui.compose.BounceableInfo
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.InactiveCornerRadius
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileEndPadding
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileHeight
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TilePaddingLarge
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileStartPadding
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.longPressLabel
 import com.android.systemui.qs.panels.ui.viewmodel.DetailsViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.TileUiState
@@ -140,27 +144,107 @@ fun Tile(
     val tileShape = TileDefaults.animateTileShape(uiState.state)
     val animatedColor by animateColorAsState(colors.background, label = "QSTileBackgroundColor")
 
-    TileExpandable(
-        color = { animatedColor },
-        shape = tileShape,
-        squishiness = squishiness,
-        hapticsViewModel = hapticsViewModel,
-        modifier =
-            modifier
-                .borderOnFocus(color = MaterialTheme.colorScheme.secondary, tileShape.topEnd)
-                .fillMaxWidth()
-                .bounceable(
-                    bounceable = currentBounceableInfo.bounceable,
-                    previousBounceable = currentBounceableInfo.previousTile,
-                    nextBounceable = currentBounceableInfo.nextTile,
-                    orientation = Orientation.Horizontal,
-                    bounceEnd = currentBounceableInfo.bounceEnd,
-                ),
-    ) { expandable ->
-        val longClick: (() -> Unit)? =
-            {
-                    hapticsViewModel?.setTileInteractionState(
-                        TileHapticsViewModel.TileInteractionState.LONG_CLICKED
+        val icon by
+            produceState(tile.currentState.toIconProvider(), tile) {
+                tile.state.collect { value = it.toIconProvider() }
+            }
+
+        val colors = TileDefaults.getColorForState(uiState, iconOnly)
+        val hapticsViewModel: TileHapticsViewModel? =
+            rememberViewModel(traceName = "TileHapticsViewModel") {
+                tileHapticsViewModelFactoryProvider.getHapticsViewModelFactory()?.create(tile)
+            }
+
+        // TODO(b/361789146): Draw the shapes instead of clipping
+        val tileShape by TileDefaults.animateTileShapeAsState(uiState.state)
+        val animatedColor by animateColorAsState(colors.background, label = "QSTileBackgroundColor")
+        val animatedAlpha by animateFloatAsState(colors.alpha, label = "QSTileAlpha")
+        val tileHeight = LocalContext.current.TileHeight
+
+        TileExpandable(
+            color = { animatedColor },
+            shape = tileShape,
+            squishiness = { 1f },
+            hapticsViewModel = hapticsViewModel,
+            modifier =
+                modifier
+                    .borderOnFocus(color = MaterialTheme.colorScheme.secondary, tileShape.topEnd)
+                    .then(
+                        if (iconOnly)
+                            Modifier.width { tileHeight.roundToPx() }
+                        else
+                            Modifier.fillMaxWidth(0.9f)
+                    )
+                    .bounceable(
+                        bounceable = currentBounceableInfo.bounceable,
+                        previousBounceable = currentBounceableInfo.previousTile,
+                        nextBounceable = currentBounceableInfo.nextTile,
+                        orientation = Orientation.Horizontal,
+                        bounceEnd = currentBounceableInfo.bounceEnd,
+                    )
+                    .graphicsLayer { alpha = animatedAlpha },
+        ) { expandable ->
+            val longClick: (() -> Unit)? =
+                {
+                        hapticsViewModel?.setTileInteractionState(
+                            TileHapticsViewModel.TileInteractionState.LONG_CLICKED
+                        )
+                        tile.onLongClick(expandable)
+                    }
+                    .takeIf { uiState.handlesLongClick }
+            TileContainer(
+                onClick = {
+                    var hasDetails = false
+                    if (QsDetailedView.isEnabled) {
+                        hasDetails = detailsViewModel?.onTileClicked(tile.spec) == true
+                    }
+                    if (!hasDetails) {
+                        // For those tile's who doesn't have a detailed view, process with their
+                        // `onClick` behavior.
+                        tile.onClick(expandable)
+                        hapticsViewModel?.setTileInteractionState(
+                            TileHapticsViewModel.TileInteractionState.CLICKED
+                        )
+                        if (uiState.accessibilityUiState.toggleableState != null) {
+                            coroutineScope.launch {
+                                currentBounceableInfo.bounceable.animateBounce()
+                            }
+                        }
+                    }
+                },
+                onLongClick = longClick,
+                accessibilityUiState = uiState.accessibilityUiState,
+                iconOnly = iconOnly,
+            ) {
+                val iconProvider: Context.() -> Icon = { getTileIcon(icon = icon) }
+                if (iconOnly) {
+                    SmallTileContent(
+                        iconProvider = iconProvider,
+                        color = colors.icon,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                } else {
+                    val iconShape by TileDefaults.animateIconShapeAsState(uiState.state)
+                    val secondaryClick: (() -> Unit)? =
+                        {
+                                hapticsViewModel?.setTileInteractionState(
+                                    TileHapticsViewModel.TileInteractionState.CLICKED
+                                )
+                                tile.onSecondaryClick()
+                            }
+                            .takeIf { uiState.handlesSecondaryClick }
+                    LargeTileContent(
+                        label = uiState.label,
+                        secondaryLabel = uiState.secondaryLabel,
+                        iconProvider = iconProvider,
+                        sideDrawable = uiState.sideDrawable,
+                        colors = colors,
+                        iconShape = iconShape,
+                        toggleClick = secondaryClick,
+                        onLongClick = longClick,
+                        accessibilityUiState = uiState.accessibilityUiState,
+                        squishiness = squishiness,
+                        isVisible = isVisible,
                     )
                     tile.onLongClick(expandable)
                 }
@@ -249,7 +333,7 @@ fun TileContainer(
 ) {
     Box(
         modifier =
-            Modifier.height(TileHeight)
+            Modifier.height(LocalContext.current.TileHeight)
                 .fillMaxWidth()
                 .tileCombinedClickable(
                     onClick = onClick,
@@ -271,8 +355,8 @@ fun LargeStaticTile(uiState: TileUiState, modifier: Modifier = Modifier) {
         modifier
             .clip(TileDefaults.animateTileShape(state = uiState.state))
             .background(colors.background)
-            .height(TileHeight)
-            .tilePadding()
+            .height(LocalContext.current.TileHeight)
+            .largeTilePadding()
     ) {
         LargeTileContent(
             label = uiState.label,

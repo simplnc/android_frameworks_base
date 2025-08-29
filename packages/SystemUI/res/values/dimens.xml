@@ -184,10 +184,10 @@
     <dimen name="status_bar_clock_end_padding">0dp</dimen>
 
     <!-- Starting padding for a left-aligned status bar clock -->
-    <dimen name="status_bar_left_clock_starting_padding">0dp</dimen>
+    <dimen name="status_bar_left_clock_starting_padding">4dp</dimen>
 
     <!-- End padding for left-aligned status bar clock -->
-    <dimen name="status_bar_left_clock_end_padding">2sp</dimen>
+    <dimen name="status_bar_left_clock_end_padding">6dp</dimen>
 
     <!-- Spacing after the wifi signals that is present if there are any icons following it. -->
     <dimen name="status_bar_wifi_signal_spacer_width">2.5sp</dimen>
@@ -2114,4 +2114,9 @@
     <dimen name="volume_panel_slice_vertical_padding">8dp</dimen>
     <dimen name="volume_panel_slice_horizontal_padding">24dp</dimen>
     <!-- Volume end -->
+
+    <dimen name="status_bar_left_clock_starting_padding">4dp</dimen>
+    <dimen name="status_bar_left_clock_end_padding">6dp</dimen>
+    <dimen name="status_bar_clock_vertical_padding">2dp</dimen>
+    <dimen name="status_bar_clock_horizontal_margin">8dp</dimen>
 </resources>
