@@ -178,13 +178,13 @@ public class StorageUsageProgressBarPreference extends Preference {
             animator.start();
         }
 
-        if (mPercent >= 51) {
+        if (mPercent <= 62) {
             progressBar.setProgressTintList(context.getColorStateList(R.color.battery_high));
             progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_high));
-        } else if (mPercent >= 20) {
+        } else if (mPercent <= 80) {
             progressBar.setProgressTintList(context.getColorStateList(R.color.battery_medium));
             progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_medium));
-        } else if (mPercent <= 19) {
+        } else { 
             progressBar.setProgressTintList(context.getColorStateList(R.color.battery_low));
             progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_low));
         }
