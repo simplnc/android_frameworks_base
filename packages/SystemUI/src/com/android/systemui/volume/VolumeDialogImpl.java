@@ -333,6 +333,12 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
     // Variable to track the default row with which the panel is initially shown
     private VolumeRow mDefaultRow = null;
 
+    // Volume panel expand state
+    private boolean mExpanded;
+
+    // Number of animating rows
+    private int mAnimatingRows = 0;
+
     @VisibleForTesting
     final int mVolumeRingerIconDrawableId = R.drawable.ic_speaker_on;
     @VisibleForTesting
