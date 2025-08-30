@@ -79,15 +79,15 @@ public enum ScrimState {
             } else {
                 mAnimationDuration = ScrimController.ANIMATION_DURATION;
             }
-            mFrontTint = Color.BLACK;
-            mBehindTint = Color.BLACK;
-            mNotifTint = Color.TRANSPARENT;
+            mFrontTint = mBackgroundColor;
+            mBehindTint = mBackgroundColor;
+            mNotifTint = mClipQsScrim ? mBackgroundColor : Color.TRANSPARENT;
 
             mFrontAlpha = 0;
-            mBehindAlpha = mClipQsScrim ? mQSClipScrimAlpha : mScrimBehindAlphaKeyguard;
+            mBehindAlpha = mClipQsScrim ? 1 : mScrimBehindAlphaKeyguard;
             mNotifAlpha = mClipQsScrim ? mScrimBehindAlphaKeyguard : 0;
             if (mClipQsScrim) {
-                updateScrimColor(mScrimBehind, mQSClipScrimAlpha /* alpha */, Color.BLACK);
+                updateScrimColor(mScrimBehind, 1f /* alpha */, mBackgroundColor);
             }
         }
     },
@@ -126,9 +126,9 @@ public enum ScrimState {
     BOUNCER {
         @Override
         public void prepare(ScrimState previousState) {
-            mBehindAlpha = mClipQsScrim ? mQSClipScrimAlpha : mDefaultScrimAlpha;
-            mBehindTint = mClipQsScrim ? Color.BLACK : mSurfaceColor;
-            mNotifAlpha = mClipQsScrim ? mQSClipScrimAlpha : 0;
+            mBehindAlpha = mClipQsScrim ? 1 : mDefaultScrimAlpha;
+            mBehindTint = mSurfaceColor;
+            mNotifAlpha = mClipQsScrim ? mDefaultScrimAlpha : 0;
             mNotifTint = Color.TRANSPARENT;
             mFrontAlpha = 0f;
         }
@@ -156,13 +156,13 @@ public enum ScrimState {
     SHADE_LOCKED {
         @Override
         public void prepare(ScrimState previousState) {
-            mBehindAlpha = mClipQsScrim ? mQSClipScrimAlpha : mDefaultScrimAlpha;
-            mNotifAlpha = mClipQsScrim ? mQSClipScrimAlpha : mDefaultScrimAlpha;
+            mBehindAlpha = mClipQsScrim ? 1 : mDefaultScrimAlpha;
+            mNotifAlpha = 1f;
             mFrontAlpha = 0f;
             mBehindTint = Color.TRANSPARENT;
 
             if (mClipQsScrim) {
-                updateScrimColor(mScrimBehind, mQSClipScrimAlpha /* alpha */, Color.BLACK);
+                updateScrimColor(mScrimBehind, 1f /* alpha */, mBackgroundColor);
             }
         }
     },
@@ -241,7 +241,7 @@ public enum ScrimState {
         @Override
         public void prepare(ScrimState previousState) {
             // State that UI will sync to.
-            mBehindAlpha = mClipQsScrim ? mQSClipScrimAlpha : 0;
+            mBehindAlpha = mClipQsScrim ? 1 : 0;
             mNotifAlpha = 0;
             mFrontAlpha = 0;
             mAnimationDuration = mKeyguardFadingAway
@@ -272,7 +272,7 @@ public enum ScrimState {
             }
 
             if (mClipQsScrim) {
-                updateScrimColor(mScrimBehind, mQSClipScrimAlpha /* alpha */, Color.BLACK);
+                updateScrimColor(mScrimBehind, 1f /* alpha */, mBackgroundColor);
             }
         }
     },
@@ -352,7 +352,6 @@ public enum ScrimState {
 
     float mScrimBehindAlphaKeyguard;
     float mDefaultScrimAlpha;
-    float mQSClipScrimAlpha;
     ScrimView mScrimInFront;
     ScrimView mScrimBehind;
 
@@ -456,14 +455,6 @@ public enum ScrimState {
 
     public void setSurfaceColor(int surfaceColor) {
         mSurfaceColor = surfaceColor;
-    }
-
-    public void setQSClipScrimAlpha(float qsClipScrimAlpha) {
-        mQSClipScrimAlpha = qsClipScrimAlpha;
-    }
-
-    public void setWallpaperSupportsAmbientMode(boolean wallpaperSupportsAmbientMode) {
-        mWallpaperSupportsAmbientMode = wallpaperSupportsAmbientMode;
     }
 
     public void setLaunchingAffordanceWithPreview(boolean launchingAffordanceWithPreview) {

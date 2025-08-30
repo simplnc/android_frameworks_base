@@ -110,17 +110,6 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
     @Override
     protected void onViewAttached() {
         super.onViewAttached();
-
-        mTunerService.addTunable(mView, QSPanel.QS_BRIGHTNESS_SLIDER_POSITION);
-        mTunerService.addTunable(mView, QSPanel.QS_SHOW_AUTO_BRIGHTNESS);
-        mTunerService.addTunable(mView, QSPanel.QS_SHOW_BRIGHTNESS_SLIDER);
-
-        mView.setBrightnessRunnable(() -> {
-            mView.updateResources();
-            updateBrightnessMirror();
-        });
-        mView.updateColumns();
-        mBrightnessMirrorHandler.onQsPanelAttached();
     }
 
     @Override
@@ -130,7 +119,6 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
 
     private void setMaxTiles(int parseNumTiles) {
         mView.setMaxTiles(parseNumTiles);
-        mView.updateColumns();
         setTiles();
     }
 
@@ -140,8 +128,9 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
         if (newMaxTiles != mView.getNumQuickTiles()) {
             setMaxTiles(newMaxTiles);
         }
-        updateMediaExpansion();
-        mView.updateColumns();
+        if (!SceneContainerFlag.isEnabled()) {
+            updateMediaExpansion();
+        }
     }
 
     @Override

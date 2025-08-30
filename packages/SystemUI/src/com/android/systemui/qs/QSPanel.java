@@ -99,10 +99,7 @@ public class QSPanel extends LinearLayout {
     private PageIndicator mFooterPageIndicator;
     private int mContentMarginStart;
     private int mContentMarginEnd;
-    private int mMaxColumnsPortrait;
-    private int mMaxColumnsLandscape;
-    private int mMaxColumnsMediaPlayer;
-    protected boolean mUsingHorizontalLayout;
+    private boolean mUsingHorizontalLayout;
 
     @Nullable
     private LinearLayout mHorizontalLinearLayout;
@@ -137,9 +134,6 @@ public class QSPanel extends LinearLayout {
                 R.dimen.quick_settings_bottom_margin_media);
         mMediaTopMargin = getResources().getDimensionPixelSize(
                 R.dimen.qs_tile_margin_vertical);
-        mMaxColumnsPortrait = getResources().getInteger(R.integer.qs_panel_num_columns);
-        mMaxColumnsLandscape = getResources().getInteger(R.integer.qs_panel_num_columns_landscape);
-        mMaxColumnsMediaPlayer = getResources().getInteger(R.integer.qs_panel_num_columns_media);
         mContext = context;
 
         setOrientation(VERTICAL);
@@ -217,23 +211,25 @@ public class QSPanel extends LinearLayout {
     }
 
     protected void setHorizontalContentContainerClipping() {
-        mHorizontalContentContainer.setClipChildren(true);
-        mHorizontalContentContainer.setClipToPadding(false);
-        // Don't clip on the top, that way, secondary pages tiles can animate up
-        // Clipping coordinates should be relative to this view, not absolute (parent coordinates)
-        mHorizontalContentContainer.addOnLayoutChangeListener(
-                (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                    if ((right - left) != (oldRight - oldLeft)
-                            || ((bottom - top) != (oldBottom - oldTop))) {
-                        mClippingRect.right = right - left;
-                        mClippingRect.bottom = bottom - top;
-                        mHorizontalContentContainer.setClipBounds(mClippingRect);
-                    }
-                });
-        mClippingRect.left = 0;
-        mClippingRect.top = -1000;
-        mHorizontalContentContainer.setClipBounds(mClippingRect);
-        updateColumns();
+        if (mHorizontalContentContainer != null) {
+            mHorizontalContentContainer.setClipChildren(true);
+            mHorizontalContentContainer.setClipToPadding(false);
+            // Don't clip on the top, that way, secondary pages tiles can animate up
+            // Clipping coordinates should be relative to this view, not absolute
+            // (parent coordinates)
+            mHorizontalContentContainer.addOnLayoutChangeListener(
+                    (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                        if ((right - left) != (oldRight - oldLeft)
+                                || ((bottom - top) != (oldBottom - oldTop))) {
+                            mClippingRect.right = right - left;
+                            mClippingRect.bottom = bottom - top;
+                            mHorizontalContentContainer.setClipBounds(mClippingRect);
+                        }
+                    });
+            mClippingRect.left = 0;
+            mClippingRect.top = -1000;
+            mHorizontalContentContainer.setClipBounds(mClippingRect);
+        }
     }
 
     /**
@@ -692,18 +688,6 @@ public class QSPanel extends LinearLayout {
         }
     }
 
-    public void updateColumns() {
-        boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-
-        int mColumnsMediaPlayer = mUsingHorizontalLayout ?
-            mMaxColumnsMediaPlayer :
-            mMaxColumnsLandscape;
-
-        mTileLayout.setMaxColumns(isLandscape ?
-            mColumnsMediaPlayer :
-            mMaxColumnsPortrait);
-    }
-
     void setUsingHorizontalLayout(boolean horizontal, ViewGroup mediaHostView, boolean force) {
         if (horizontal != mUsingHorizontalLayout || force) {
             Log.d(getDumpableTag(), "setUsingHorizontalLayout: " + horizontal + ", " + force);
@@ -716,7 +700,7 @@ public class QSPanel extends LinearLayout {
             switchAllContentToParent(newParent, mTileLayout);
             reAttachMediaHost(mediaHostView, horizontal);
             if (needsDynamicRowsAndColumns()) {
-                updateColumns();
+                setColumnRowLayout(horizontal);
             }
             updateMargins(mediaHostView);
             if (mHorizontalLinearLayout != null) {
