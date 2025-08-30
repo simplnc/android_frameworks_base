@@ -374,8 +374,7 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
             longPressEffect = null;
         }
         final QSTileViewImpl tileView;
-        if (FlashlightStrengthTile.TILE_SPEC.equals(tile.getTileSpec())
-            || VolumeControlTile.TILE_SPEC.equals(tile.getTileSpec())) {
+        if (FlashlightStrengthTile.TILE_SPEC.equals(tile.getTileSpec())) {
             SlideableQSTile slideableQSTile = (SlideableQSTile) tile;
             tileView = new SliderQSTileViewImpl(
                     getContext(),
