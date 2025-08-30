@@ -35,7 +35,6 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.StateListDrawable
 import android.os.Trace
-import android.provider.Settings
 import android.service.quicksettings.Tile
 import android.text.TextUtils
 import android.util.Log
@@ -878,13 +877,6 @@ constructor(
     }
 
     private fun getCornerRadiusForState(state: Int): Float {
-        var qsTileShape : Int = Settings.Secure.getInt(context.contentResolver, Settings.Secure.QS_TILE_SHAPE, 2)
-        if (qsTileShape == 0)
-            return radiusActive
-
-        if (qsTileShape == 1)
-            return radiusInactive
-
         return when (state) {
             Tile.STATE_ACTIVE -> radiusActive
             Tile.STATE_INACTIVE -> radiusInactive
