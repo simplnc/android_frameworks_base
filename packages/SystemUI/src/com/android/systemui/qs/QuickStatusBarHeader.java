@@ -98,9 +98,7 @@ public class QuickStatusBarHeader extends FrameLayout {
             qqsLP.topMargin = mContext.getResources()
                     .getDimensionPixelSize(R.dimen.qqs_layout_margin_top);
         } else {
-            qqsLP.topMargin = mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.large_screen_shade_header_min_height) *2 + mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.qqs_layout_padding_bottom) *2;
+            qqsLP.topMargin = LargeScreenHeaderHelper.getLargeScreenHeaderHeight(mContext);
         }
         mHeaderQsPanel.setLayoutParams(qqsLP);
     }

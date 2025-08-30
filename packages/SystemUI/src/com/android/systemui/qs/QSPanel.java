@@ -441,7 +441,7 @@ public class QSPanel extends LinearLayout {
 
     protected void updatePadding() {
         final Resources res = mContext.getResources();
-        int paddingTop = res.getDimensionPixelSize(R.dimen.qs_panel_padding_top) + res.getDimensionPixelSize(R.dimen.qs_panel_spacer);
+        int paddingTop = res.getDimensionPixelSize(R.dimen.qs_panel_padding_top);
         int paddingBottom = res.getDimensionPixelSize(R.dimen.qs_panel_padding_bottom);
         setPaddingRelative(getPaddingStart(),
                 mSceneContainerEnabled ? 0 : paddingTop,
