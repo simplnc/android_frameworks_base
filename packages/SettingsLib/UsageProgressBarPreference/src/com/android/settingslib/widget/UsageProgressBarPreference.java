@@ -194,14 +194,14 @@ public class UsageProgressBarPreference extends Preference implements GroupSecti
         }
 
         if (mPercent >= 51) {
-            progressBar.setProgressTintList(context.getColorStateList(R.color.battery_high));
-            progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_high));
+            progressBar.setProgressTintList(context.getColorStateList(R.color.battery_low));
+            progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_low));
         } else if (mPercent >= 20) {
             progressBar.setProgressTintList(context.getColorStateList(R.color.battery_medium));
             progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_medium));
         } else if (mPercent <= 19) {
-            progressBar.setProgressTintList(context.getColorStateList(R.color.battery_low));
-            progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_low));
+            progressBar.setProgressTintList(context.getColorStateList(R.color.battery_high));
+            progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_high));
         }
     }
 
