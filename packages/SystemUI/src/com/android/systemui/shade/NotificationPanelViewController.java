@@ -1770,9 +1770,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         return mFeatureFlags.isEnabled(Flags.LOCKSCREEN_ENABLE_LANDSCAPE)
                 && !isOnAod()
                 // True on small landscape screens
-                && mResources.getBoolean(R.bool.force_small_clock_on_lockscreen) ||
-                (Settings.Secure.getIntForUser(
-                    mContentResolver, "lockscreen_widgets_enabled", 0, UserHandle.USER_CURRENT) != 0);
+                && mResources.getBoolean(R.bool.force_small_clock_on_lockscreen);
     }
 
     private void updateKeyguardStatusViewAlignment(boolean animate) {
