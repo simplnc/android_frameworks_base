@@ -53,8 +53,4 @@
     <string name="quick_settings_preferred_network_lte">4G / LTE</string>
     <string name="quick_settings_preferred_network_nr">5G / NR</string>
     <string name="quick_settings_preferred_network_unsupported">Unsupported</string>
-
-    <!-- Now bar -->
-    <string name="nowbar_no_media">No media playing</string>
-    <string name="nowbar_unknown_title">Unknown title</string>
 </resources>

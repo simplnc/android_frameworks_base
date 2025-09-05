@@ -46,6 +46,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.systemui.Dependency
 import com.android.systemui.res.R
 import com.android.systemui.plugins.ActivityStarter
+import com.android.systemui.statusbar.NotificationListener
 import com.android.systemui.util.ColorUtils
 import com.android.systemui.util.NotificationUtils
 
@@ -77,6 +78,7 @@ class PeekDisplayView @JvmOverloads constructor(
     private val notificationAdapter: NotificationAdapter = NotificationAdapter()
 
     private val activityStarter: ActivityStarter = Dependency.get(ActivityStarter::class.java)
+    public val notificationListener: NotificationListener = Dependency.get(NotificationListener::class.java)
     private val mController: PeekDisplayViewController = PeekDisplayViewController.getInstance()
 
     private var allowPrivateNotifications = true
@@ -135,7 +137,9 @@ class PeekDisplayView @JvmOverloads constructor(
     }
 
     fun clearAllNotifications() {
-        mController.clearAllNotifications()
+        try {
+            notificationListener.cancelAllNotifications()
+        } catch (e: Exception) {}
         updateNotificationShelf(emptyList())
         overflowText?.visibility = View.GONE
         clearAllButton?.visibility = View.GONE
@@ -143,7 +147,12 @@ class PeekDisplayView @JvmOverloads constructor(
 
     fun removeCurrentNotification() {
         currentDisplayedNotification?.let { sbn ->
-            mController.removeCurrentNotification(sbn)
+            val sbnKey = sbn.key
+            notificationListener?.let { listener ->
+                listener.cancelNotification(sbnKey)
+                updateNotificationShelf(listener.getActiveNotifications().toList())
+                hideNotificationCard()
+            }
         }
     }
 
@@ -289,12 +298,9 @@ class PeekDisplayView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        mController.addPeekDisplayView(this)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        mController.removePeekDisplayView(this)
+        mController.setPeekDisplayView(this)
+        mController.registerCallbacks()
+        updatePeekDisplayState()
     }
 
     fun updatePeekDisplayState() {
@@ -310,7 +316,9 @@ class PeekDisplayView @JvmOverloads constructor(
             "peek_display_notifications", 0, UserHandle.USER_CURRENT) == 1
         peekDisplayLocation = Settings.Secure.getIntForUser(context.contentResolver,
             "peek_display_location", PEEK_DISPLAY_LOCATION_BOTTOM, UserHandle.USER_CURRENT)
+        visibility = if (isPeekDisplayEnabled) View.VISIBLE else View.GONE
         if (isPeekDisplayEnabled) {
+            updateNotificationShelf(notificationListener.getActiveNotifications().toList())
             updateViewColors()
         }
     }

@@ -95,7 +95,6 @@ import com.android.systemui.util.animation.requiresRemeasuring
 import com.android.systemui.util.concurrency.DelayableExecutor
 import com.android.systemui.util.settings.GlobalSettings
 import com.android.systemui.util.settings.SecureSettings
-import com.android.systemui.util.settings.SystemSettings
 import com.android.systemui.util.settings.SettingsProxyExt.observerFlow
 import com.android.systemui.util.time.SystemClock
 import java.io.PrintWriter
@@ -154,7 +153,6 @@ constructor(
     private val keyguardTransitionInteractor: KeyguardTransitionInteractor,
     private val globalSettings: GlobalSettings,
     private val secureSettings: SecureSettings,
-    private val systemSettings: SystemSettings,
     private val mediaCarouselViewModel: MediaCarouselViewModel,
     private val mediaViewControllerFactory: Provider<MediaViewController>,
     private val deviceEntryInteractor: DeviceEntryInteractor,
@@ -415,7 +413,6 @@ constructor(
         }
         listenForLockscreenSettingChanges(applicationScope)
         listenForPeekDisplayExpansionChanges(applicationScope)
-        listenForNowBarChanges(applicationScope)
 
         // Notifies all active players about animation scale changes.
         bgExecutor.execute {
@@ -718,21 +715,7 @@ constructor(
         return scope.launch {
             secureSettings
                 .observerFlow(UserHandle.USER_ALL, Settings.Secure.MEDIA_CONTROLS_LOCK_SCREEN)
-                .onStart { emit(Unit) }
-                .map { getMediaLockScreenSetting() }
-                .distinctUntilChanged()
-                .collectLatest {
-                    allowMediaPlayerOnLockScreen = it
-                    updateHostVisibility()
-                }
-        }
-    }
-    
-    @VisibleForTesting
-    internal fun listenForNowBarChanges(scope: CoroutineScope): Job {
-        return scope.launch {
-            systemSettings
-                .observerFlow(UserHandle.USER_ALL, "keyguard_now_bar_enabled")
+                // query to get initial value
                 .onStart { emit(Unit) }
                 .map { getMediaLockScreenSetting() }
                 .distinctUntilChanged()
@@ -949,7 +932,7 @@ constructor(
 
     private suspend fun getMediaLockScreenSetting(): Boolean {
         return withContext(backgroundDispatcher) {
-            val isMediaControlsEnabled = secureSettings.getBoolForUser(
+            secureSettings.getBoolForUser(
                 Settings.Secure.MEDIA_CONTROLS_LOCK_SCREEN,
                 true,
                 UserHandle.USER_CURRENT,
@@ -959,12 +942,7 @@ constructor(
                 false,
                 UserHandle.USER_CURRENT
             )
-            val isNowBarEnabled = systemSettings.getBoolForUser(
-                "keyguard_now_bar_enabled",
-                false,
-                UserHandle.USER_CURRENT
-            )
-            isMediaControlsEnabled && !isPeekDisplayExpanded && !isNowBarEnabled
+            isMediaControlsEnabled && !isPeekDisplayExpanded
         }
     }
 
