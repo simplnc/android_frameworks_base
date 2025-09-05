@@ -38,7 +38,6 @@ import com.android.systemui.animation.DialogTransitionAnimator
 import com.android.systemui.animation.Expandable
 import com.android.systemui.monet.ColorScheme
 import com.android.systemui.media.dialog.MediaOutputDialogManager
-import com.android.systemui.lockscreen.ActivityLauncherUtils
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
