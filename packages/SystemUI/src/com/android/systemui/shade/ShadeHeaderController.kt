@@ -587,8 +587,8 @@ constructor(
         clock.setTextColor(textColorPrimary)
         date.setTextColor(textColorPrimary)
         
-        // Also update carrier group text colors for consistency
-        mShadeCarrierGroup.setTextColor(textColorPrimary)
+        // Also update carrier group text appearance for consistency
+        mShadeCarrierGroup.updateTextAppearance(R.style.TextAppearance_QS_Status_Carriers)
     }
 
     private fun updateQQSPaddings() {
