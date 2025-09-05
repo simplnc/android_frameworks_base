@@ -80,12 +80,16 @@ public class OnTheGoDialog extends Dialog {
         final float value = Settings.System.getFloat(resolver,
                 Settings.System.ON_THE_GO_ALPHA,
                 0.48f);
-        final int progress = ((int) (value * 100));
-        mSlider.setProgress(progress);
+        // Convert alpha (0.0-1.0) to slider progress (0-90)
+        // Map 0.1-1.0 to 0-90 range for better user experience
+        final int progress = Math.round((value - 0.1f) * 100f);
+        mSlider.setProgress(Math.max(0, Math.min(90, progress)));
         mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                sendAlphaBroadcast(String.valueOf(i + 10));
+                // Convert slider progress (0-90) back to alpha (0.1-1.0)
+                final float alpha = 0.1f + (i / 100f);
+                sendAlphaBroadcast(String.valueOf(alpha));
             }
 
             @Override
@@ -155,8 +159,9 @@ public class OnTheGoDialog extends Dialog {
         mHandler.removeCallbacks(mDismissDialogRunnable);
     }
 
-    private void sendAlphaBroadcast(String i) {
-        final float value = (Float.parseFloat(i) / 100);
+    private void sendAlphaBroadcast(String alphaValue) {
+        final float value = Float.parseFloat(alphaValue);
+        android.util.Log.d("OnTheGoDialog", "Sending alpha broadcast: " + value);
         final Intent alphaBroadcast = new Intent();
         alphaBroadcast.setAction(OnTheGoService.ACTION_TOGGLE_ALPHA);
         alphaBroadcast.putExtra(OnTheGoService.EXTRA_ALPHA, value);

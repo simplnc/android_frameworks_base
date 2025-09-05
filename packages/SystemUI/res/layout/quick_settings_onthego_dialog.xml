@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_below="@+id/alpha_slider_label"
-        android:max="65" />
+        android:max="90" />
 
     <View
         android:id="@+id/onthego_divider_0"

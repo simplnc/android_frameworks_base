@@ -108,6 +108,7 @@ public class OnTheGoService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             final float intentAlpha = intent.getFloatExtra(EXTRA_ALPHA, 0.5f);
+            logDebug("Alpha broadcast received: " + intentAlpha);
             toggleOnTheGoAlpha(intentAlpha);
         }
     };
@@ -211,12 +212,16 @@ public class OnTheGoService extends Service {
     }
 
     private void toggleOnTheGoAlpha(float alpha) {
+        logDebug("Setting OnTheGo alpha to: " + alpha);
         Settings.System.putFloat(getContentResolver(),
                 Settings.System.ON_THE_GO_ALPHA,
                 alpha);
 
         if (mOverlay != null) {
             mOverlay.setAlpha(alpha);
+            logDebug("Overlay alpha updated to: " + alpha);
+        } else {
+            logDebug("Overlay is null, cannot update alpha");
         }
     }
 

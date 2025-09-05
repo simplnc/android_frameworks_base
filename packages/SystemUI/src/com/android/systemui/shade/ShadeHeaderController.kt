@@ -21,8 +21,11 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.IdRes
 import android.app.PendingIntent
 import android.app.StatusBarManager
+import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.Insets
 import android.os.Bundle
 import android.os.Trace
@@ -92,6 +95,7 @@ constructor(
     private val privacyIconsController: HeaderPrivacyIconsController,
     private val insetsProviderStore: StatusBarContentInsetsProviderStore,
     @ShadeDisplayAware private val configurationController: ConfigurationController,
+    private val context: Context,
     private val variableDateViewControllerFactory: VariableDateViewController.Factory,
     @Named(SHADE_HEADER) private val batteryMeterViewController: BatteryMeterViewController,
     private val dumpManager: DumpManager,
@@ -145,6 +149,7 @@ constructor(
     private var cutout: DisplayCutout? = null
     private var lastInsets: WindowInsets? = null
     private var nextAlarmIntent: PendingIntent? = null
+    private var textColorPrimary = Color.TRANSPARENT
 
     private var qsDisabled = false
     private var visible = false
@@ -293,6 +298,10 @@ constructor(
                 updateResources()
                 updateCarrierGroupPadding()
                 clock.onDensityOrFontScaleChanged()
+            }
+
+            override fun onUiModeChanged() {
+                updateResources()
             }
 
             override fun onThemeChanged() {
@@ -565,6 +574,21 @@ constructor(
         header.setPadding(padding, header.paddingTop, padding, header.paddingBottom)
         updateQQSPaddings()
         qsBatteryModeController.updateResources()
+        
+        // Enhanced clock visibility for light/dark mode transitions
+        updateClockTextColors()
+    }
+    
+    private fun updateClockTextColors() {
+        // Get the current text color based on the current theme
+        textColorPrimary = Utils.getColorAttrDefaultColor(header.context, android.R.attr.textColorPrimary)
+        
+        // Apply the color to clock and date views
+        clock.setTextColor(textColorPrimary)
+        date.setTextColor(textColorPrimary)
+        
+        // Also update carrier group text colors for consistency
+        mShadeCarrierGroup.setTextColor(textColorPrimary)
     }
 
     private fun updateQQSPaddings() {
