@@ -15,45 +15,45 @@
   ~ limitations under the License.
   -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/qs_tile_ripple_color">
+    android:color="@color/notification_ripple_squishy_color">
     <item android:id="@android:id/mask"
-        android:drawable="@drawable/qs_tile_background_shape"
+        android:drawable="@drawable/notification_background_shape"
         />
     <item android:id="@id/background">
         <layer-list>
-            <!-- Subtle depth shadow using vertical gradient -->
-            <item android:id="@+id/qs_tile_shadow">
+            <!-- Enhanced depth shadow for squishy effect -->
+            <item android:id="@+id/notification_shadow">
                 <shape>
-                    <corners android:radius="28dp" />
+                    <corners android:radius="@dimen/notification_corner_radius" />
                     <gradient
                         android:startColor="#00000000"
-                        android:centerColor="#15000000"
-                        android:endColor="#30000000"
+                        android:centerColor="#10000000"
+                        android:endColor="#20000000"
                         android:angle="90" />
                 </shape>
             </item>
             <item
-                android:id="@+id/qs_tile_background_base"
-                android:drawable="@drawable/qs_tile_background_shape" />
-            <!-- Thin outline stroke for better definition -->
-            <item android:id="@+id/qs_tile_stroke">
+                android:id="@+id/notification_background_base"
+                android:drawable="@drawable/notification_background_shape" />
+            <!-- Enhanced outline stroke for better definition -->
+            <item android:id="@+id/notification_stroke">
                 <shape>
-                    <corners android:radius="28dp" />
-                    <stroke android:width="1dp" android:color="#20000000" />
+                    <corners android:radius="@dimen/notification_corner_radius" />
+                    <stroke android:width="0.5dp" android:color="#15000000" />
                     <solid android:color="#00000000" />
                 </shape>
             </item>
-            <item android:id="@+id/qs_tile_background_overlay">
+            <item android:id="@+id/notification_background_overlay">
                 <selector>
                     <item
                         android:state_pressed="true"
-                        android:drawable="@drawable/qs_tile_background_pressed_squishy" />
+                        android:drawable="@drawable/notification_background_pressed_squishy" />
                     <item
                         android:state_hovered="true"
-                        android:drawable="@drawable/qs_tile_background_shape" />
+                        android:drawable="@drawable/notification_background_shape" />
                     <item
                         android:state_focused="true"
-                        android:drawable="@drawable/qs_tile_background_shape" />
+                        android:drawable="@drawable/notification_background_shape" />
                 </selector>
             </item>
         </layer-list>

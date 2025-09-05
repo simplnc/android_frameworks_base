@@ -17,11 +17,11 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="@dimen/qs_corner_radius" />
-    <!-- Light mode: subtle gradient for depth -->
+    <!-- Dark mode: subtle gradient for depth -->
     <gradient
-        android:startColor="#FFFFFF"
-        android:centerColor="#F8F8F8"
-        android:endColor="#F0F0F0"
+        android:startColor="#2A2A2A"
+        android:centerColor="#262626"
+        android:endColor="#222222"
         android:angle="135" />
     <!-- Slight surface tint to emulate layered surfaces -->
     <size android:width="0dp" android:height="0dp" />

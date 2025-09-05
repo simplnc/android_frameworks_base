@@ -111,6 +111,7 @@ import com.android.systemui.statusbar.notification.row.shared.AsyncGroupHeaderVi
 import com.android.systemui.statusbar.notification.row.shared.LockscreenOtpRedaction;
 import com.android.systemui.statusbar.notification.row.wrapper.NotificationCompactMessagingTemplateViewWrapper;
 import com.android.systemui.statusbar.notification.row.wrapper.NotificationViewWrapper;
+import com.android.systemui.statusbar.notification.row.NotificationSquishinessHandler;
 import com.android.systemui.statusbar.notification.shared.NotificationAddXOnHoverToDismiss;
 import com.android.systemui.statusbar.notification.shared.NotificationContentAlphaOptimization;
 import com.android.systemui.statusbar.notification.shared.TransparentHeaderFix;
@@ -290,6 +291,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
     private OnExpandClickListener mOnExpandClickListener;
     private View.OnClickListener mOnFeedbackClickListener;
     private Path mExpandingClipPath;
+    private NotificationSquishinessHandler mSquishinessHandler;
 
     private static boolean shouldSimulateSlowMeasure() {
         return Compile.IS_DEBUG && RefactorFlag.forView(
@@ -1127,6 +1129,11 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // Handle squishiness effect
+        if (mSquishinessHandler != null) {
+            mSquishinessHandler.handleTouchEvent(event);
+        }
+        
         if (event.getActionMasked() != MotionEvent.ACTION_DOWN
                 || !isChildInGroup() || isGroupExpanded()) {
             return super.onTouchEvent(event);
@@ -1992,6 +1999,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
                 new NotificationInlineImageCache());
         float radius = getResources().getDimension(R.dimen.notification_corner_radius_small);
         mSmallRoundness = radius / getMaxRadius();
+        mSquishinessHandler = new NotificationSquishinessHandler(this);
         initDimens();
     }
 
@@ -4199,5 +4207,13 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
             return;
         }
         mLogger.logRemoveTransientRow(row.getEntry(), getEntry());
+    }
+    
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mSquishinessHandler != null) {
+            mSquishinessHandler.cleanup();
+        }
     }
 }

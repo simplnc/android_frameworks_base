@@ -79,7 +79,7 @@ public class OnTheGoDialog extends Dialog {
         final SeekBar mSlider = (SeekBar) findViewById(R.id.alpha_slider);
         final float value = Settings.System.getFloat(resolver,
                 Settings.System.ON_THE_GO_ALPHA,
-                0.5f);
+                0.48f);
         final int progress = ((int) (value * 100));
         mSlider.setProgress(progress);
         mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

@@ -206,7 +206,7 @@ public class OnTheGoService extends Service {
     private void toggleOnTheGoAlpha() {
         final float alpha = Settings.System.getFloat(getContentResolver(),
                 Settings.System.ON_THE_GO_ALPHA,
-                0.5f);
+                0.48f);
         toggleOnTheGoAlpha(alpha);
     }
 

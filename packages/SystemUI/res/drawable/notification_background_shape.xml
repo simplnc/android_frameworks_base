@@ -16,12 +16,12 @@
   -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="@dimen/qs_corner_radius" />
+    <corners android:radius="@dimen/notification_corner_radius" />
     <!-- Light mode: subtle gradient for depth -->
     <gradient
         android:startColor="#FFFFFF"
-        android:centerColor="#F8F8F8"
-        android:endColor="#F0F0F0"
+        android:centerColor="#FAFAFA"
+        android:endColor="#F5F5F5"
         android:angle="135" />
     <!-- Slight surface tint to emulate layered surfaces -->
     <size android:width="0dp" android:height="0dp" />

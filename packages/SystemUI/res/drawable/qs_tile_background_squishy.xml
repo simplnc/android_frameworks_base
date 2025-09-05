@@ -21,7 +21,7 @@
         />
     <item android:id="@id/background">
         <layer-list>
-            <!-- Subtle depth shadow using vertical gradient -->
+            <!-- Enhanced depth shadow for squishy effect -->
             <item android:id="@+id/qs_tile_shadow">
                 <shape>
                     <corners android:radius="28dp" />
@@ -35,7 +35,7 @@
             <item
                 android:id="@+id/qs_tile_background_base"
                 android:drawable="@drawable/qs_tile_background_shape" />
-            <!-- Thin outline stroke for better definition -->
+            <!-- Enhanced outline stroke for better definition -->
             <item android:id="@+id/qs_tile_stroke">
                 <shape>
                     <corners android:radius="28dp" />

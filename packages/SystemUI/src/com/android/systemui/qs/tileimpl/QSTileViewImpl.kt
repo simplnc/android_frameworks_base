@@ -98,6 +98,7 @@ constructor(
     }
 
     private val icon: QSIconViewImpl = QSIconViewImpl(context)
+    private val squishinessHandler: QSTileSquishinessHandler = QSTileSquishinessHandler(this)
     private var position: Int = INVALID
     private var hasLongClickEffect: Boolean = true
 
@@ -632,9 +633,17 @@ constructor(
         sb.append("]")
         return sb.toString()
     }
+    
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        squishinessHandler.cleanup()
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        // Handle squishiness effect
+        squishinessHandler.handleTouchEvent(event)
+        
         // let the View run the onTouch logic for click and long-click detection
         val result = super.onTouchEvent(event)
         if (longPressEffect != null) {

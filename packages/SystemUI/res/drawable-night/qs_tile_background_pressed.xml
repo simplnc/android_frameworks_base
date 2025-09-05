@@ -17,12 +17,13 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="@dimen/qs_corner_radius" />
-    <!-- Light mode: subtle gradient for depth -->
+    <!-- Pressed state: darker gradient for tactile feedback -->
     <gradient
-        android:startColor="#FFFFFF"
-        android:centerColor="#F8F8F8"
-        android:endColor="#F0F0F0"
+        android:startColor="#1A1A1A"
+        android:centerColor="#161616"
+        android:endColor="#121212"
         android:angle="135" />
-    <!-- Slight surface tint to emulate layered surfaces -->
+    <!-- Enhanced border for pressed state -->
+    <stroke android:width="1dp" android:color="#4AFFFFFF" />
     <size android:width="0dp" android:height="0dp" />
 </shape>
