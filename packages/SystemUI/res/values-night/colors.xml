@@ -178,4 +178,65 @@
     <color name="island_border">#404040</color>
     <color name="island_text_primary">#FFFFFF</color>
     <color name="island_text_secondary">#B3B3B3</color>
+    
+    <!-- Phase 13: Advanced System Customization Colors - Dark Mode -->
+    <color name="system_ui_tuner_background">#1C1C1C</color>
+    <color name="system_ui_tuner_accent">#42A5F5</color>
+    <color name="system_ui_tuner_primary">#1976D2</color>
+    <color name="system_ui_tuner_secondary">#26C6DA</color>
+    <color name="system_ui_tuner_text">#FFFFFF</color>
+    <color name="system_ui_tuner_text_secondary">#B3B3B3</color>
+    
+    <!-- Performance Monitoring Colors - Dark Mode -->
+    <color name="performance_cpu_normal">#66BB6A</color>
+    <color name="performance_cpu_warning">#FFA726</color>
+    <color name="performance_cpu_critical">#EF5350</color>
+    <color name="performance_memory_normal">#42A5F5</color>
+    <color name="performance_memory_warning">#FFA726</color>
+    <color name="performance_memory_critical">#EF5350</color>
+    <color name="performance_battery_normal">#66BB6A</color>
+    <color name="performance_battery_warning">#FFA726</color>
+    <color name="performance_battery_critical">#EF5350</color>
+    
+    <!-- Animation Control Colors - Dark Mode -->
+    <color name="animation_disabled">#757575</color>
+    <color name="animation_reduced">#FFCA28</color>
+    <color name="animation_standard">#42A5F5</color>
+    <color name="animation_enhanced">#AB47BC</color>
+    <color name="animation_maximum">#EC407A</color>
+    
+    <!-- Enhanced Notification Colors - Dark Mode -->
+    <color name="notification_priority_high">#EF5350</color>
+    <color name="notification_priority_medium">#FFA726</color>
+    <color name="notification_priority_low">#66BB6A</color>
+    <color name="notification_priority_minimal">#757575</color>
+    <color name="notification_group_expanded">#1A237E</color>
+    <color name="notification_group_collapsed">#2C2C2C</color>
+    
+    <!-- Dynamic Theme Colors - Dark Mode -->
+    <color name="theme_material_accent">#42A5F5</color>
+    <color name="theme_material_primary">#1976D2</color>
+    <color name="theme_material_secondary">#26C6DA</color>
+    <color name="theme_dark_accent">#BB86FC</color>
+    <color name="theme_dark_primary">#121212</color>
+    <color name="theme_dark_secondary">#03DAC6</color>
+    <color name="theme_amoled_accent">#00E676</color>
+    <color name="theme_amoled_primary">#000000</color>
+    <color name="theme_amoled_secondary">#00E676</color>
+    
+    <!-- Advanced Gesture Colors - Dark Mode -->
+    <color name="gesture_swipe_up">#66BB6A</color>
+    <color name="gesture_swipe_down">#42A5F5</color>
+    <color name="gesture_swipe_left">#FFA726</color>
+    <color name="gesture_swipe_right">#AB47BC</color>
+    <color name="gesture_double_tap">#EF5350</color>
+    <color name="gesture_long_press">#8D6E63</color>
+    <color name="gesture_pinch">#78909C</color>
+    <color name="gesture_rotation">#26A69A</color>
+    
+    <!-- Developer Options Colors - Dark Mode -->
+    <color name="developer_options_enabled">#66BB6A</color>
+    <color name="developer_options_disabled">#757575</color>
+    <color name="developer_options_warning">#FFA726</color>
+    <color name="developer_options_critical">#EF5350</color>
 </resources>
