@@ -30,6 +30,7 @@ import android.util.Log;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.HapticFeedbackConstants;
+import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.Nullable;
 
