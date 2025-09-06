@@ -41,7 +41,7 @@ class SystemUITunerService @Inject constructor(
     fun isSystemUITunerEnabled(): Boolean {
         return Settings.Secure.getInt(
             context.contentResolver,
-            Settings.Secure.SYSTEM_UI_TUNER_STATUS_BAR,
+            "system_ui_tuner_status_bar",
             0
         ) == 1
     }
@@ -52,7 +52,7 @@ class SystemUITunerService @Inject constructor(
     fun setSystemUITunerEnabled(enabled: Boolean) {
         Settings.Secure.putInt(
             context.contentResolver,
-            Settings.Secure.SYSTEM_UI_TUNER_STATUS_BAR,
+            "system_ui_tuner_status_bar",
             if (enabled) 1 else 0
         )
         Log.d(TAG, "System UI Tuner ${if (enabled) "enabled" else "disabled"}")
@@ -156,7 +156,7 @@ class SystemUITunerService @Inject constructor(
     fun isAdvancedDeveloperOptionsEnabled(): Boolean {
         return Settings.Secure.getInt(
             context.contentResolver,
-            Settings.Secure.ADVANCED_DEVELOPER_OPTIONS,
+            "advanced_developer_options",
             0
         ) == 1
     }
@@ -167,7 +167,7 @@ class SystemUITunerService @Inject constructor(
     fun setAdvancedDeveloperOptionsEnabled(enabled: Boolean) {
         Settings.Secure.putInt(
             context.contentResolver,
-            Settings.Secure.ADVANCED_DEVELOPER_OPTIONS,
+            "advanced_developer_options",
             if (enabled) 1 else 0
         )
         Log.d(TAG, "Advanced developer options ${if (enabled) "enabled" else "disabled"}")
@@ -179,7 +179,7 @@ class SystemUITunerService @Inject constructor(
     fun isPerformanceMonitoringEnabled(): Boolean {
         return Settings.Secure.getInt(
             context.contentResolver,
-            Settings.Secure.PERFORMANCE_MONITORING,
+            "performance_monitoring",
             0
         ) == 1
     }
@@ -190,7 +190,7 @@ class SystemUITunerService @Inject constructor(
     fun setPerformanceMonitoringEnabled(enabled: Boolean) {
         Settings.Secure.putInt(
             context.contentResolver,
-            Settings.Secure.PERFORMANCE_MONITORING,
+            "performance_monitoring",
             if (enabled) 1 else 0
         )
         Log.d(TAG, "Performance monitoring ${if (enabled) "enabled" else "disabled"}")

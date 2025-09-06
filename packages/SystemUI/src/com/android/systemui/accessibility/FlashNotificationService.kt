@@ -46,10 +46,10 @@ class FlashNotificationService @Inject constructor(
         private const val TAG = "FlashNotificationService"
         private const val FLASH_DURATION_MS = 200L
         private const val FLASH_PATTERN_DURATION_MS = 1000L
-        // Android 15 compatible settings keys using Settings.Secure constants
-        private const val SETTING_FLASH_NOTIFICATIONS = Settings.Secure.ACCESSIBILITY_FLASH_NOTIFICATION_ENABLED
-        private const val SETTING_FLASH_CAMERA = Settings.Secure.ACCESSIBILITY_FLASH_NOTIFICATION_CAMERA
-        private const val SETTING_FLASH_SCREEN = Settings.Secure.ACCESSIBILITY_FLASH_NOTIFICATION_SCREEN
+        // Android 15 compatible settings keys using string literals
+        private const val SETTING_FLASH_NOTIFICATIONS = "accessibility_flash_notification_enabled"
+        private const val SETTING_FLASH_CAMERA = "accessibility_flash_notification_camera"
+        private const val SETTING_FLASH_SCREEN = "accessibility_flash_notification_screen"
     }
     
     init {
