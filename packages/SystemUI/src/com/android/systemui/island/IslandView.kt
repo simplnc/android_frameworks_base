@@ -23,7 +23,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.android.systemui.R
 
 /**
  * Island notification view - iOS Dynamic Island inspired

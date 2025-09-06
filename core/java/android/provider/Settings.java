@@ -6583,6 +6583,60 @@ public final class Settings {
         public static final String ACCESSIBILITY_FLASH_NOTIFICATION_SCREEN = "accessibility_flash_notification_screen";
 
         /**
+         * Island notification feature
+         * @hide
+         */
+        public static final String ISLAND_NOTIFICATION = "island_notification";
+        
+        /**
+         * Advanced System UI Tuner - Status Bar Customization
+         * @hide
+         */
+        public static final String SYSTEM_UI_TUNER_STATUS_BAR = "system_ui_tuner_status_bar";
+        
+        /**
+         * Advanced System UI Tuner - Navigation Bar Customization
+         * @hide
+         */
+        public static final String SYSTEM_UI_TUNER_NAVIGATION_BAR = "system_ui_tuner_navigation_bar";
+        
+        /**
+         * Advanced Animation Controls - Animation Scale Multiplier
+         * @hide
+         */
+        public static final String ADVANCED_ANIMATION_SCALE = "advanced_animation_scale";
+        
+        /**
+         * Enhanced Notification Management - Smart Notification Grouping
+         * @hide
+         */
+        public static final String SMART_NOTIFICATION_GROUPING = "smart_notification_grouping";
+        
+        /**
+         * System Performance Monitoring - Real-time Metrics
+         * @hide
+         */
+        public static final String PERFORMANCE_MONITORING = "performance_monitoring";
+        
+        /**
+         * Advanced Developer Options - Enhanced Debugging
+         * @hide
+         */
+        public static final String ADVANCED_DEVELOPER_OPTIONS = "advanced_developer_options";
+        
+        /**
+         * System UI Theme Engine - Dynamic Theme Switching
+         * @hide
+         */
+        public static final String DYNAMIC_THEME_ENGINE = "dynamic_theme_engine";
+        
+        /**
+         * Advanced Gesture Controls - Custom Gesture Recognition
+         * @hide
+         */
+        public static final String ADVANCED_GESTURE_CONTROLS = "advanced_gesture_controls";
+
+        /**
          * Transparent power menu and dialogs
          * @hide
          */
@@ -13286,59 +13340,6 @@ public final class Settings {
      * like the "Secure" settings, these are for preferences that the user must
      * explicitly modify through the system UI or specialized APIs for those values.
      */
-    
-    /**
-     * @hide
-     */
-    public static final String ISLAND_NOTIFICATION = "island_notification";
-    
-    /**
-     * Advanced System UI Tuner - Status Bar Customization
-     * @hide
-     */
-    public static final String SYSTEM_UI_TUNER_STATUS_BAR = "system_ui_tuner_status_bar";
-    
-    /**
-     * Advanced System UI Tuner - Navigation Bar Customization
-     * @hide
-     */
-    public static final String SYSTEM_UI_TUNER_NAVIGATION_BAR = "system_ui_tuner_navigation_bar";
-    
-    /**
-     * Advanced Animation Controls - Animation Scale Multiplier
-     * @hide
-     */
-    public static final String ADVANCED_ANIMATION_SCALE = "advanced_animation_scale";
-    
-    /**
-     * Enhanced Notification Management - Smart Notification Grouping
-     * @hide
-     */
-    public static final String SMART_NOTIFICATION_GROUPING = "smart_notification_grouping";
-    
-    /**
-     * System Performance Monitoring - Real-time Metrics
-     * @hide
-     */
-    public static final String PERFORMANCE_MONITORING = "performance_monitoring";
-    
-    /**
-     * Advanced Developer Options - Enhanced Debugging
-     * @hide
-     */
-    public static final String ADVANCED_DEVELOPER_OPTIONS = "advanced_developer_options";
-    
-    /**
-     * System UI Theme Engine - Dynamic Theme Switching
-     * @hide
-     */
-    public static final String DYNAMIC_THEME_ENGINE = "dynamic_theme_engine";
-    
-    /**
-     * Advanced Gesture Controls - Custom Gesture Recognition
-     * @hide
-     */
-    public static final String ADVANCED_GESTURE_CONTROLS = "advanced_gesture_controls";
     
     public static final class Global extends NameValueTable {
         // NOTE: If you add new settings here, be sure to add them to

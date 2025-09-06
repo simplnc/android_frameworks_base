@@ -214,9 +214,9 @@ class AdvancedAnimationController @Inject constructor(
             "scales" to scales,
             "enabled" to enabled,
             "mode" to mode,
-            "window_scale" to scales[ANIMATION_SCALE_WINDOW] ?: 0.0f,
-            "transition_scale" to scales[ANIMATION_SCALE_TRANSITION] ?: 0.0f,
-            "animator_scale" to scales[ANIMATION_SCALE_ANIMATOR] ?: 0.0f
+            "window_scale" to (scales[ANIMATION_SCALE_WINDOW] ?: 0.0f),
+            "transition_scale" to (scales[ANIMATION_SCALE_TRANSITION] ?: 0.0f),
+            "animator_scale" to (scales[ANIMATION_SCALE_ANIMATOR] ?: 0.0f)
         )
     }
 }
