@@ -21,6 +21,20 @@
     <!-- Background color behind the shade - Dark Mode -->
     <color name="shade_scrim_background">@android:color/system_surface_container_dark</color>
 
+    <!-- Enhanced Status Bar Icon Colors - Dark Mode -->
+    <color name="status_bar_battery_low">#FF6B6B</color> <!-- Brighter red for low battery -->
+    <color name="status_bar_battery_charging">#66BB6A</color> <!-- Brighter green for charging -->
+    <color name="status_bar_signal_excellent">#66BB6A</color> <!-- Brighter green for excellent signal -->
+    <color name="status_bar_signal_good">#9CCC65</color> <!-- Brighter light green for good signal -->
+    <color name="status_bar_signal_fair">#FFCA28</color> <!-- Brighter yellow for fair signal -->
+    <color name="status_bar_signal_poor">#FF6B6B</color> <!-- Brighter red for poor signal -->
+    <color name="status_bar_wifi_excellent">#42A5F5</color> <!-- Brighter blue for excellent WiFi -->
+    <color name="status_bar_wifi_good">#29B6F6</color> <!-- Brighter light blue for good WiFi -->
+    <color name="status_bar_wifi_fair">#FFA726</color> <!-- Brighter orange for fair WiFi -->
+    <color name="status_bar_wifi_poor">#EF5350</color> <!-- Brighter red for poor WiFi -->
+    <color name="status_bar_bluetooth_connected">#AB47BC</color> <!-- Brighter purple for connected Bluetooth -->
+    <color name="status_bar_bluetooth_disconnected">#BDBDBD</color> <!-- Brighter gray for disconnected Bluetooth -->
+
     <!-- The color of the legacy notifications with customs backgrounds (gingerbread and lollipop.)
     It's fine to override this color since at that point the shade was dark. -->
     <color name="notification_legacy_background_color">@color/GM2_grey_900</color>

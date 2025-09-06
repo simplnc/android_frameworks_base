@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Enhanced lock screen notification animation -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/overshoot_interpolator">
+    
+    <!-- Notification slide in from right -->
+    <translate
+        android:duration="600"
+        android:fromXDelta="100%"
+        android:toXDelta="0" />
+    
+    <!-- Notification fade in -->
+    <alpha
+        android:duration="600"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+    
+    <!-- Notification scale animation -->
+    <scale
+        android:duration="600"
+        android:fromXScale="0.9"
+        android:fromYScale="0.9"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
+</set>

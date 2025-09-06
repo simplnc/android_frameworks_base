@@ -29,6 +29,20 @@
     <color name="status_bar_icons_hover_color_light">#38FFFFFF</color> <!-- 22% white -->
     <color name="status_bar_icons_hover_color_dark">#38000000</color> <!-- 22% black -->
 
+    <!-- Enhanced Status Bar Icon Colors - Light Mode -->
+    <color name="status_bar_battery_low">#FF5722</color> <!-- Red for low battery -->
+    <color name="status_bar_battery_charging">#4CAF50</color> <!-- Green for charging -->
+    <color name="status_bar_signal_excellent">#4CAF50</color> <!-- Green for excellent signal -->
+    <color name="status_bar_signal_good">#8BC34A</color> <!-- Light green for good signal -->
+    <color name="status_bar_signal_fair">#FFC107</color> <!-- Yellow for fair signal -->
+    <color name="status_bar_signal_poor">#FF5722</color> <!-- Red for poor signal -->
+    <color name="status_bar_wifi_excellent">#2196F3</color> <!-- Blue for excellent WiFi -->
+    <color name="status_bar_wifi_good">#03A9F4</color> <!-- Light blue for good WiFi -->
+    <color name="status_bar_wifi_fair">#FF9800</color> <!-- Orange for fair WiFi -->
+    <color name="status_bar_wifi_poor">#F44336</color> <!-- Red for poor WiFi -->
+    <color name="status_bar_bluetooth_connected">#9C27B0</color> <!-- Purple for connected Bluetooth -->
+    <color name="status_bar_bluetooth_disconnected">#9E9E9E</color> <!-- Gray for disconnected Bluetooth -->
+
     <!-- Background color behind the shade - Light Mode -->
     <color name="shade_scrim_background">@android:color/system_surface_container_light</color>
 

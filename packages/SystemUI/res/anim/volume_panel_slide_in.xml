@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Enhanced volume panel slide in animation -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/overshoot_interpolator">
+    
+    <!-- Volume panel slide in from right -->
+    <translate
+        android:duration="400"
+        android:fromXDelta="100%"
+        android:toXDelta="0" />
+    
+    <!-- Volume panel fade in -->
+    <alpha
+        android:duration="400"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+    
+    <!-- Volume panel scale animation -->
+    <scale
+        android:duration="400"
+        android:fromXScale="0.8"
+        android:fromYScale="0.8"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
+</set>
