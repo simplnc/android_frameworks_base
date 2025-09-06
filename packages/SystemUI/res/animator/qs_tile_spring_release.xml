@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Enhanced Spring Physics Release Animation for QS Tiles - More Bounce -->
+    <objectAnimator
+        android:propertyName="scaleX"
+        android:duration="450"
+        android:valueTo="1.0"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/overshoot_interpolator" />
+    <objectAnimator
+        android:propertyName="scaleY"
+        android:duration="450"
+        android:valueTo="1.0"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/overshoot_interpolator" />
+    <objectAnimator
+        android:propertyName="alpha"
+        android:duration="350"
+        android:valueTo="1.0"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/overshoot_interpolator" />
+    <!-- Enhanced bounce effect -->
+    <objectAnimator
+        android:propertyName="translationZ"
+        android:duration="250"
+        android:valueTo="3dp"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/overshoot_interpolator" />
+</set>

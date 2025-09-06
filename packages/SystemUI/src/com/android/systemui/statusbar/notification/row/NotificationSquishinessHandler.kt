@@ -36,7 +36,7 @@ class NotificationSquishinessHandler(
             MotionEvent.ACTION_DOWN -> {
                 if (!isPressed) {
                     isPressed = true
-                    animateSquishiness(0.92f) // Subtle squish for notifications
+                    animateSquishiness(0.90f) // More squishy for notifications
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {

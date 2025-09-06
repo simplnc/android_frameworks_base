@@ -18,8 +18,8 @@
   -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
-    <!-- Background color behind the shade -->
-    <color name="shade_scrim_background">@androidprv:color/system_under_surface_dark</color>
+    <!-- Background color behind the shade - Dark Mode -->
+    <color name="shade_scrim_background">@android:color/system_surface</color>
 
     <!-- The color of the legacy notifications with customs backgrounds (gingerbread and lollipop.)
     It's fine to override this color since at that point the shade was dark. -->
@@ -109,4 +109,13 @@
     <color name="people_tile_background">@color/GM2_blue_300</color>
 
     <color name="volume_seekbar_bg">@android:color/system_accent2_700</color>
+    
+    <!-- Phase 3 Advanced Visual Effects - Dark Mode -->
+    <color name="qs_tile_advanced_shadow">#60000000</color>
+    <color name="qs_tile_advanced_highlight">#20FFFFFF</color>
+    <color name="qs_header_custom_bg_start">#1A1A1A</color>
+    <color name="qs_header_custom_bg_center">#161616</color>
+    <color name="qs_header_custom_bg_end">#121212</color>
+    <color name="notification_advanced_shadow">#50000000</color>
+    <color name="notification_advanced_highlight">#15FFFFFF</color>
 </resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Custom QS Header Background -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="135"
+                android:startColor="#F5F5F5"
+                android:centerColor="#F0F0F0"
+                android:endColor="#EBEBEB" />
+            <corners android:radius="0dp" />
+        </shape>
+    </item>
+    
+    <!-- Subtle Pattern Overlay -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="45"
+                android:startColor="#10FFFFFF"
+                android:centerColor="#05FFFFFF"
+                android:endColor="#00FFFFFF" />
+            <corners android:radius="0dp" />
+        </shape>
+    </item>
+</layer-list>

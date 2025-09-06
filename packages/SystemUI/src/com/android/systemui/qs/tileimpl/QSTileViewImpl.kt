@@ -100,6 +100,7 @@ constructor(
 
     private val icon: QSIconViewImpl = QSIconViewImpl(context)
     private val squishinessHandler: QSTileSquishinessHandler = QSTileSquishinessHandler(this)
+    private val advancedPhysicsHandler: QSTileAdvancedPhysicsHandler = QSTileAdvancedPhysicsHandler(this)
     
     // Haptic feedback variables
     private var initialX: Float = 0f
@@ -643,12 +644,16 @@ constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         squishinessHandler.cleanup()
+        advancedPhysicsHandler.cleanup()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         // Handle squishiness effect
         squishinessHandler.handleTouchEvent(event)
+        
+        // Handle advanced physics animations
+        advancedPhysicsHandler.handleTouchEvent(event)
         
         // Enhanced haptic feedback based on RisingOS implementation
         val touchSlop = ViewConfiguration.get(context).scaledTouchSlop

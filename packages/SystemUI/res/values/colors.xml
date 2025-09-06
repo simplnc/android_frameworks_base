@@ -29,8 +29,8 @@
     <color name="status_bar_icons_hover_color_light">#38FFFFFF</color> <!-- 22% white -->
     <color name="status_bar_icons_hover_color_dark">#38000000</color> <!-- 22% black -->
 
-    <!-- Background color behind the shade -->
-    <color name="shade_scrim_background">@androidprv:color/system_under_surface_light</color>
+    <!-- Background color behind the shade - Light Mode -->
+    <color name="shade_scrim_background">@android:color/system_surface</color>
 
     <!-- The color of the background in the separated list of the Global Actions menu -->
     <color name="global_actions_separated_background">#F5F5F5</color>
@@ -269,4 +269,13 @@
     <color name="rear_display_overlay_dialog_background_color">#1E1B17</color>
     <!-- volume seekbar -->
     <color name="volume_seekbar_bg">@android:color/system_accent2_100</color>
+    
+    <!-- Phase 3 Advanced Visual Effects -->
+    <color name="qs_tile_advanced_shadow">#40000000</color>
+    <color name="qs_tile_advanced_highlight">#20FFFFFF</color>
+    <color name="qs_header_custom_bg_start">#F5F5F5</color>
+    <color name="qs_header_custom_bg_center">#F0F0F0</color>
+    <color name="qs_header_custom_bg_end">#EBEBEB</color>
+    <color name="notification_advanced_shadow">#30000000</color>
+    <color name="notification_advanced_highlight">#15FFFFFF</color>
 </resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Custom QS Header Background for Dark Mode -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="135"
+                android:startColor="#1A1A1A"
+                android:centerColor="#161616"
+                android:endColor="#121212" />
+            <corners android:radius="0dp" />
+        </shape>
+    </item>
+    
+    <!-- Subtle Pattern Overlay -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="45"
+                android:startColor="#10FFFFFF"
+                android:centerColor="#05FFFFFF"
+                android:endColor="#00FFFFFF" />
+            <corners android:radius="0dp" />
+        </shape>
+    </item>
+</layer-list>
