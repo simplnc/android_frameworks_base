@@ -6565,6 +6565,24 @@ public final class Settings {
         public static final String QS_PANEL_TILE_HAPTIC = "qs_panel_tile_haptic";
 
         /**
+         * Accessibility flash notification enabled
+         * @hide
+         */
+        public static final String ACCESSIBILITY_FLASH_NOTIFICATION_ENABLED = "accessibility_flash_notification_enabled";
+
+        /**
+         * Accessibility flash notification camera enabled
+         * @hide
+         */
+        public static final String ACCESSIBILITY_FLASH_NOTIFICATION_CAMERA = "accessibility_flash_notification_camera";
+
+        /**
+         * Accessibility flash notification screen enabled
+         * @hide
+         */
+        public static final String ACCESSIBILITY_FLASH_NOTIFICATION_SCREEN = "accessibility_flash_notification_screen";
+
+        /**
          * Transparent power menu and dialogs
          * @hide
          */

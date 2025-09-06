@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Enhanced Toast Slide Out Animation with Squishiness -->
+    <objectAnimator
+        android:propertyName="translationY"
+        android:duration="250"
+        android:valueFrom="0dp"
+        android:valueTo="-50dp"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/accelerate_interpolator" />
+    <objectAnimator
+        android:propertyName="alpha"
+        android:duration="200"
+        android:valueFrom="1.0"
+        android:valueTo="0.0"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/accelerate_interpolator" />
+    <objectAnimator
+        android:propertyName="scaleX"
+        android:duration="250"
+        android:valueFrom="1.0"
+        android:valueTo="0.9"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/accelerate_interpolator" />
+    <objectAnimator
+        android:propertyName="scaleY"
+        android:duration="250"
+        android:valueFrom="1.0"
+        android:valueTo="0.9"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/accelerate_interpolator" />
+    <!-- Squishy compression effect -->
+    <objectAnimator
+        android:propertyName="translationZ"
+        android:duration="200"
+        android:valueFrom="2dp"
+        android:valueTo="0dp"
+        android:valueType="floatType"
+        android:interpolator="@android:anim/accelerate_interpolator" />
+</set>
