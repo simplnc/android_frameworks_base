@@ -27,9 +27,9 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import androidx.annotation.Nullable;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.view.HapticFeedbackConstants;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
@@ -56,6 +56,7 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
     public static final String TILE_SPEC = "volume_control";
     private static final String VOLUME_LEVEL_SETTING = "volume_level";
     private final AudioManager mAudioManager;
+    private final Vibrator mVibrator;
     private float mCurrentVolumePercent;
     private int mCurrentVolumeLevel;
     
@@ -99,6 +100,7 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
                 qsLogger);
         mMainHandler = mainHandler;
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mTouchListener = new View.OnTouchListener() {
                 private static final int LONG_PRESS_TIMEOUT = 500;
 
@@ -122,6 +124,8 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
                             initPct = initX / view.getWidth();
                             moved = false;
                             longPressed = false;
+                            // Add haptic feedback on touch down
+                            mVibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
                             mMainHandler.postDelayed(longPressRunnable, LONG_PRESS_TIMEOUT);
                             return true;
                         }
@@ -133,6 +137,8 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
                                 moved = true;
                                 mMainHandler.removeCallbacks(longPressRunnable);
                                 mCurrentVolumePercent = Math.max(0f, Math.min(newPct, 1));
+                                // Add subtle haptic feedback during volume adjustment
+                                mVibrator.vibrate(VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE));
                                 updateVolumeFromUser();
                             }
                             return true;

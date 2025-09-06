@@ -2,43 +2,10 @@
 <!-- Enhanced WiFi icon with dynamic colors -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <!-- Excellent WiFi -->
-    <item android:state_wifi_excellent="true">
-        <layer-list>
-            <item android:drawable="@drawable/stat_sys_wifi_signal_4" 
-                  android:tint="@color/status_bar_wifi_excellent" />
-        </layer-list>
-    </item>
-    
-    <!-- Good WiFi -->
-    <item android:state_wifi_good="true">
-        <layer-list>
-            <item android:drawable="@drawable/stat_sys_wifi_signal_3" 
-                  android:tint="@color/status_bar_wifi_good" />
-        </layer-list>
-    </item>
-    
-    <!-- Fair WiFi -->
-    <item android:state_wifi_fair="true">
-        <layer-list>
-            <item android:drawable="@drawable/stat_sys_wifi_signal_2" 
-                  android:tint="@color/status_bar_wifi_fair" />
-        </layer-list>
-    </item>
-    
-    <!-- Poor WiFi -->
-    <item android:state_wifi_poor="true">
-        <layer-list>
-            <item android:drawable="@drawable/stat_sys_wifi_signal_1" 
-                  android:tint="@color/status_bar_wifi_poor" />
-        </layer-list>
-    </item>
-    
     <!-- Default state -->
     <item>
         <layer-list>
-            <item android:drawable="@drawable/stat_sys_wifi_signal_4" 
-                  android:tint="@android:color/white" />
+            <item android:drawable="@*android:drawable/stat_sys_wifi_signal_4" />
         </layer-list>
     </item>
 </selector>

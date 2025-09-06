@@ -134,9 +134,9 @@ public abstract class SensorPrivacyToggleTile extends QSTileImpl<QSTile.BooleanS
         
         // Enhanced color coding for active privacy sensors (when NOT blocked)
         if (!isBlocked) {
-            state.iconTint = Color.parseColor("#fc4e57"); // Privacy active color
+            // Privacy is active - icon will be tinted by the system
         } else {
-            state.iconTint = null; // Use default color when blocked
+            // Privacy is inactive - use default icon
         }
     }
 

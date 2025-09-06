@@ -2,30 +2,10 @@
 <!-- Enhanced battery icon with dynamic colors -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <!-- Low battery state -->
-    <item android:state_battery_low="true">
-        <layer-list>
-            <item android:drawable="@drawable/stat_sys_battery" />
-            <item android:drawable="@drawable/stat_sys_battery_charge" 
-                  android:tint="@color/status_bar_battery_low" />
-        </layer-list>
-    </item>
-    
-    <!-- Charging state -->
-    <item android:state_battery_charging="true">
-        <layer-list>
-            <item android:drawable="@drawable/stat_sys_battery" />
-            <item android:drawable="@drawable/stat_sys_battery_charge" 
-                  android:tint="@color/status_bar_battery_charging" />
-        </layer-list>
-    </item>
-    
-    <!-- Normal state -->
+    <!-- Default state -->
     <item>
         <layer-list>
-            <item android:drawable="@drawable/stat_sys_battery" />
-            <item android:drawable="@drawable/stat_sys_battery_charge" 
-                  android:tint="@android:color/white" />
+            <item android:drawable="@*android:drawable/stat_sys_battery" />
         </layer-list>
     </item>
 </selector>

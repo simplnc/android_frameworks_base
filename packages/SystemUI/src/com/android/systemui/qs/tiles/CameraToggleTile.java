@@ -81,7 +81,7 @@ public class CameraToggleTile extends SensorPrivacyToggleTile {
         if (isBlocked) {
             return R.drawable.qs_camera_access_icon_off;
         } else {
-            return R.drawable.qs_camera_access_icon_on;
+            return R.drawable.qs_camera_access_on_tinted;
         }
     }
 

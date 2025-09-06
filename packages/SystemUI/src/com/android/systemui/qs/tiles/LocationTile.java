@@ -124,7 +124,7 @@ public class LocationTile extends QSTileImpl<BooleanState> {
             checkIfRestrictionEnforcedByAdminOnly(state, UserManager.DISALLOW_CONFIG_LOCATION);
         }
         state.icon = maybeLoadResourceIcon(state.value
-                ? R.drawable.qs_location_icon_on : R.drawable.qs_location_icon_off);
+                ? R.drawable.qs_location_icon_on_tinted : R.drawable.qs_location_icon_off);
         state.label = mContext.getString(R.string.quick_settings_location_label);
         state.contentDescription = state.label;
         state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
@@ -132,9 +132,9 @@ public class LocationTile extends QSTileImpl<BooleanState> {
         
         // Enhanced color coding for active location
         if (state.value) {
-            state.iconTint = Color.parseColor("#fc4e57"); // Privacy active color
+            // Location is active - icon will be tinted by the system
         } else {
-            state.iconTint = null; // Use default color when inactive
+            // Location is inactive - use default icon
         }
     }
 

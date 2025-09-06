@@ -149,7 +149,7 @@ public class BatterySaverTile extends QSTileImpl<BooleanState> implements
         state.state = mPluggedIn ? Tile.STATE_UNAVAILABLE
                 : mPowerSave ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
         state.icon = maybeLoadResourceIcon(mPowerSave
-                ? R.drawable.qs_battery_saver_icon_on : R.drawable.qs_battery_saver_icon_off);
+                ? R.drawable.qs_battery_saver_icon_on_tinted : R.drawable.qs_battery_saver_icon_off);
         state.label = mContext.getString(R.string.battery_detail_switch_title);
         state.secondaryLabel = "";
         state.contentDescription = state.label;
@@ -158,9 +158,9 @@ public class BatterySaverTile extends QSTileImpl<BooleanState> implements
         
         // Enhanced color coding for active battery saver
         if (mPowerSave && !mPluggedIn) {
-            state.iconTint = Color.parseColor("#fccb4e"); // Battery saver active color
+            // Battery saver is active - icon will be tinted by the system
         } else {
-            state.iconTint = null; // Use default color when inactive
+            // Battery saver is inactive - use default icon
         }
     }
 

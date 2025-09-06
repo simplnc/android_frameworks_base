@@ -145,13 +145,13 @@ public class FlashlightTile extends QSTileImpl<BooleanState> implements
         state.expandedAccessibilityClassName = Switch.class.getName();
         state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
         state.icon = maybeLoadResourceIcon(state.value
-                ? R.drawable.qs_flashlight_icon_on : R.drawable.qs_flashlight_icon_off);
+                ? R.drawable.qs_flashlight_icon_on_tinted : R.drawable.qs_flashlight_icon_off);
         
         // Enhanced color coding for active flashlight
         if (state.value) {
-            state.iconTint = Color.parseColor("#ffeb3b"); // Flashlight active color
+            // Flashlight is active - icon will be tinted by the system
         } else {
-            state.iconTint = null; // Use default color when inactive
+            // Flashlight is inactive - use default icon
         }
     }
 

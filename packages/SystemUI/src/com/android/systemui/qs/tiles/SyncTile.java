@@ -93,19 +93,18 @@ public class SyncTile extends QSTileImpl<BooleanState> {
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.value = ContentResolver.getMasterSyncAutomatically();
         state.label = mContext.getString(R.string.quick_settings_sync_label);
-        state.icon = mIcon;
+        state.icon = maybeLoadResourceIcon(state.value
+                ? R.drawable.qs_sync_icon_on_tinted : R.drawable.ic_qs_sync);
         if (state.value) {
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_sync_on);
             state.state = Tile.STATE_ACTIVE;
-            // Enhanced color coding for active sync
-            state.iconTint = Color.parseColor("#fc4e57"); // Privacy active color
+            // Enhanced color coding for active sync - icon will be tinted by the system
         } else {
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_sync_off);
             state.state = Tile.STATE_INACTIVE;
-            // Use default color when inactive
-            state.iconTint = null;
+            // Use default color when inactive - icon will be tinted by the system
         }
     }
 

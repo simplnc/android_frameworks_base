@@ -527,8 +527,7 @@ public class InternetTile extends QSTileImpl<QSTile.BooleanState> {
         state.dualTarget = true;
         state.value = cb.mEnabled;
         
-        // Enhanced color coding for active internet
-        state.iconTint = Color.parseColor("#4eabfc"); // Internet active color
+        // Enhanced color coding for active internet - icon will be tinted by the system
         final StringBuffer minimalContentDescription = new StringBuffer();
         final StringBuffer minimalStateDescription = new StringBuffer();
         final Resources r = mContext.getResources();
@@ -538,8 +537,7 @@ public class InternetTile extends QSTileImpl<QSTile.BooleanState> {
                 state.state = Tile.STATE_INACTIVE;
                 state.icon = maybeLoadResourceIcon(R.drawable.ic_qs_no_internet_unavailable);
                 state.secondaryLabel = r.getString(R.string.status_bar_airplane);
-                // Reset color when inactive
-                state.iconTint = null;
+                // Reset color when inactive - use default icon
             } else if (!wifiConnected) {
                 state.icon = maybeLoadResourceIcon(R.drawable.ic_qs_no_internet_unavailable);
                 if (cb.mNoNetworksAvailable) {

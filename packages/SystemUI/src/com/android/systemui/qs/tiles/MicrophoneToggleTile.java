@@ -81,7 +81,7 @@ public class MicrophoneToggleTile extends SensorPrivacyToggleTile {
         if (isBlocked) {
             return R.drawable.qs_mic_access_off;
         } else {
-            return R.drawable.qs_mic_access_on;
+            return R.drawable.qs_mic_access_on_tinted;
         }
     }
 
