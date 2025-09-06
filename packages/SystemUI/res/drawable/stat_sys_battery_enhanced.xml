@@ -4,8 +4,10 @@
     
     <!-- Default state -->
     <item>
-        <layer-list>
-            <item android:drawable="@*android:drawable/stat_sys_battery" />
-        </layer-list>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/status_bar_enhanced_light" />
+            <corners android:radius="2dp" />
+            <size android:width="20dp" android:height="10dp" />
+        </shape>
     </item>
 </selector>

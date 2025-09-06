@@ -4,8 +4,9 @@
     
     <!-- Default state -->
     <item>
-        <layer-list>
-            <item android:drawable="@*android:drawable/stat_sys_wifi_signal_4" />
-        </layer-list>
+        <shape android:shape="oval">
+            <solid android:color="@color/status_bar_enhanced_light" />
+            <size android:width="12dp" android:height="12dp" />
+        </shape>
     </item>
 </selector>
