@@ -16,6 +16,7 @@
 package com.android.systemui.qs.tiles;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -154,6 +155,13 @@ public class BatterySaverTile extends QSTileImpl<BooleanState> implements
         state.contentDescription = state.label;
         state.value = mPowerSave;
         state.expandedAccessibilityClassName = Switch.class.getName();
+        
+        // Enhanced color coding for active battery saver
+        if (mPowerSave && !mPluggedIn) {
+            state.iconTint = Color.parseColor("#fccb4e"); // Battery saver active color
+        } else {
+            state.iconTint = null; // Use default color when inactive
+        }
     }
 
     @Override

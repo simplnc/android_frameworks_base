@@ -19,6 +19,7 @@ package com.android.systemui.qs.tiles;
 import static android.hardware.SensorPrivacyManager.Sources.QS_TILE;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.SensorPrivacyManager.Sensors.Sensor;
 import android.os.Handler;
 import android.os.Looper;
@@ -130,6 +131,13 @@ public abstract class SensorPrivacyToggleTile extends QSTileImpl<QSTile.BooleanS
         }
         state.contentDescription = TextUtils.concat(state.label, ", ", state.secondaryLabel);
         state.expandedAccessibilityClassName = Switch.class.getName();
+        
+        // Enhanced color coding for active privacy sensors (when NOT blocked)
+        if (!isBlocked) {
+            state.iconTint = Color.parseColor("#fc4e57"); // Privacy active color
+        } else {
+            state.iconTint = null; // Use default color when blocked
+        }
     }
 
     @Override

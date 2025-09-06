@@ -22,6 +22,7 @@ import static com.android.internal.logging.MetricsLogger.VIEW_UNKNOWN;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SyncStatusObserver;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.service.quicksettings.Tile;
@@ -97,10 +98,14 @@ public class SyncTile extends QSTileImpl<BooleanState> {
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_sync_on);
             state.state = Tile.STATE_ACTIVE;
+            // Enhanced color coding for active sync
+            state.iconTint = Color.parseColor("#fc4e57"); // Privacy active color
         } else {
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_sync_off);
             state.state = Tile.STATE_INACTIVE;
+            // Use default color when inactive
+            state.iconTint = null;
         }
     }
 

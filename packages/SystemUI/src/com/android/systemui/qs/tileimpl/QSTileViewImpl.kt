@@ -48,6 +48,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
 import android.widget.ImageView
+import com.android.systemui.util.VibrationUtils
 import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
@@ -99,6 +100,11 @@ constructor(
 
     private val icon: QSIconViewImpl = QSIconViewImpl(context)
     private val squishinessHandler: QSTileSquishinessHandler = QSTileSquishinessHandler(this)
+    
+    // Haptic feedback variables
+    private var initialX: Float = 0f
+    private var initialY: Float = 0f
+    private var qsTileHaptic: Int = 1
     private var position: Int = INVALID
     private var hasLongClickEffect: Boolean = true
 
@@ -644,24 +650,38 @@ constructor(
         // Handle squishiness effect
         squishinessHandler.handleTouchEvent(event)
         
-        // let the View run the onTouch logic for click and long-click detection
-        val result = super.onTouchEvent(event)
-        if (longPressEffect != null) {
-            when (event?.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    longPressEffect.handleActionDown()
-                    if (isLongClickable) {
-                        postDelayed(
-                            { longPressEffect.handleTimeoutComplete() },
-                            ViewConfiguration.getTapTimeout().toLong(),
-                        )
-                    }
+        // Enhanced haptic feedback based on RisingOS implementation
+        val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        if (event == null) return super.onTouchEvent(event)
+        
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                initialX = event.x
+                initialY = event.y
+                qsTileHaptic = VibrationUtils.getHapticIntensity(context)
+                longPressEffect?.handleActionDown()
+                if (isLongClickable) {
+                    postDelayed(
+                        { longPressEffect?.handleTimeoutComplete() },
+                        ViewConfiguration.getTapTimeout().toLong(),
+                    )
                 }
-                MotionEvent.ACTION_UP -> longPressEffect.handleActionUp()
-                MotionEvent.ACTION_CANCEL -> longPressEffect.handleActionCancel()
+            }
+            MotionEvent.ACTION_UP -> {
+                val distanceX = Math.abs(event.x - initialX)
+                val distanceY = Math.abs(event.y - initialY)
+                longPressEffect?.handleActionUp()
+                if (distanceX < touchSlop && distanceY < touchSlop) {
+                    VibrationUtils.triggerVibration(context, qsTileHaptic)
+                }
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                longPressEffect?.handleActionCancel()
             }
         }
-        return result
+        
+        // let the View run the onTouch logic for click and long-click detection
+        return super.onTouchEvent(event)
     }
 
     // HANDLE STATE CHANGES RELATED METHODS

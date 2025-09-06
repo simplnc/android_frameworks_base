@@ -6559,6 +6559,12 @@ public final class Settings {
         public static final String ADAPTIVE_PLAYBACK_TIMEOUT = "adaptive_playback_timeout";
 
         /**
+         * QS Panel tile haptic feedback intensity
+         * @hide
+         */
+        public static final String QS_PANEL_TILE_HAPTIC = "qs_panel_tile_haptic";
+
+        /**
          * Transparent power menu and dialogs
          * @hide
          */

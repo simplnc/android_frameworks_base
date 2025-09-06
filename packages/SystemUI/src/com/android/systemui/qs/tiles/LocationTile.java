@@ -17,6 +17,7 @@
 package com.android.systemui.qs.tiles;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.UserManager;
@@ -128,6 +129,13 @@ public class LocationTile extends QSTileImpl<BooleanState> {
         state.contentDescription = state.label;
         state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
         state.expandedAccessibilityClassName = Switch.class.getName();
+        
+        // Enhanced color coding for active location
+        if (state.value) {
+            state.iconTint = Color.parseColor("#fc4e57"); // Privacy active color
+        } else {
+            state.iconTint = null; // Use default color when inactive
+        }
     }
 
     @Override

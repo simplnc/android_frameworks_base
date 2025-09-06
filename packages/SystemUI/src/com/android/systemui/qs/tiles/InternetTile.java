@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
@@ -525,6 +526,9 @@ public class InternetTile extends QSTileImpl<QSTile.BooleanState> {
         state.state = Tile.STATE_ACTIVE;
         state.dualTarget = true;
         state.value = cb.mEnabled;
+        
+        // Enhanced color coding for active internet
+        state.iconTint = Color.parseColor("#4eabfc"); // Internet active color
         final StringBuffer minimalContentDescription = new StringBuffer();
         final StringBuffer minimalStateDescription = new StringBuffer();
         final Resources r = mContext.getResources();
@@ -534,6 +538,8 @@ public class InternetTile extends QSTileImpl<QSTile.BooleanState> {
                 state.state = Tile.STATE_INACTIVE;
                 state.icon = maybeLoadResourceIcon(R.drawable.ic_qs_no_internet_unavailable);
                 state.secondaryLabel = r.getString(R.string.status_bar_airplane);
+                // Reset color when inactive
+                state.iconTint = null;
             } else if (!wifiConnected) {
                 state.icon = maybeLoadResourceIcon(R.drawable.ic_qs_no_internet_unavailable);
                 if (cb.mNoNetworksAvailable) {
