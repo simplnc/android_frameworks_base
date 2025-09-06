@@ -172,4 +172,10 @@
     <color name="qs_tile_release_overlay">#10FFFFFF</color>
     <color name="notification_performance_shadow">#40000000</color>
     <color name="status_bar_performance_bg">#1C1C1C</color>
+    
+    <!-- Phase 10: Island Notification Colors - Dark Mode -->
+    <color name="island_background">#2C2C2C</color>
+    <color name="island_border">#404040</color>
+    <color name="island_text_primary">#FFFFFF</color>
+    <color name="island_text_secondary">#B3B3B3</color>
 </resources>

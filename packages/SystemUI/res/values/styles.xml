@@ -511,6 +511,23 @@
         <item name="android:itemTextAppearance">@style/Control.MenuItem</item>
     </style>
 
+    <!-- Phase 10: Island Notification Styles -->
+    <style name="Theme.Island.SystemUI" parent="@style/Theme.SystemUI.QuickSettings">
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
+    </style>
+
+    <style name="TextAppearance.Island.Title" parent="@*android:style/TextAppearance.Material.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamilyMedium</item>
+    </style>
+
+    <style name="TextAppearance.Island.Content" parent="@*android:style/TextAppearance.Material.Body2">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
+    </style>
+
     <!-- Cannot double inherit. Use Theme.SystemUI.QuickSettings in code to match -->
     <style name="BrightnessDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>

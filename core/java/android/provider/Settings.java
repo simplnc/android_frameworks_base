@@ -13286,6 +13286,12 @@ public final class Settings {
      * like the "Secure" settings, these are for preferences that the user must
      * explicitly modify through the system UI or specialized APIs for those values.
      */
+    
+    /**
+     * @hide
+     */
+    public static final String ISLAND_NOTIFICATION = "island_notification";
+    
     public static final class Global extends NameValueTable {
         // NOTE: If you add new settings here, be sure to add them to
         // com.android.providers.settings.SettingsProtoDumpUtil#dumpProtoGlobalSettingsLocked.

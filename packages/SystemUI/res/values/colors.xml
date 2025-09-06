@@ -24,7 +24,7 @@
     <color name="qs_tile_divider">#29ffffff</color><!-- 16% white -->
     <color name="qs_tile_ripple_color">#2A000000</color><!-- 17% black for enhanced ripple effect -->
     <color name="qs_detail_button_white">#B3FFFFFF</color><!-- 70% white -->
-    <color name="status_bar_clock_color">#FFFFFFFF</color>
+    <color name="status_bar_clock_color">?android:attr/textColorPrimary</color>
     <color name="qs_tile_disabled_color">#9E9E9E</color> <!-- 38% black -->
     <color name="status_bar_icons_hover_color_light">#38FFFFFF</color> <!-- 22% white -->
     <color name="status_bar_icons_hover_color_dark">#38000000</color> <!-- 22% black -->
@@ -50,11 +50,11 @@
     <color name="lock_screen_clock_nothing_secondary">#000000</color> <!-- Nothing black -->
     <color name="lock_screen_shortcut_hover">#F5F5F5</color> <!-- Shortcut hover background -->
     <color name="lock_screen_shortcut_press">#E0E0E0</color> <!-- Shortcut press background -->
-    <color name="ambient_display_clock_primary">#FFFFFF</color> <!-- Ambient display clock -->
+    <color name="ambient_display_clock_primary">?android:attr/textColorPrimary</color> <!-- Ambient display clock -->
     <color name="ambient_display_clock_secondary">#CCCCCC</color> <!-- Ambient display secondary -->
 
     <!-- Phase 7: Advanced Lock Screen Customization Colors - Light Mode -->
-    <color name="lock_screen_widget_oneplus_bg">#FFFFFF</color> <!-- OnePlus widget background -->
+    <color name="lock_screen_widget_oneplus_bg">?android:attr/colorSurface</color> <!-- OnePlus widget background -->
     <color name="lock_screen_widget_oneplus_border">#2196F3</color> <!-- OnePlus widget border -->
     <color name="lock_screen_widget_nothing_bg">#000000</color> <!-- Nothing widget background -->
     <color name="lock_screen_widget_nothing_border">#00FF41</color> <!-- Nothing widget border -->
@@ -68,7 +68,7 @@
     <color name="ambient_display_nothing_text">#00FF41</color> <!-- Nothing ambient text -->
     <color name="ambient_display_notification_oneplus_bg">#F5F5F5</color> <!-- OnePlus notification bg -->
     <color name="ambient_display_notification_nothing_bg">#000000</color> <!-- Nothing notification bg -->
-    <color name="ambient_display_music_oneplus_bg">#FFFFFF</color> <!-- OnePlus music controls bg -->
+    <color name="ambient_display_music_oneplus_bg">?android:attr/colorSurface</color> <!-- OnePlus music controls bg -->
     <color name="ambient_display_music_nothing_bg">#000000</color> <!-- Nothing music controls bg -->
 
     <!-- Background color behind the shade - Light Mode -->
@@ -322,7 +322,7 @@
     <!-- Phase 4 Advanced System Features -->
     <color name="toast_background_light">#F0F0F0</color>
     <color name="toast_text_light">#212121</color>
-    <color name="power_menu_background_light">#FFFFFF</color>
+    <color name="power_menu_background_light">?android:attr/colorSurface</color>
     <color name="app_install_progress_light">#4CAF50</color>
     <color name="flash_notification_color">#FFFFFF</color>
     <color name="status_bar_enhanced_light">#F5F5F5</color>
@@ -332,4 +332,10 @@
     <color name="qs_tile_release_overlay">#05000000</color>
     <color name="notification_performance_shadow">#20000000</color>
     <color name="status_bar_performance_bg">#F8F8F8</color>
+    
+    <!-- Phase 10: Island Notification Colors -->
+    <color name="island_background">#E8E8E8</color>
+    <color name="island_border">#CCCCCC</color>
+    <color name="island_text_primary">#212121</color>
+    <color name="island_text_secondary">#757575</color>
 </resources>
