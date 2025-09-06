@@ -45,6 +45,24 @@
     <color name="ambient_display_clock_primary">#FFFFFF</color> <!-- Ambient display clock -->
     <color name="ambient_display_clock_secondary">#BDBDBD</color> <!-- Ambient display secondary -->
 
+    <!-- Phase 7: Advanced Lock Screen Customization Colors - Dark Mode -->
+    <color name="lock_screen_widget_oneplus_bg">#1A237E</color> <!-- Darker OnePlus widget background -->
+    <color name="lock_screen_widget_oneplus_border">#42A5F5</color> <!-- Brighter OnePlus widget border -->
+    <color name="lock_screen_widget_nothing_bg">#FFFFFF</color> <!-- Nothing widget background -->
+    <color name="lock_screen_widget_nothing_border">#00FF41</color> <!-- Nothing widget border -->
+    <color name="lock_screen_gesture_oneplus_path">#42A5F5</color> <!-- Brighter OnePlus gesture path -->
+    <color name="lock_screen_gesture_nothing_dots">#00FF41</color> <!-- Nothing gesture dots -->
+    
+    <!-- Phase 8: Ambient Display & Always-On Colors - Dark Mode -->
+    <color name="ambient_display_oneplus_bg">#1A237E</color> <!-- Darker OnePlus ambient background -->
+    <color name="ambient_display_oneplus_text">#42A5F5</color> <!-- Brighter OnePlus ambient text -->
+    <color name="ambient_display_nothing_bg">#FFFFFF</color> <!-- Nothing ambient background -->
+    <color name="ambient_display_nothing_text">#00FF41</color> <!-- Nothing ambient text -->
+    <color name="ambient_display_notification_oneplus_bg">#424242</color> <!-- Dark OnePlus notification bg -->
+    <color name="ambient_display_notification_nothing_bg">#FFFFFF</color> <!-- Nothing notification bg -->
+    <color name="ambient_display_music_oneplus_bg">#303030</color> <!-- Dark OnePlus music controls bg -->
+    <color name="ambient_display_music_nothing_bg">#FFFFFF</color> <!-- Nothing music controls bg -->
+
     <!-- The color of the legacy notifications with customs backgrounds (gingerbread and lollipop.)
     It's fine to override this color since at that point the shade was dark. -->
     <color name="notification_legacy_background_color">@color/GM2_grey_900</color>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nothing Phone-inspired lock screen widget container -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Widget background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lock_screen_clock_nothing_secondary" />
+            <corners android:radius="12dp" />
+            <stroke 
+                android:width="1dp" 
+                android:color="@color/lock_screen_clock_nothing_primary" />
+        </shape>
+    </item>
+    
+    <!-- Widget glow effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#2000FF41" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+    
+    <!-- Widget content area -->
+    <item android:top="1dp" android:left="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lock_screen_clock_nothing_secondary" />
+            <corners android:radius="11dp" />
+        </shape>
+    </item>
+</layer-list>

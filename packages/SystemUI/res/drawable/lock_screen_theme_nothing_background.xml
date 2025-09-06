@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nothing Phone-inspired lock screen theme background -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Main background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lock_screen_clock_nothing_secondary" />
+        </shape>
+    </item>
+    
+    <!-- Grid pattern overlay -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#2000FF41" />
+        </shape>
+    </item>
+    
+    <!-- Dot matrix pattern -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#1000FF41" />
+        </shape>
+    </item>
+</layer-list>

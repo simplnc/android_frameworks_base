@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OnePlus-inspired ambient display music controls -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Music controls background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F5F5F5" />
+            <corners android:radius="16dp" />
+            <stroke 
+                android:width="2dp" 
+                android:color="@color/lock_screen_clock_oneplus_primary" />
+        </shape>
+    </item>
+    
+    <!-- Music controls shadow -->
+    <item android:top="3dp" android:left="3dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#30000000" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+    
+    <!-- Music controls content area -->
+    <item android:top="2dp" android:left="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#F5F5F5" />
+            <corners android:radius="14dp" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OnePlus-inspired lock screen theme background -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Main background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lock_screen_clock_oneplus_secondary" />
+        </shape>
+    </item>
+    
+    <!-- Gradient overlay -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="135"
+                android:startColor="@color/lock_screen_clock_oneplus_primary"
+                android:centerColor="@android:color/transparent"
+                android:endColor="@android:color/transparent"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- Subtle pattern -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#10000000" />
+        </shape>
+    </item>
+</layer-list>

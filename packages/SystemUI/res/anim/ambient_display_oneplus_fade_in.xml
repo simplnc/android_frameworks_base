@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OnePlus-inspired ambient display fade in animation -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator">
+    
+    <!-- Ambient display fade in -->
+    <alpha
+        android:duration="1000"
+        android:fromAlpha="0.0"
+        android:toAlpha="0.9" />
+    
+    <!-- Ambient display scale animation -->
+    <scale
+        android:duration="1000"
+        android:fromXScale="0.8"
+        android:fromYScale="0.8"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
+    
+    <!-- Ambient display slide up -->
+    <translate
+        android:duration="1000"
+        android:fromYDelta="40"
+        android:toYDelta="0" />
+</set>

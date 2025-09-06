@@ -53,6 +53,24 @@
     <color name="ambient_display_clock_primary">#FFFFFF</color> <!-- Ambient display clock -->
     <color name="ambient_display_clock_secondary">#CCCCCC</color> <!-- Ambient display secondary -->
 
+    <!-- Phase 7: Advanced Lock Screen Customization Colors - Light Mode -->
+    <color name="lock_screen_widget_oneplus_bg">#FFFFFF</color> <!-- OnePlus widget background -->
+    <color name="lock_screen_widget_oneplus_border">#2196F3</color> <!-- OnePlus widget border -->
+    <color name="lock_screen_widget_nothing_bg">#000000</color> <!-- Nothing widget background -->
+    <color name="lock_screen_widget_nothing_border">#00FF41</color> <!-- Nothing widget border -->
+    <color name="lock_screen_gesture_oneplus_path">#2196F3</color> <!-- OnePlus gesture path -->
+    <color name="lock_screen_gesture_nothing_dots">#00FF41</color> <!-- Nothing gesture dots -->
+    
+    <!-- Phase 8: Ambient Display & Always-On Colors - Light Mode -->
+    <color name="ambient_display_oneplus_bg">#E8F4FD</color> <!-- OnePlus ambient background -->
+    <color name="ambient_display_oneplus_text">#2196F3</color> <!-- OnePlus ambient text -->
+    <color name="ambient_display_nothing_bg">#000000</color> <!-- Nothing ambient background -->
+    <color name="ambient_display_nothing_text">#00FF41</color> <!-- Nothing ambient text -->
+    <color name="ambient_display_notification_oneplus_bg">#F5F5F5</color> <!-- OnePlus notification bg -->
+    <color name="ambient_display_notification_nothing_bg">#000000</color> <!-- Nothing notification bg -->
+    <color name="ambient_display_music_oneplus_bg">#FFFFFF</color> <!-- OnePlus music controls bg -->
+    <color name="ambient_display_music_nothing_bg">#000000</color> <!-- Nothing music controls bg -->
+
     <!-- Background color behind the shade - Light Mode -->
     <color name="shade_scrim_background">@android:color/system_surface_container_light</color>
 
