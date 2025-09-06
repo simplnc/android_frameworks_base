@@ -55,7 +55,7 @@ class IslandView @JvmOverloads constructor(
         contentView = TextView(context)
         
         // Set up layout parameters
-        iconView.layoutParams = LayoutParams(24.dp, 24.dp)
+        iconView.layoutParams = LayoutParams(24, 24)
         titleView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         contentView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         
