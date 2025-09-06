@@ -54,7 +54,7 @@
     <color name="ambient_display_clock_secondary">#CCCCCC</color> <!-- Ambient display secondary -->
 
     <!-- Phase 7: Advanced Lock Screen Customization Colors - Light Mode -->
-    <color name="lock_screen_widget_oneplus_bg">?android:attr/colorSurface</color> <!-- OnePlus widget background -->
+    <color name="lock_screen_widget_oneplus_bg">?android:attr/colorBackground</color> <!-- OnePlus widget background -->
     <color name="lock_screen_widget_oneplus_border">#2196F3</color> <!-- OnePlus widget border -->
     <color name="lock_screen_widget_nothing_bg">#000000</color> <!-- Nothing widget background -->
     <color name="lock_screen_widget_nothing_border">#00FF41</color> <!-- Nothing widget border -->
@@ -68,7 +68,7 @@
     <color name="ambient_display_nothing_text">#00FF41</color> <!-- Nothing ambient text -->
     <color name="ambient_display_notification_oneplus_bg">#F5F5F5</color> <!-- OnePlus notification bg -->
     <color name="ambient_display_notification_nothing_bg">#000000</color> <!-- Nothing notification bg -->
-    <color name="ambient_display_music_oneplus_bg">?android:attr/colorSurface</color> <!-- OnePlus music controls bg -->
+    <color name="ambient_display_music_oneplus_bg">?android:attr/colorBackground</color> <!-- OnePlus music controls bg -->
     <color name="ambient_display_music_nothing_bg">#000000</color> <!-- Nothing music controls bg -->
 
     <!-- Background color behind the shade - Light Mode -->
@@ -322,7 +322,7 @@
     <!-- Phase 4 Advanced System Features -->
     <color name="toast_background_light">#F0F0F0</color>
     <color name="toast_text_light">#212121</color>
-    <color name="power_menu_background_light">?android:attr/colorSurface</color>
+    <color name="power_menu_background_light">?android:attr/colorBackground</color>
     <color name="app_install_progress_light">#4CAF50</color>
     <color name="flash_notification_color">#FFFFFF</color>
     <color name="status_bar_enhanced_light">#F5F5F5</color>
@@ -338,4 +338,65 @@
     <color name="island_border">#CCCCCC</color>
     <color name="island_text_primary">#212121</color>
     <color name="island_text_secondary">#757575</color>
+    
+    <!-- Phase 13: Advanced System Customization Colors -->
+    <color name="system_ui_tuner_background">#F5F5F5</color>
+    <color name="system_ui_tuner_accent">#2196F3</color>
+    <color name="system_ui_tuner_primary">#1976D2</color>
+    <color name="system_ui_tuner_secondary">#03DAC6</color>
+    <color name="system_ui_tuner_text">#212121</color>
+    <color name="system_ui_tuner_text_secondary">#757575</color>
+    
+    <!-- Performance Monitoring Colors -->
+    <color name="performance_cpu_normal">#4CAF50</color>
+    <color name="performance_cpu_warning">#FF9800</color>
+    <color name="performance_cpu_critical">#F44336</color>
+    <color name="performance_memory_normal">#2196F3</color>
+    <color name="performance_memory_warning">#FF9800</color>
+    <color name="performance_memory_critical">#F44336</color>
+    <color name="performance_battery_normal">#4CAF50</color>
+    <color name="performance_battery_warning">#FF9800</color>
+    <color name="performance_battery_critical">#F44336</color>
+    
+    <!-- Animation Control Colors -->
+    <color name="animation_disabled">#9E9E9E</color>
+    <color name="animation_reduced">#FFC107</color>
+    <color name="animation_standard">#2196F3</color>
+    <color name="animation_enhanced">#9C27B0</color>
+    <color name="animation_maximum">#E91E63</color>
+    
+    <!-- Enhanced Notification Colors -->
+    <color name="notification_priority_high">#F44336</color>
+    <color name="notification_priority_medium">#FF9800</color>
+    <color name="notification_priority_low">#4CAF50</color>
+    <color name="notification_priority_minimal">#9E9E9E</color>
+    <color name="notification_group_expanded">#E3F2FD</color>
+    <color name="notification_group_collapsed">#F5F5F5</color>
+    
+    <!-- Dynamic Theme Colors -->
+    <color name="theme_material_accent">#2196F3</color>
+    <color name="theme_material_primary">#1976D2</color>
+    <color name="theme_material_secondary">#03DAC6</color>
+    <color name="theme_dark_accent">#BB86FC</color>
+    <color name="theme_dark_primary">#121212</color>
+    <color name="theme_dark_secondary">#03DAC6</color>
+    <color name="theme_amoled_accent">#00E676</color>
+    <color name="theme_amoled_primary">#000000</color>
+    <color name="theme_amoled_secondary">#00E676</color>
+    
+    <!-- Advanced Gesture Colors -->
+    <color name="gesture_swipe_up">#4CAF50</color>
+    <color name="gesture_swipe_down">#2196F3</color>
+    <color name="gesture_swipe_left">#FF9800</color>
+    <color name="gesture_swipe_right">#9C27B0</color>
+    <color name="gesture_double_tap">#F44336</color>
+    <color name="gesture_long_press">#795548</color>
+    <color name="gesture_pinch">#607D8B</color>
+    <color name="gesture_rotation">#009688</color>
+    
+    <!-- Developer Options Colors -->
+    <color name="developer_options_enabled">#4CAF50</color>
+    <color name="developer_options_disabled">#9E9E9E</color>
+    <color name="developer_options_warning">#FF9800</color>
+    <color name="developer_options_critical">#F44336</color>
 </resources>
