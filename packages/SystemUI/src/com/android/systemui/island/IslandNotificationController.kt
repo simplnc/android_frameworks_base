@@ -33,8 +33,10 @@ import javax.inject.Inject
 class IslandNotificationController @Inject constructor(
     private val context: Context
 ) {
-    private static final String TAG = "IslandNotificationController"
-    private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG)
+    companion object {
+        private const val TAG = "IslandNotificationController"
+        private val DEBUG = Log.isLoggable(TAG, Log.DEBUG)
+    }
     
     private var mIslandView: IslandView? = null
     private var mCurrentNotification: NotificationEntry? = null
