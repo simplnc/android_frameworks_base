@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phase 9: Performance Optimized QS Tile Background -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Pressed state with optimized overlay -->
+    <item android:state_pressed="true">
+        <layer-list>
+            <item android:drawable="@drawable/qs_tile_background_shape" />
+            <item android:drawable="@color/qs_tile_press_overlay" />
+        </layer-list>
+    </item>
+    
+    <!-- Default state -->
+    <item>
+        <layer-list>
+            <item android:drawable="@drawable/qs_tile_background_shape" />
+            <item android:drawable="@color/qs_tile_release_overlay" />
+        </layer-list>
+    </item>
+</selector>

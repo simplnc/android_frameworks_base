@@ -166,4 +166,10 @@
     <color name="app_install_progress_dark">#4CAF50</color>
     <color name="flash_notification_color">#FFFFFF</color>
     <color name="status_bar_enhanced_dark">#1A1A1A</color>
+    
+    <!-- Phase 9: Performance Optimized Colors - Dark Mode -->
+    <color name="qs_tile_press_overlay">#20FFFFFF</color>
+    <color name="qs_tile_release_overlay">#10FFFFFF</color>
+    <color name="notification_performance_shadow">#40000000</color>
+    <color name="status_bar_performance_bg">#1C1C1C</color>
 </resources>

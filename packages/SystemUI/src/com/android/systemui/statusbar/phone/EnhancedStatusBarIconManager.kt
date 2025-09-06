@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager
 import android.bluetooth.BluetoothAdapter
 import android.util.Log
 import com.android.systemui.dagger.SysUISingleton
+import com.android.systemui.statusbar.phone.ui.StatusBarIconController
 import javax.inject.Inject
 
 /**
