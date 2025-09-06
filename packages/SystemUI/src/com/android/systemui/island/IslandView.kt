@@ -22,7 +22,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 
 /**
  * Island notification view - iOS Dynamic Island inspired
@@ -32,7 +33,7 @@ class IslandView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val iconView: ImageView
     private val titleView: TextView
@@ -55,9 +56,9 @@ class IslandView @JvmOverloads constructor(
         contentView = TextView(context)
         
         // Set up layout parameters
-        iconView.layoutParams = LayoutParams(24, 24)
-        titleView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        contentView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        iconView.layoutParams = FrameLayout.LayoutParams(24, 24)
+        titleView.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+        contentView.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         
         // Add views to this container
         addView(iconView)
