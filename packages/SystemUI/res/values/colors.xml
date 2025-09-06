@@ -43,6 +43,16 @@
     <color name="status_bar_bluetooth_connected">#9C27B0</color> <!-- Purple for connected Bluetooth -->
     <color name="status_bar_bluetooth_disconnected">#9E9E9E</color> <!-- Gray for disconnected Bluetooth -->
 
+    <!-- Enhanced Lock Screen Colors - Light Mode -->
+    <color name="lock_screen_clock_oneplus_primary">#2196F3</color> <!-- OnePlus blue -->
+    <color name="lock_screen_clock_oneplus_secondary">#E8F4FD</color> <!-- OnePlus light blue -->
+    <color name="lock_screen_clock_nothing_primary">#00FF41</color> <!-- Nothing green -->
+    <color name="lock_screen_clock_nothing_secondary">#000000</color> <!-- Nothing black -->
+    <color name="lock_screen_shortcut_hover">#F5F5F5</color> <!-- Shortcut hover background -->
+    <color name="lock_screen_shortcut_press">#E0E0E0</color> <!-- Shortcut press background -->
+    <color name="ambient_display_clock_primary">#FFFFFF</color> <!-- Ambient display clock -->
+    <color name="ambient_display_clock_secondary">#CCCCCC</color> <!-- Ambient display secondary -->
+
     <!-- Background color behind the shade - Light Mode -->
     <color name="shade_scrim_background">@android:color/system_surface_container_light</color>
 

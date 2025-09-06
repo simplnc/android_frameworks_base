@@ -35,6 +35,16 @@
     <color name="status_bar_bluetooth_connected">#AB47BC</color> <!-- Brighter purple for connected Bluetooth -->
     <color name="status_bar_bluetooth_disconnected">#BDBDBD</color> <!-- Brighter gray for disconnected Bluetooth -->
 
+    <!-- Enhanced Lock Screen Colors - Dark Mode -->
+    <color name="lock_screen_clock_oneplus_primary">#42A5F5</color> <!-- Brighter OnePlus blue -->
+    <color name="lock_screen_clock_oneplus_secondary">#1A237E</color> <!-- Darker OnePlus blue -->
+    <color name="lock_screen_clock_nothing_primary">#00FF41</color> <!-- Nothing green -->
+    <color name="lock_screen_clock_nothing_secondary">#FFFFFF</color> <!-- Nothing white -->
+    <color name="lock_screen_shortcut_hover">#424242</color> <!-- Dark shortcut hover background -->
+    <color name="lock_screen_shortcut_press">#616161</color> <!-- Dark shortcut press background -->
+    <color name="ambient_display_clock_primary">#FFFFFF</color> <!-- Ambient display clock -->
+    <color name="ambient_display_clock_secondary">#BDBDBD</color> <!-- Ambient display secondary -->
+
     <!-- The color of the legacy notifications with customs backgrounds (gingerbread and lollipop.)
     It's fine to override this color since at that point the shade was dark. -->
     <color name="notification_legacy_background_color">@color/GM2_grey_900</color>

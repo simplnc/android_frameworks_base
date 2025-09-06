@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nothing Phone-inspired dot matrix clock animation -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator">
+    
+    <!-- Dot matrix fade in sequence -->
+    <alpha
+        android:duration="800"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0"
+        android:startOffset="200" />
+    
+    <!-- Dot matrix scale animation -->
+    <scale
+        android:duration="800"
+        android:fromXScale="0.5"
+        android:fromYScale="0.5"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="200"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
+    
+    <!-- Dot matrix rotation for dynamic effect -->
+    <rotate
+        android:duration="800"
+        android:fromDegrees="-5"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="200"
+        android:toDegrees="0" />
+</set>

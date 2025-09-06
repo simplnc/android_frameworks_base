@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OnePlus-inspired lock screen notification slide animation -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/overshoot_interpolator">
+    
+    <!-- Notification slide in from right with bounce -->
+    <translate
+        android:duration="700"
+        android:fromXDelta="120%"
+        android:toXDelta="0" />
+    
+    <!-- Notification fade in -->
+    <alpha
+        android:duration="700"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+    
+    <!-- Notification scale animation -->
+    <scale
+        android:duration="700"
+        android:fromXScale="0.8"
+        android:fromYScale="0.8"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
+    
+    <!-- Notification rotation for dynamic effect -->
+    <rotate
+        android:duration="700"
+        android:fromDegrees="3"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toDegrees="0" />
+</set>

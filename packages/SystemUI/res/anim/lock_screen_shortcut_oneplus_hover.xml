@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- OnePlus-inspired lock screen shortcut hover animation -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/overshoot_interpolator">
+    
+    <!-- Shortcut scale animation -->
+    <scale
+        android:duration="300"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.1"
+        android:toYScale="1.1" />
+    
+    <!-- Shortcut elevation animation -->
+    <translate
+        android:duration="300"
+        android:fromYDelta="0"
+        android:toYDelta="-8" />
+    
+    <!-- Shortcut alpha animation -->
+    <alpha
+        android:duration="300"
+        android:fromAlpha="1.0"
+        android:toAlpha="0.9" />
+</set>
