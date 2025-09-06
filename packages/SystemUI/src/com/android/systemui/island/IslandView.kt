@@ -49,11 +49,20 @@ class IslandView @JvmOverloads constructor(
     )
     
     init {
-        LayoutInflater.from(context).inflate(R.layout.island_notification, this, true)
+        // Create views programmatically instead of using layout inflation
+        iconView = ImageView(context)
+        titleView = TextView(context)
+        contentView = TextView(context)
         
-        iconView = findViewById(R.id.island_icon)
-        titleView = findViewById(R.id.island_title)
-        contentView = findViewById(R.id.island_content)
+        // Set up layout parameters
+        iconView.layoutParams = LayoutParams(24.dp, 24.dp)
+        titleView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        contentView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        
+        // Add views to this container
+        addView(iconView)
+        addView(titleView)
+        addView(contentView)
         
         setupClickListeners()
     }

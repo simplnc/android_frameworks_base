@@ -246,7 +246,7 @@ class PerformanceMonitoringService @Inject constructor(
     fun isPerformanceMonitoringEnabled(): Boolean {
         return Settings.Secure.getInt(
             context.contentResolver,
-            Settings.Secure.PERFORMANCE_MONITORING,
+            "performance_monitoring",
             0
         ) == 1
     }
