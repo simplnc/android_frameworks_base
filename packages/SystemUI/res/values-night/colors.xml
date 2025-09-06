@@ -19,7 +19,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <!-- Background color behind the shade - Dark Mode -->
-    <color name="shade_scrim_background">@android:color/system_surface</color>
+    <color name="shade_scrim_background">@android:color/system_surface_container_dark</color>
 
     <!-- The color of the legacy notifications with customs backgrounds (gingerbread and lollipop.)
     It's fine to override this color since at that point the shade was dark. -->
@@ -117,5 +117,11 @@
     <color name="qs_header_custom_bg_center">#161616</color>
     <color name="qs_header_custom_bg_end">#121212</color>
     <color name="notification_advanced_shadow">#50000000</color>
-    <color name="notification_advanced_highlight">#15FFFFFF</color>
+    <!-- Phase 4 Advanced System Features - Dark Mode -->
+    <color name="toast_background_dark">#2C2C2C</color>
+    <color name="toast_text_dark">#FFFFFF</color>
+    <color name="power_menu_background_dark">#1A1A1A</color>
+    <color name="app_install_progress_dark">#4CAF50</color>
+    <color name="flash_notification_color">#FFFFFF</color>
+    <color name="status_bar_enhanced_dark">#1A1A1A</color>
 </resources>
