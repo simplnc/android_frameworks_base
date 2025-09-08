@@ -357,7 +357,7 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
                     new HapticSlider.SeekBar(root.requireViewById(R.id.slider)));
             HapticSliderViewBinder.bind(viewRoot, plugin);
             return new BrightnessSliderController(root, mFalsingManager, mUiEventLogger, plugin,
-                    mActivityStarter, mBrightnessWarningToast);
+                    mActivityStarter, mVibratorHelper, mBrightnessWarningToast);
         }
 
         /** Get the layout to inflate based on what slider to use */
