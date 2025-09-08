@@ -96,12 +96,12 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     }
 
     @Override
-    public int getBackgroundColorForState(int state, boolean disabledByPolicy, String spec) {
+    public int getBackgroundColorForState(int state, boolean disabledByPolicy, String tileSpec) {
         if (mSlideableQSTile != null && mSlideableQSTile.isSlideable()
                 && state == STATE_ACTIVE && mCurrentPercent >= 0.90f) {
             return mWarnColor;
         } else {
-            return super.getBackgroundColorForState(state, disabledByPolicy, spec);
+            return super.getBackgroundColorForState(state, disabledByPolicy, tileSpec);
         }
     }
 
