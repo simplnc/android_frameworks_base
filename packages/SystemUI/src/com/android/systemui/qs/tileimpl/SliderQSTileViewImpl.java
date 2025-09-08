@@ -118,7 +118,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         percentageDrawable.setAlpha(isActive ? ACTIVE_STATE_PERCENTAGE_ALPHA
                 : INACTIVE_STATE_PERCENTAGE_ALPHA);
         if (isActive) {
-            setColor(getBackgroundColorForState(state, false));
+            setColor(getBackgroundColorForState(state, false, null));
         }
         LayerDrawable layerDrawable =
                 new LayerDrawable(new Drawable[] {backgroundBaseDrawable, percentageDrawable});
