@@ -75,9 +75,6 @@ import java.util.Objects
 
 private const val TAG = "QSTileViewImpl"
 
-// Add a nullable physics handler (default null; created only if flag enabled)
-private var advancedPhysicsHandler: QSTileAdvancedPhysicsHandler? = null
-
 open class QSTileViewImpl
 @JvmOverloads
 constructor(
@@ -103,6 +100,9 @@ constructor(
     private val icon: QSIconViewImpl = QSIconViewImpl(context)
     private var position: Int = INVALID
     private var hasLongClickEffect: Boolean = true
+    
+    // Per-tile physics handler for individual tile animations
+    private var advancedPhysicsHandler: QSTileAdvancedPhysicsHandler? = null
 
     override fun setPosition(position: Int) {
         this.position = position
@@ -243,17 +243,9 @@ constructor(
     }
 
     private fun getAdvancedPhysicsHandler(): QSTileAdvancedPhysicsHandler? {
-        // Handler itself checks the sysprop; only create once when needed
+        // Create per-tile handler; each tile gets its own instance
         if (advancedPhysicsHandler == null) {
             advancedPhysicsHandler = QSTileAdvancedPhysicsHandler(this)
-            // Add click listener as backup for reliability
-            setOnClickListener {
-                // Trigger press animation on click as backup
-                advancedPhysicsHandler?.animatePress()
-                postDelayed({
-                    advancedPhysicsHandler?.animateRelease()
-                }, 150)
-            }
         }
         return advancedPhysicsHandler
     }
@@ -656,9 +648,10 @@ constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        // Handle our physics first, before parent processing
+        // Always handle physics first for all tiles - this provides immediate tactile feedback
         if (event != null) {
-            getAdvancedPhysicsHandler()?.handleTouchEvent(event)
+            val physicsHandled = getAdvancedPhysicsHandler()?.handleTouchEvent(event) ?: false
+            // If physics handler consumed the event, we still need to process it for clicks
         }
         
         // let the View run the onTouch logic for click and long-click detection
@@ -678,13 +671,16 @@ constructor(
                 MotionEvent.ACTION_CANCEL -> longPressEffect.handleActionCancel()
             }
         }
-        // Optional light haptic on press (flag-gated)
+        
+        // Enhanced haptic feedback for better tactile response
         if (event?.actionMasked == MotionEvent.ACTION_DOWN &&
             android.os.SystemProperties.getBoolean("sysui.qs.haptic", true)
         ) {
-            // Prefer a stronger, crisp click; fall back if not performed
+            // Use stronger haptic feedback for better button feel
             val flags = android.view.HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING or
                 android.view.HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+            
+            // Try multiple haptic types for better feedback
             val performed = performHapticFeedback(
                 android.view.HapticFeedbackConstants.CONTEXT_CLICK,
                 flags,
@@ -693,6 +689,7 @@ constructor(
                 performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
             }
         }
+        
         return result
     }
 
