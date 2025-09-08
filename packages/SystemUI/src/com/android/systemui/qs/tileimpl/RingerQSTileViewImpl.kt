@@ -16,6 +16,8 @@ import android.media.AudioManager
 import android.media.AudioManager.RINGER_MODE_NORMAL
 import android.media.AudioManager.RINGER_MODE_SILENT
 import android.media.AudioManager.RINGER_MODE_VIBRATE
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -42,6 +44,7 @@ class RingerQSTileViewImpl @JvmOverloads constructor(
     private var activeRingerMode: Int = RINGER_MODE_SILENT
     private lateinit var tileState: QSTile.State
     private val audioManager = context.getSystemService(AudioManager::class.java)
+    private val vibrator = context.getSystemService(Vibrator::class.java)
 
     private val stateChangeRunnable = Runnable { handleStateChanged() }
     private val ringerModeChangeRunnable = Runnable {
@@ -86,6 +89,7 @@ class RingerQSTileViewImpl @JvmOverloads constructor(
                         activeRingerMode = mode
                         removeCallbacks(ringerModeChangeRunnable)
                         post(ringerModeChangeRunnable)
+                        performHapticForMode(mode)
                     }
                     return true
                 }
@@ -206,6 +210,22 @@ class RingerQSTileViewImpl @JvmOverloads constructor(
             .translationX(translationX)
             .setDuration(RINGER_ICON_TRANSLATION_DURATION)
             .start()
+    }
+
+    private fun performHapticForMode(mode: Int) {
+        vibrator?.let {
+            when (mode) {
+                RINGER_MODE_SILENT -> it.vibrate(
+                    VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK)
+                )
+                RINGER_MODE_VIBRATE -> it.vibrate(
+                    VibrationEffect.createOneShot(25, VibrationEffect.DEFAULT_AMPLITUDE)
+                )
+                RINGER_MODE_NORMAL -> it.vibrate(
+                    VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK)
+                )
+            }
+        }
     }
 
     private fun updateHeight() {
