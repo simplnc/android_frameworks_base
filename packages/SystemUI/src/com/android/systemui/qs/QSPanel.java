@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2014 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -233,7 +233,7 @@ public class QSPanel extends LinearLayout {
     }
 
     /**
-     * Add brightness view above the tile layout.
+     * Add brightness view at the bottom of the tile layout.
      *
      * Used to add the brightness slider after construction.
      */
@@ -243,13 +243,17 @@ public class QSPanel extends LinearLayout {
             mChildrenLayoutTop.remove(mBrightnessView);
             mMovableContentStartIndex--;
         }
-        addView(view, 0);
+        // Force brightness slider to bottom - add after all other children
+        // getChildCount() gives us the last position
+        int bottomIndex = getChildCount();
+        addView(view, bottomIndex);
         mBrightnessView = view;
         mAutoBrightnessView = view.findViewById(R.id.brightness_icon);
 
         setBrightnessViewMargin();
 
-        mMovableContentStartIndex++;
+        // Don't increment movable content index for bottom placement
+        // mMovableContentStartIndex++;
     }
 
     private void setBrightnessViewMargin() {
@@ -258,10 +262,11 @@ public class QSPanel extends LinearLayout {
             // For Brightness Slider to extend its boundary to draw focus background
             int offset = getResources()
                     .getDimensionPixelSize(R.dimen.rounded_slider_boundary_offset);
+            // Adjusted margins for bottom positioning - more top margin, less bottom margin
             lp.topMargin = mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.qs_brightness_margin_top) - offset;
-            lp.bottomMargin = mContext.getResources()
                     .getDimensionPixelSize(R.dimen.qs_brightness_margin_bottom) - offset;
+            lp.bottomMargin = mContext.getResources()
+                    .getDimensionPixelSize(R.dimen.qs_brightness_margin_top) - offset;
             mBrightnessView.setLayoutParams(lp);
         }
     }

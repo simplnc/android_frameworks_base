@@ -43,6 +43,7 @@ import com.android.systemui.statusbar.VibratorHelper;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
 import com.android.systemui.util.ViewController;
 import com.android.systemui.util.time.SystemClock;
+import com.android.internal.util.android.VibrationUtils;
 import com.google.android.msdl.domain.MSDLPlayer;
 
 import javax.inject.Inject;
@@ -71,6 +72,7 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
 
     private final HapticSliderPlugin mBrightnessSliderHapticPlugin;
     private final ActivityStarter mActivityStarter;
+    private final VibratorHelper mVibratorHelper;
 
     private final BrightnessWarningToast mBrightnessWarningToast;
 
@@ -97,12 +99,14 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
             UiEventLogger uiEventLogger,
             HapticSliderPlugin brightnessSliderHapticPlugin,
             ActivityStarter activityStarter,
+            VibratorHelper vibratorHelper,
             BrightnessWarningToast brightnessWarningToast) {
         super(brightnessSliderView);
         mFalsingManager = falsingManager;
         mUiEventLogger = uiEventLogger;
         mBrightnessSliderHapticPlugin = brightnessSliderHapticPlugin;
         mActivityStarter = activityStarter;
+        mVibratorHelper = vibratorHelper;
         mBrightnessWarningToast = brightnessWarningToast;
         mIcon = mView.findViewById(R.id.brightness_icon);
     }
@@ -261,6 +265,8 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
                 mListener.onChanged(mTracking, progress, false);
                 if (fromUser) {
                     mBrightnessSliderHapticPlugin.onProgressChanged(progress, true);
+                    // AxionAOSP-style haptic feedback for brightness slider
+                    VibrationUtils.triggerVibration(mView.getContext(), 4);
                 }
             }
         }
@@ -272,6 +278,8 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
             if (mListener != null) {
                 mListener.onChanged(mTracking, getValue(), false);
                 mBrightnessSliderHapticPlugin.onStartTrackingTouch();
+                // AxionAOSP-style haptic feedback on start tracking
+                VibrationUtils.triggerVibration(mView.getContext(), 4);
             }
 
             if (mMirrorController != null) {
@@ -287,6 +295,8 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
             if (mListener != null) {
                 mListener.onChanged(mTracking, getValue(), true);
                 mBrightnessSliderHapticPlugin.onStopTrackingTouch();
+                // AxionAOSP-style haptic feedback on stop tracking
+                VibrationUtils.triggerVibration(mView.getContext(), 4);
             }
 
             if (mMirrorController != null) {
@@ -347,7 +357,7 @@ public class BrightnessSliderController extends ViewController<BrightnessSliderV
                     new HapticSlider.SeekBar(root.requireViewById(R.id.slider)));
             HapticSliderViewBinder.bind(viewRoot, plugin);
             return new BrightnessSliderController(root, mFalsingManager, mUiEventLogger, plugin,
-                    mActivityStarter, mBrightnessWarningToast);
+                    mActivityStarter, mVibratorHelper, mBrightnessWarningToast);
         }
 
         /** Get the layout to inflate based on what slider to use */
