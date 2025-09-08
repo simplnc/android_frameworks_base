@@ -31,15 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.android.systemui.island.IslandView
-        android:id="@+id/notification_island"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center"
-        android:layout_marginTop="60dp"
-        android:elevation="100dp"
-        android:visibility="gone" />
-
     <ViewStub
         android:id="@+id/keyguard_qs_user_switch_stub"
         android:layout="@layout/keyguard_qs_user_switch"

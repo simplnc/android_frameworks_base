@@ -7136,11 +7136,6 @@ public final class Settings {
             return isCallingPackageAllowedToWriteSettings(context, Process.myUid(),
                     context.getOpPackageName(), false);
         }
-
-        /**
-         * @hide
-         */
-        public static final String ISLAND_NOTIFICATION = "island_notification";
     }
 
     /**
