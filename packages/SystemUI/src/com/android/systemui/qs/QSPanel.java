@@ -233,7 +233,7 @@ public class QSPanel extends LinearLayout {
     }
 
     /**
-     * Add brightness view above the tile layout.
+     * Add brightness view at the bottom of the tile layout.
      *
      * Used to add the brightness slider after construction.
      */
@@ -243,7 +243,8 @@ public class QSPanel extends LinearLayout {
             mChildrenLayoutTop.remove(mBrightnessView);
             mMovableContentStartIndex--;
         }
-        addView(view, 0);
+        // Add brightness slider at the bottom instead of top (index 0)
+        addView(view, getChildCount());
         mBrightnessView = view;
         mAutoBrightnessView = view.findViewById(R.id.brightness_icon);
 
@@ -258,10 +259,11 @@ public class QSPanel extends LinearLayout {
             // For Brightness Slider to extend its boundary to draw focus background
             int offset = getResources()
                     .getDimensionPixelSize(R.dimen.rounded_slider_boundary_offset);
+            // Adjusted margins for bottom positioning - more top margin, less bottom margin
             lp.topMargin = mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.qs_brightness_margin_top) - offset;
-            lp.bottomMargin = mContext.getResources()
                     .getDimensionPixelSize(R.dimen.qs_brightness_margin_bottom) - offset;
+            lp.bottomMargin = mContext.getResources()
+                    .getDimensionPixelSize(R.dimen.qs_brightness_margin_top) - offset;
             mBrightnessView.setLayoutParams(lp);
         }
     }
