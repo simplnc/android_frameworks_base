@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2014 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -243,14 +243,17 @@ public class QSPanel extends LinearLayout {
             mChildrenLayoutTop.remove(mBrightnessView);
             mMovableContentStartIndex--;
         }
-        // Add brightness slider at the bottom instead of top (index 0)
-        addView(view, getChildCount());
+        // Force brightness slider to bottom - add after all other children
+        // getChildCount() gives us the last position
+        int bottomIndex = getChildCount();
+        addView(view, bottomIndex);
         mBrightnessView = view;
         mAutoBrightnessView = view.findViewById(R.id.brightness_icon);
 
         setBrightnessViewMargin();
 
-        mMovableContentStartIndex++;
+        // Don't increment movable content index for bottom placement
+        // mMovableContentStartIndex++;
     }
 
     private void setBrightnessViewMargin() {
