@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light elevations for tiles/panel/notifications (public attrs only) -->
+    <dimen name="qs_tile_elevation">2dp</dimen>
+    <dimen name="qs_panel_elevation">4dp</dimen>
+    <dimen name="notification_card_elevation">2dp</dimen>
+    <dimen name="notification_heads_up_elevation">8dp</dimen>
+</resources>

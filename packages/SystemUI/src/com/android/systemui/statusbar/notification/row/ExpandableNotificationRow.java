@@ -1127,11 +1127,43 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // Handle notification squishiness animations
+        handleNotificationSquishiness(event);
+        
         if (event.getActionMasked() != MotionEvent.ACTION_DOWN
                 || !isChildInGroup() || isGroupExpanded()) {
             return super.onTouchEvent(event);
         } else {
             return false;
+        }
+    }
+    
+    /**
+     * Handle notification press/release squishiness animations
+     */
+    private void handleNotificationSquishiness(MotionEvent event) {
+        if (!SystemProperties.getBoolean("sysui.notif.squish", true)) {
+            return;
+        }
+        
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                // Cancel any existing animations
+                animate().cancel();
+                // Start press animation
+                android.animation.Animator pressAnim = android.animation.AnimatorInflater
+                        .loadAnimator(getContext(), R.animator.notification_press);
+                pressAnim.setTarget(this);
+                pressAnim.start();
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                // Start release animation
+                android.animation.Animator releaseAnim = android.animation.AnimatorInflater
+                        .loadAnimator(getContext(), R.animator.notification_release);
+                releaseAnim.setTarget(this);
+                releaseAnim.start();
+                break;
         }
     }
 
@@ -1694,6 +1726,27 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
         if (TransparentHeaderFix.isEnabled()) {
             updateBackgroundForGroupState();
         }
+        
+        // Enlarge group header icon
+        enlargeGroupHeaderIcon(headerView);
+    }
+    
+    /**
+     * Enlarge the app icon in group header for better visibility
+     */
+    private void enlargeGroupHeaderIcon(NotificationHeaderView headerView) {
+        if (headerView == null) return;
+        
+        android.widget.ImageView iconView = headerView.findViewById(android.R.id.icon);
+        if (iconView != null) {
+            int groupIconSize = getResources().getDimensionPixelSize(R.dimen.notification_header_icon_size_group);
+            ViewGroup.LayoutParams params = iconView.getLayoutParams();
+            if (params != null) {
+                params.width = groupIconSize;
+                params.height = groupIconSize;
+                iconView.setLayoutParams(params);
+            }
+        }
     }
 
     /**
@@ -1706,6 +1759,9 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
                 /* headerViewLowPriority= */ headerView,
                 /* onClickListener= */ mExpandClickListener
         );
+        
+        // Enlarge group header icon for minimized header too
+        enlargeGroupHeaderIcon(headerView);
     }
 
     public void setHeadsUpAnimatingAway(boolean headsUpAnimatingAway) {
