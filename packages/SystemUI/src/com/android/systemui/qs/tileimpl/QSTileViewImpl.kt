@@ -75,6 +75,9 @@ import java.util.Objects
 
 private const val TAG = "QSTileViewImpl"
 
+// Add a nullable physics handler (default null; created only if flag enabled)
+private var advancedPhysicsHandler: QSTileAdvancedPhysicsHandler? = null
+
 open class QSTileViewImpl
 @JvmOverloads
 constructor(
@@ -239,6 +242,22 @@ constructor(
         createAndAddSideView()
     }
 
+    private fun getAdvancedPhysicsHandler(): QSTileAdvancedPhysicsHandler? {
+        // Handler itself checks the sysprop; only create once when needed
+        if (advancedPhysicsHandler == null) {
+            advancedPhysicsHandler = QSTileAdvancedPhysicsHandler(this)
+            // Add click listener as backup for reliability
+            setOnClickListener {
+                // Trigger press animation on click as backup
+                advancedPhysicsHandler?.animatePress()
+                postDelayed({
+                    advancedPhysicsHandler?.animateRelease()
+                }, 150)
+            }
+        }
+        return advancedPhysicsHandler
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         updateResources()
@@ -335,6 +354,8 @@ constructor(
         qsTileBackground =
             if (Flags.qsTileFocusState()) {
                 mContext.getDrawable(R.drawable.qs_tile_background_flagged) as RippleDrawable
+            } else if (android.os.SystemProperties.getBoolean("sysui.qs.bg_advanced", true)) {
+                mContext.getDrawable(R.drawable.qs_tile_background_advanced) as RippleDrawable
             } else {
                 mContext.getDrawable(R.drawable.qs_tile_background) as RippleDrawable
             }
@@ -635,6 +656,11 @@ constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        // Handle our physics first, before parent processing
+        if (event != null) {
+            getAdvancedPhysicsHandler()?.handleTouchEvent(event)
+        }
+        
         // let the View run the onTouch logic for click and long-click detection
         val result = super.onTouchEvent(event)
         if (longPressEffect != null) {
@@ -652,7 +678,27 @@ constructor(
                 MotionEvent.ACTION_CANCEL -> longPressEffect.handleActionCancel()
             }
         }
+        // Optional light haptic on press (flag-gated)
+        if (event?.actionMasked == MotionEvent.ACTION_DOWN &&
+            android.os.SystemProperties.getBoolean("sysui.qs.haptic", true)
+        ) {
+            // Prefer a stronger, crisp click; fall back if not performed
+            val flags = android.view.HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING or
+                android.view.HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+            val performed = performHapticFeedback(
+                android.view.HapticFeedbackConstants.CONTEXT_CLICK,
+                flags,
+            )
+            if (!performed) {
+                performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+            }
+        }
         return result
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        advancedPhysicsHandler?.cleanup()
     }
 
     // HANDLE STATE CHANGES RELATED METHODS
