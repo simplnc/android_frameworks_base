@@ -39,10 +39,11 @@ import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.statusbar.policy.HotspotController;
+import com.android.systemui.statusbar.policy.KeyguardStateController;
 
 import javax.inject.Inject;
 
-public class ThreeFingerGestureTile extends QSTileImpl<BooleanState> {
+public class ThreeFingerGestureTile extends SecureQSTile<BooleanState> {
     private static final String TAG = "ThreeFingerGestureTile";
     public static final String TILE_SPEC = "three_finger_gesture";
 
@@ -55,10 +56,11 @@ public class ThreeFingerGestureTile extends QSTileImpl<BooleanState> {
             MetricsLogger metricsLogger,
             StatusBarStateController statusBarStateController,
             ActivityStarter activityStarter,
-            QSLogger qsLogger
+            QSLogger qsLogger,
+            KeyguardStateController keyguardStateController
     ) {
         super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger);
+                statusBarStateController, activityStarter, qsLogger, keyguardStateController);
     }
 
     @Override
@@ -72,7 +74,11 @@ public class ThreeFingerGestureTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    protected void handleClick(@Nullable View view) {
+    protected void handleClick(@Nullable View view, boolean keyguardShowing) {
+        if (checkKeyguard(null, keyguardShowing)) {
+            return;
+        }
+        
         if (getState().state == Tile.STATE_UNAVAILABLE) {
             return;
         }
