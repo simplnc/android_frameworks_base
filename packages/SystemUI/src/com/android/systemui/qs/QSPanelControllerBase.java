@@ -56,7 +56,7 @@ import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.ViewController;
 import com.android.systemui.util.animation.DisappearParameters;
 import com.android.systemui.util.kotlin.JavaAdapterKt;
-import com.android.systemui.dagger.qualifiers.ShadeDisplayAware;
+import com.android.systemui.shade.ShadeDisplayAware;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
