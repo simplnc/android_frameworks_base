@@ -192,7 +192,8 @@ public class QuickStatusBarHeader extends FrameLayout
 
         Configuration config = mContext.getResources().getConfiguration();
         if (config.orientation != Configuration.ORIENTATION_LANDSCAPE) {
-            mQsHeaderLayout.setVisibility(mHeaderImageEnabled ? View.VISIBLE : View.GONE);
+            final boolean hasDrawable = mQsHeaderImageView != null && mQsHeaderImageView.getDrawable() != null;
+            mQsHeaderLayout.setVisibility((mHeaderImageEnabled || hasDrawable) ? View.VISIBLE : View.GONE);
         } else {
             mQsHeaderLayout.setVisibility(View.GONE);
         }
@@ -263,7 +264,8 @@ public class QuickStatusBarHeader extends FrameLayout
                 } else {
                     mQsHeaderImageView.setVisibility(View.GONE);
                 }
-                mHeaderImageEnabled = false;
+                // Keep header visible when we have a fallback drawable
+                mHeaderImageEnabled = (mCurrentBackground != null);
                 updateResources();
             }
         });
