@@ -49,28 +49,34 @@
 
     <TextView
         android:id="@+id/notification_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:singleLine="true"
-        android:paddingEnd="4dp"
+        android:paddingEnd="8dp"
+        android:ellipsize="end"
         android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Notification.Title"
     />
 
     <TextView
         android:id="@+id/conversation_notification_sender"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:singleLine="true"
-        android:paddingEnd="4dp"
+        android:paddingEnd="8dp"
+        android:ellipsize="end"
         style="@*android:style/Widget.DeviceDefault.Notification.Text"
     />
 
     <TextView
         android:id="@+id/notification_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:singleLine="true"
         android:paddingEnd="4dp"
+        android:ellipsize="end"
         style="@*android:style/Widget.DeviceDefault.Notification.Text"
     />
 </com.android.systemui.statusbar.notification.row.HybridConversationNotificationView>
