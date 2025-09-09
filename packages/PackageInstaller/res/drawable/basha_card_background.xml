@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Enhanced Card Background
+     Based on dotOS 5.1 design guidelines and Material Design 3
+-->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/basha_list_item_ripple">
+    
+    <!-- Card background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/basha_card_background" />
+            <corners android:radius="16dp" />
+            <stroke 
+                android:width="1dp" 
+                android:color="@color/basha_card_stroke" />
+        </shape>
+    </item>
+    
+</ripple>

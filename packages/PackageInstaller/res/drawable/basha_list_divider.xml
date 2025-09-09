@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Enhanced List Divider
+     Based on dotOS 5.1 design guidelines and Material Design 3
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    
+    <!-- Divider color -->
+    <solid android:color="@color/basha_outline_variant" />
+    
+    <!-- Height of the divider -->
+    <size android:height="1dp" />
+    
+</shape>

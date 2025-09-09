@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Enhanced PackageInstaller Dimensions
+     Based on dotOS 5.1 design guidelines and Material Design 3
+-->
+<resources>
+    
+    <!-- Dialog Dimensions -->
+    <dimen name="basha_dialog_corner_radius">16dp</dimen>
+    <dimen name="basha_dialog_padding">24dp</dimen>
+    <dimen name="basha_dialog_margin">16dp</dimen>
+    <dimen name="basha_dialog_max_width">400dp</dimen>
+    <dimen name="basha_dialog_min_width">280dp</dimen>
+    <dimen name="basha_dialog_elevation">8dp</dimen>
+    
+    <!-- Bottom Sheet Dimensions -->
+    <dimen name="basha_bottom_sheet_corner_radius">24dp</dimen>
+    <dimen name="basha_bottom_sheet_padding">24dp</dimen>
+    <dimen name="basha_bottom_sheet_margin">16dp</dimen>
+    <dimen name="basha_bottom_sheet_elevation">12dp</dimen>
+    <dimen name="basha_bottom_sheet_handle_width">40dp</dimen>
+    <dimen name="basha_bottom_sheet_handle_height">4dp</dimen>
+    
+    <!-- List Item Dimensions -->
+    <dimen name="basha_list_item_height">64dp</dimen>
+    <dimen name="basha_list_item_height_small">48dp</dimen>
+    <dimen name="basha_list_item_padding_start">16dp</dimen>
+    <dimen name="basha_list_item_padding_end">16dp</dimen>
+    <dimen name="basha_list_item_padding_top">12dp</dimen>
+    <dimen name="basha_list_item_padding_bottom">12dp</dimen>
+    <dimen name="basha_list_item_corner_radius">12dp</dimen>
+    <dimen name="basha_list_item_icon_size">40dp</dimen>
+    <dimen name="basha_list_item_icon_margin_end">16dp</dimen>
+    
+    <!-- Button Dimensions -->
+    <dimen name="basha_button_height">48dp</dimen>
+    <dimen name="basha_button_height_small">36dp</dimen>
+    <dimen name="basha_button_height_large">56dp</dimen>
+    <dimen name="basha_button_padding_start">24dp</dimen>
+    <dimen name="basha_button_padding_end">24dp</dimen>
+    <dimen name="basha_button_min_width">120dp</dimen>
+    <dimen name="basha_button_corner_radius">24dp</dimen>
+    <dimen name="basha_button_elevation">2dp</dimen>
+    <dimen name="basha_button_margin">8dp</dimen>
+    
+    <!-- Button Bar Dimensions -->
+    <dimen name="basha_button_bar_padding_start">16dp</dimen>
+    <dimen name="basha_button_bar_padding_end">16dp</dimen>
+    <dimen name="basha_button_bar_padding_top">8dp</dimen>
+    <dimen name="basha_button_bar_padding_bottom">8dp</dimen>
+    
+    <!-- Typography Dimensions -->
+    <dimen name="basha_text_display_large">57sp</dimen>
+    <dimen name="basha_text_display_medium">45sp</dimen>
+    <dimen name="basha_text_display_small">36sp</dimen>
+    <dimen name="basha_text_headline_large">32sp</dimen>
+    <dimen name="basha_text_headline_medium">28sp</dimen>
+    <dimen name="basha_text_headline_small">24sp</dimen>
+    <dimen name="basha_text_title_large">22sp</dimen>
+    <dimen name="basha_text_title_medium">16sp</dimen>
+    <dimen name="basha_text_title_small">14sp</dimen>
+    <dimen name="basha_text_body_large">16sp</dimen>
+    <dimen name="basha_text_body_medium">14sp</dimen>
+    <dimen name="basha_text_body_small">12sp</dimen>
+    <dimen name="basha_text_label_large">14sp</dimen>
+    <dimen name="basha_text_label_medium">12sp</dimen>
+    <dimen name="basha_text_label_small">11sp</dimen>
+    
+    <!-- Icon Dimensions -->
+    <dimen name="basha_icon_size_small">16dp</dimen>
+    <dimen name="basha_icon_size_medium">24dp</dimen>
+    <dimen name="basha_icon_size_large">48dp</dimen>
+    <dimen name="basha_icon_size_xlarge">64dp</dimen>
+    <dimen name="basha_icon_size_xxlarge">96dp</dimen>
+    
+    <!-- Progress Bar Dimensions -->
+    <dimen name="basha_progress_height">4dp</dimen>
+    <dimen name="basha_progress_height_thick">8dp</dimen>
+    <dimen name="basha_progress_margin_start">16dp</dimen>
+    <dimen name="basha_progress_margin_end">16dp</dimen>
+    <dimen name="basha_progress_margin_top">8dp</dimen>
+    <dimen name="basha_progress_margin_bottom">8dp</dimen>
+    <dimen name="basha_progress_corner_radius">2dp</dimen>
+    
+    <!-- Card Dimensions -->
+    <dimen name="basha_card_corner_radius">16dp</dimen>
+    <dimen name="basha_card_padding">16dp</dimen>
+    <dimen name="basha_card_margin">8dp</dimen>
+    <dimen name="basha_card_elevation">2dp</dimen>
+    <dimen name="basha_card_stroke_width">1dp</dimen>
+    
+    <!-- Snackbar Dimensions -->
+    <dimen name="basha_snackbar_corner_radius">8dp</dimen>
+    <dimen name="basha_snackbar_padding">16dp</dimen>
+    <dimen name="basha_snackbar_margin">8dp</dimen>
+    <dimen name="basha_snackbar_elevation">6dp</dimen>
+    <dimen name="basha_snackbar_min_height">48dp</dimen>
+    
+    <!-- Text Input Dimensions -->
+    <dimen name="basha_text_input_height">56dp</dimen>
+    <dimen name="basha_text_input_padding_start">16dp</dimen>
+    <dimen name="basha_text_input_padding_end">16dp</dimen>
+    <dimen name="basha_text_input_corner_radius">12dp</dimen>
+    <dimen name="basha_text_input_stroke_width">1dp</dimen>
+    <dimen name="basha_text_input_stroke_width_focused">2dp</dimen>
+    
+    <!-- Spacing Dimensions -->
+    <dimen name="basha_spacing_xs">4dp</dimen>
+    <dimen name="basha_spacing_small">8dp</dimen>
+    <dimen name="basha_spacing_medium">16dp</dimen>
+    <dimen name="basha_spacing_large">24dp</dimen>
+    <dimen name="basha_spacing_xl">32dp</dimen>
+    <dimen name="basha_spacing_xxl">48dp</dimen>
+    
+    <!-- Elevation Dimensions -->
+    <dimen name="basha_elevation_none">0dp</dimen>
+    <dimen name="basha_elevation_low">2dp</dimen>
+    <dimen name="basha_elevation_medium">4dp</dimen>
+    <dimen name="basha_elevation_high">8dp</dimen>
+    <dimen name="basha_elevation_highest">12dp</dimen>
+    
+    <!-- Divider Dimensions -->
+    <dimen name="basha_divider_height">1dp</dimen>
+    <dimen name="basha_divider_height_thick">2dp</dimen>
+    <dimen name="basha_divider_margin_start">16dp</dimen>
+    <dimen name="basha_divider_margin_end">16dp</dimen>
+    
+    <!-- Animation Dimensions (removed - durations should be in integers.xml) -->
+    
+    <!-- Touch Target Dimensions -->
+    <dimen name="basha_touch_target_min_size">48dp</dimen>
+    <dimen name="basha_touch_target_large_size">56dp</dimen>
+    
+</resources>
