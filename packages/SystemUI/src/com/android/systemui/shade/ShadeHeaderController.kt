@@ -35,6 +35,7 @@ import android.view.DisplayCutout
 import android.view.View
 import android.view.WindowInsets
 import android.widget.TextView
+import java.io.PrintWriter
 import androidx.annotation.VisibleForTesting
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.doOnLayout
@@ -70,6 +71,8 @@ import com.android.systemui.statusbar.policy.Clock
 import com.android.systemui.statusbar.policy.ConfigurationController
 import com.android.systemui.statusbar.policy.NextAlarmController
 import com.android.systemui.statusbar.policy.VariableDateView
+import com.android.systemui.statusbar.policy.VariableDateViewController
+import com.android.systemui.util.ViewController
 import android.provider.Settings
 import com.android.systemui.tuner.TunerService
 import com.android.systemui.statusbar.policy.CustomClockViewStub
