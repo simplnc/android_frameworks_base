@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - PackageInstaller Enhanced Colors
+     Based on dotOS 5.1 design guidelines and modern Material Design 3
+-->
+<resources>
+    
+    <!-- Primary Colors -->
+    <color name="basha_primary">#6750A4</color>
+    <color name="basha_primary_container">#EADDFF</color>
+    <color name="basha_on_primary">#FFFFFF</color>
+    <color name="basha_on_primary_container">#21005D</color>
+    
+    <!-- Secondary Colors -->
+    <color name="basha_secondary">#625B71</color>
+    <color name="basha_secondary_container">#E8DEF8</color>
+    <color name="basha_on_secondary">#FFFFFF</color>
+    <color name="basha_on_secondary_container">#1D192B</color>
+    
+    <!-- Tertiary Colors -->
+    <color name="basha_tertiary">#7D5260</color>
+    <color name="basha_tertiary_container">#FFD8E4</color>
+    <color name="basha_on_tertiary">#FFFFFF</color>
+    <color name="basha_on_tertiary_container">#31111D</color>
+    
+    <!-- Error Colors -->
+    <color name="basha_error">#BA1A1A</color>
+    <color name="basha_error_container">#FFDAD6</color>
+    <color name="basha_on_error">#FFFFFF</color>
+    <color name="basha_on_error_container">#410002</color>
+    
+    <!-- Success Colors -->
+    <color name="basha_success">#006A6B</color>
+    <color name="basha_success_container">#6FF7F8</color>
+    <color name="basha_on_success">#FFFFFF</color>
+    <color name="basha_on_success_container">#002020</color>
+    
+    <!-- Warning Colors -->
+    <color name="basha_warning">#8A5000</color>
+    <color name="basha_warning_container">#FFDBCA</color>
+    <color name="basha_on_warning">#FFFFFF</color>
+    <color name="basha_on_warning_container">#2D1600</color>
+    
+    <!-- Background Colors -->
+    <color name="basha_background">#FFFBFE</color>
+    <color name="basha_on_background">#1C1B1F</color>
+    <color name="basha_surface">#FFFBFE</color>
+    <color name="basha_on_surface">#1C1B1F</color>
+    <color name="basha_surface_variant">#E7E0EC</color>
+    <color name="basha_on_surface_variant">#49454F</color>
+    
+    <!-- Outline Colors -->
+    <color name="basha_outline">#79747E</color>
+    <color name="basha_outline_variant">#CAC4D0</color>
+    
+    <!-- Surface Tint Colors -->
+    <color name="basha_surface_tint">#6750A4</color>
+    <color name="basha_inverse_surface">#313033</color>
+    <color name="basha_inverse_on_surface">#F4EFF4</color>
+    <color name="basha_inverse_primary">#D0BCFF</color>
+    
+    <!-- Dark Theme Colors -->
+    <color name="basha_primary_dark">#D0BCFF</color>
+    <color name="basha_primary_container_dark">#4F378B</color>
+    <color name="basha_on_primary_dark">#381E72</color>
+    <color name="basha_on_primary_container_dark">#EADDFF</color>
+    
+    <color name="basha_secondary_dark">#CCC2DC</color>
+    <color name="basha_secondary_container_dark">#4A4458</color>
+    <color name="basha_on_secondary_dark">#332D41</color>
+    <color name="basha_on_secondary_container_dark">#E8DEF8</color>
+    
+    <color name="basha_tertiary_dark">#EFB8C8</color>
+    <color name="basha_tertiary_container_dark">#633B48</color>
+    <color name="basha_on_tertiary_dark">#492532</color>
+    <color name="basha_on_tertiary_container_dark">#FFD8E4</color>
+    
+    <color name="basha_error_dark">#FFB4AB</color>
+    <color name="basha_error_container_dark">#93000A</color>
+    <color name="basha_on_error_dark">#690005</color>
+    <color name="basha_on_error_container_dark">#FFDAD6</color>
+    
+    <color name="basha_success_dark">#4DD8D9</color>
+    <color name="basha_success_container_dark">#004F50</color>
+    <color name="basha_on_success_dark">#003738</color>
+    <color name="basha_on_success_container_dark">#6FF7F8</color>
+    
+    <color name="basha_warning_dark">#FFB77C</color>
+    <color name="basha_warning_container_dark">#5D3700</color>
+    <color name="basha_on_warning_dark">#3D2400</color>
+    <color name="basha_on_warning_container_dark">#FFDBCA</color>
+    
+    <color name="basha_background_dark">#1C1B1F</color>
+    <color name="basha_on_background_dark">#E6E1E5</color>
+    <color name="basha_surface_dark">#1C1B1F</color>
+    <color name="basha_on_surface_dark">#E6E1E5</color>
+    <color name="basha_surface_variant_dark">#49454F</color>
+    <color name="basha_on_surface_variant_dark">#CAC4D0</color>
+    
+    <color name="basha_outline_dark">#938F99</color>
+    <color name="basha_outline_variant_dark">#49454F</color>
+    
+    <!-- Dialog Specific Colors -->
+    <color name="basha_dialog_background">@color/basha_surface</color>
+    <color name="basha_dialog_background_dark">@color/basha_surface_dark</color>
+    <color name="basha_dialog_scrim">#80000000</color>
+    <color name="basha_dialog_scrim_dark">#80000000</color>
+    
+    <!-- List Item Colors -->
+    <color name="basha_list_item_background">@color/basha_surface</color>
+    <color name="basha_list_item_background_dark">@color/basha_surface_dark</color>
+    <color name="basha_list_item_ripple">#1F6750A4</color>
+    <color name="basha_list_item_ripple_dark">#1FD0BCFF</color>
+    
+    <!-- Progress Colors -->
+    <color name="basha_progress_background">@color/basha_surface_variant</color>
+    <color name="basha_progress_background_dark">@color/basha_surface_variant_dark</color>
+    <color name="basha_progress_indicator">@color/basha_primary</color>
+    <color name="basha_progress_indicator_dark">@color/basha_primary_dark</color>
+    
+    <!-- Card Colors -->
+    <color name="basha_card_background">@color/basha_surface</color>
+    <color name="basha_card_background_dark">@color/basha_surface_dark</color>
+    <color name="basha_card_stroke">@color/basha_outline_variant</color>
+    <color name="basha_card_stroke_dark">@color/basha_outline_variant_dark</color>
+    
+    <!-- Snackbar Colors -->
+    <color name="basha_snackbar_background">#323232</color>
+    <color name="basha_snackbar_background_dark">#323232</color>
+    <color name="basha_snackbar_text">#FFFFFF</color>
+    <color name="basha_snackbar_action">@color/basha_primary</color>
+    <color name="basha_snackbar_action_dark">@color/basha_primary_dark</color>
+    
+    <!-- Status Colors -->
+    <color name="basha_installing">@color/basha_primary</color>
+    <color name="basha_installing_dark">@color/basha_primary_dark</color>
+    <color name="basha_success_install">@color/basha_success</color>
+    <color name="basha_success_install_dark">@color/basha_success_dark</color>
+    <color name="basha_failed_install">@color/basha_error</color>
+    <color name="basha_failed_install_dark">@color/basha_error_dark</color>
+    <color name="basha_uninstalling">@color/basha_warning</color>
+    <color name="basha_uninstalling_dark">@color/basha_warning_dark</color>
+    
+    <!-- Transparent Colors -->
+    <color name="basha_transparent">#00000000</color>
+    <color name="basha_semi_transparent">#80000000</color>
+    <color name="basha_light_transparent">#40000000</color>
+    
+    <!-- Legacy Support -->
+    <color name="basha_accent">@color/basha_primary</color>
+    <color name="basha_accent_dark">@color/basha_primary_dark</color>
+    
+</resources>

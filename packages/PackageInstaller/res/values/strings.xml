@@ -360,4 +360,26 @@
     <!-- Dialog action to close a dialog. [CHAR LIMIT=30] -->
     <string name="close">Close</string>
 
+    <!-- Permission-related strings -->
+    <!-- [CHAR LIMIT=50] -->
+    <string name="permissions_title">App permissions</string>
+    <!-- [CHAR LIMIT=100] -->
+    <string name="permissions_summary">This app will have access to the following:</string>
+    <!-- [CHAR LIMIT=100] -->
+    <string name="permissions_none">This app requires no special permissions</string>
+    <!-- [CHAR LIMIT=30] -->
+    <string name="show_permissions">Show permissions</string>
+    <!-- [CHAR LIMIT=30] -->
+    <string name="hide_permissions">Hide permissions</string>
+    <!-- [CHAR LIMIT=50] -->
+    <string name="app_info_title">App information</string>
+    <!-- [CHAR LIMIT=100] -->
+    <string name="app_version_label">Version: %1$s</string>
+    <!-- [CHAR LIMIT=100] -->
+    <string name="app_size_label">Size: %1$s</string>
+    <!-- [CHAR LIMIT=100] -->
+    <string name="app_package_label">Package: %1$s</string>
+    <!-- [CHAR LIMIT=100] -->
+    <string name="install_success_with_package">App installed.\nPackage: %1$s</string>
+
 </resources>

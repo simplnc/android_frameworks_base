@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Enhanced List Item Background
+     Based on dotOS 5.1 design guidelines and Material Design 3
+-->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/basha_list_item_ripple">
+    
+    <!-- Default state background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/basha_list_item_background" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+    
+    <!-- Pressed state background -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/basha_list_item_ripple" />
+            <corners android:radius="12dp" />
+        </shape>
+    </item>
+    
+    <!-- Focused state background -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/basha_list_item_ripple" />
+            <corners android:radius="12dp" />
+            <stroke 
+                android:width="2dp" 
+                android:color="@color/basha_primary" />
+        </shape>
+    </item>
+    
+</ripple>

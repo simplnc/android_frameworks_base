@@ -107,7 +107,18 @@ public class InstallSuccess extends Activity {
         });
         mDialog = builder.create();
         mDialog.show();
-        mDialog.requireViewById(R.id.install_success).setVisibility(View.VISIBLE);
+        
+        // Show install success container
+        View successContainer = mDialog.requireViewById(R.id.install_success_container);
+        successContainer.setVisibility(View.VISIBLE);
+        
+        // Show package name if available
+        if (mAppPackageName != null) {
+            View packageView = mDialog.requireViewById(R.id.install_success_package);
+            String packageText = getString(R.string.app_package_label, mAppPackageName);
+            ((android.widget.TextView) packageView).setText(packageText);
+            packageView.setVisibility(View.VISIBLE);
+        }
         // Show or hide "launch" button
         boolean visible = false;
         if (mLaunchIntent != null) {

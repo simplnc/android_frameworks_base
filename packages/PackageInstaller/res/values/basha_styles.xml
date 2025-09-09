@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - PackageInstaller Enhanced Styles
+     Based on dotOS 5.1 design guidelines and modern Material Design 3
+-->
+<resources>
+    
+    <!-- Enhanced Dialog Styles -->
+    <style name="BashaAlertDialog" parent="@android:style/Theme.DeviceDefault.Light.Dialog.Alert">
+        <item name="android:windowBackground">@android:drawable/dialog_frame</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@android:style/Widget.TextView</item>
+        <item name="android:textAppearanceMedium">@android:style/TextAppearance.Medium</item>
+        <item name="android:textAppearanceSmall">@android:style/TextAppearance.Small</item>
+        <item name="android:textAppearanceLarge">@android:style/TextAppearance.Large</item>
+        <item name="android:listPreferredItemHeight">64dp</item>
+        <item name="android:listPreferredItemHeightSmall">48dp</item>
+        <item name="android:listPreferredItemPaddingStart">16dp</item>
+        <item name="android:listPreferredItemPaddingEnd">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:listDivider">?android:attr/listDivider</item>
+        <item name="android:buttonBarButtonStyle">@style/BashaButton</item>
+        <item name="android:buttonBarStyle">@style/BashaButtonBar</item>
+        <item name="android:itemBackground">?android:attr/selectableItemBackground</item>
+        <item name="android:itemTextAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="android:drawableTint">?android:attr/colorAccent</item>
+    </style>
+    
+    <!-- Enhanced Bottom Sheet Style -->
+    <style name="BashaBottomSheet" parent="@android:style/Theme.DeviceDefault.Light.Dialog">
+        <item name="android:windowBackground">@android:drawable/dialog_frame</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+    
+    <!-- Typography Styles -->
+    <style name="BashaDialogTitle" parent="@android:style/TextAppearance.Large">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+    
+    <style name="BashaDialogMessage" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+    </style>
+    
+    <!-- Button Styles -->
+    <style name="BashaButton" parent="@android:style/Widget.Button">
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:minWidth">120dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="backgroundTint">?android:attr/colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:translationZ">2dp</item>
+    </style>
+    
+    <style name="BashaButton.Outlined" parent="BashaButton">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
+        <item name="android:strokeColor">?android:attr/colorAccent</item>
+        <item name="android:strokeWidth">1</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:translationZ">0dp</item>
+    </style>
+    
+    <style name="BashaButton.Text" parent="BashaButton">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:translationZ">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+    
+    <!-- Button Bar Style -->
+    <style name="BashaButtonBar">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">end</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:divider">?android:attr/listDivider</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+    
+    <!-- List Item Styles -->
+    <style name="BashaListItem">
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+    
+    <style name="BashaListItem.Icon">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:src">@android:drawable/sym_def_app_icon</item>
+    </style>
+    
+    <style name="BashaListItem.Text">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    
+    <style name="BashaListItem.PrimaryText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <style name="BashaListItem.SecondaryText" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_marginTop">2dp</item>
+    </style>
+    
+    <!-- Progress Styles -->
+    <style name="BashaProgressBar" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">4dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:progressTint">?android:attr/colorAccent</item>
+        <item name="android:progressBackgroundTint">?android:attr/colorControlHighlight</item>
+    </style>
+    
+    <!-- Card Styles -->
+    <style name="BashaCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@android:drawable/dialog_frame</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:translationZ">2dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+    
+    <!-- Snackbar Styles -->
+    <style name="BashaSnackbar" parent="@android:style/Widget">
+        <item name="android:background">@android:drawable/dialog_frame</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:elevation">6dp</item>
+        <item name="android:translationZ">6dp</item>
+    </style>
+    
+    <!-- Animation Styles -->
+    
+    <!-- Icon Styles -->
+    <style name="BashaIcon">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:tint">?android:attr/textColorSecondary</item>
+    </style>
+    
+    <style name="BashaIcon.Large">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:tint">?android:attr/textColorPrimary</item>
+    </style>
+    
+    <!-- Text Input Styles -->
+    <style name="BashaTextInputLayout" parent="@android:style/Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textColorHint">?android:attr/textColorSecondary</item>
+    </style>
+    
+    <style name="BashaTextInput" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.5</item>
+        <item name="android:inputType">text</item>
+        <item name="android:imeOptions">actionDone</item>
+    </style>
+    
+</resources>
