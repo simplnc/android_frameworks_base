@@ -6178,6 +6178,12 @@ public class ActivityManagerService extends IActivityManager.Stub
         return checkComponentPermission(permission, pid, uid, deviceId, -1, true);
     }
 
+    @Override
+    public boolean isSwipeToScreenshotGestureActive() {
+        return Settings.System.getInt(mContext.getContentResolver(), 
+                Settings.System.THREE_FINGER_GESTURE, 0) != 0;
+    }
+
     /**
      * Binder IPC calls go through the public entry point.
      * This can be called with or without the global lock held.

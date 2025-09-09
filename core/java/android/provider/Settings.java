@@ -11992,6 +11992,12 @@ public final class Settings {
         public static final String QS_HEADER_CLOCK_STYLE = "qs_header_clock_style";
 
         /**
+         * Three Finger Gesture from Oppo
+         * @hide
+         */
+        public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
+
+        /**
          * Whether this user has enabled Quick controls.
          *
          * 0 indicates disabled and 1 indicates enabled. A non existent value should be treated as

@@ -25,10 +25,11 @@ import com.android.systemui.accessibility.data.repository.ColorInversionReposito
 import com.android.systemui.accessibility.data.repository.OneHandedModeRepository
 import com.android.systemui.accessibility.data.repository.OneHandedModeRepositoryImpl
 import com.android.systemui.accessibility.qs.QSAccessibilityModule
+import com.android.systemui.qs.gestures.QSGestureModule
 import dagger.Binds
 import dagger.Module
 
-@Module(includes = [QSAccessibilityModule::class])
+@Module(includes = [QSAccessibilityModule::class, QSGestureModule::class])
 interface AccessibilityModule {
     @Binds
     fun colorCorrectionRepository(impl: ColorCorrectionRepositoryImpl): ColorCorrectionRepository

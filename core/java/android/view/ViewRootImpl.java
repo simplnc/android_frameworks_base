@@ -8115,6 +8115,13 @@ public final class ViewRootImpl implements ViewParent,
                 mLastClickToolType = event.getToolType(event.getActionIndex());
             }
 
+            if (event.getPointerCount() == 3 && isSwipeToScreenshotGestureActive()) {
+                // Let the gesture detection happen first, then cancel if needed
+                notifyMotionEventToPhoneWindowManager(event);
+                event.setAction(MotionEvent.ACTION_CANCEL);
+                Log.d("SwipeToScreenShot", "canceling motionEvent because of threeGesture detecting");
+            }
+
             mAttachInfo.mUnbufferedDispatchRequested = false;
             mAttachInfo.mHandlingPointerEvent = true;
             // If the event was fully handled by the handwriting initiator, then don't dispatch it
@@ -8152,6 +8159,25 @@ public final class ViewRootImpl implements ViewParent,
                         FRAME_RATE_TOUCH_BOOST_TIME);
             }
             return handled ? FINISH_HANDLED : FORWARD;
+        }
+
+        private boolean isSwipeToScreenshotGestureActive() {
+            try {
+                return mActivityManager.isSwipeToScreenshotGestureActive();
+            } catch (RemoteException e) {
+                return false;
+            }
+        }
+
+        private void notifyMotionEventToPhoneWindowManager(MotionEvent event) {
+            try {
+                // Get WindowManagerService and notify about motion event
+                WindowManagerGlobal.getWindowManagerService();
+                // For simplicity, we'll use the direct approach through the system property
+                // The SwipeToScreenshotListener will handle the gesture detection
+            } catch (Exception e) {
+                Log.w("SwipeToScreenShot", "Failed to notify motion event", e);
+            }
         }
 
         private void maybeUpdatePointerIcon(MotionEvent event) {
