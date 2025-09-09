@@ -40,7 +40,6 @@ import com.android.systemui.qs.customize.QSCustomizerController;
 import com.android.systemui.qs.dagger.QSScope;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.scene.shared.flag.SceneContainerFlag;
-import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.settings.brightness.BrightnessController;
 import com.android.systemui.settings.brightness.BrightnessMirrorHandler;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
@@ -104,9 +103,7 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel>
             StatusBarKeyguardViewManager statusBarKeyguardViewManager,
             SplitShadeStateController splitShadeStateController,
             Provider<QSLongPressEffect> longPRessEffectProvider,
-            MediaCarouselInteractor mediaCarouselInteractor,
-            @ShadeDisplayAware ConfigurationController configurationController,
-            TunerService tunerService) {
+            MediaCarouselInteractor mediaCarouselInteractor) {
         super(view, qsHost, qsCustomizerController, usingMediaPlayer, mediaHost,
                 metricsLogger, uiEventLogger, qsLogger, dumpManager, splitShadeStateController,
                 longPRessEffectProvider, configurationController, tunerService);
