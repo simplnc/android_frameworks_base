@@ -2,7 +2,7 @@
 <resources>
     <!-- Enhanced Toast Animation Style -->
     <style name="Animation.EnhancedToast">
-        <item name="windowEnterAnimation">@anim/enhanced_toast_enter</item>
-        <item name="windowExitAnimation">@anim/enhanced_toast_exit</item>
+        <item name="android:windowEnterAnimation">@anim/enhanced_toast_enter</item>
+        <item name="android:windowExitAnimation">@anim/enhanced_toast_exit</item>
     </style>
 </resources>
