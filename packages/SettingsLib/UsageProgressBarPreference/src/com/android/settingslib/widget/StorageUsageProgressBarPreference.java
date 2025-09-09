@@ -190,10 +190,14 @@ public class StorageUsageProgressBarPreference extends Preference {
             animator.start();
         }
 
-        if (mPercent >= 81) {
+        // Safer thresholds for storage usage: only show red when usage is very high.
+        // Red:   >= 90% used
+        // Orange: >= 60% used
+        // Green:  < 60% used
+        if (mPercent >= 90) {
             progressBar.setProgressTintList(context.getColorStateList(R.color.battery_low));
             progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_low));
-        } else if (mPercent >= 21) {
+        } else if (mPercent >= 60) {
             progressBar.setProgressTintList(context.getColorStateList(R.color.battery_medium));
             progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_medium));
         } else {
