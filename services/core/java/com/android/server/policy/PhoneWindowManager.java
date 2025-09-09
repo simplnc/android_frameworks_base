@@ -600,7 +600,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     boolean mWakeGestureEnabledSetting;
     MyWakeGestureListener mWakeGestureListener;
-    SwipeToScreenshotListener mSwipeToScreenshotListener;
 
     int mLidKeyboardAccessibility;
     int mLidNavigationAccessibility;
@@ -2044,21 +2043,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mDefaultDisplayPolicy.takeScreenshot(type, source);
     }
 
-    private void takeScreenshot() {
-        handleScreenShot(WindowManager.ScreenshotSource.SCREENSHOT_OTHER, TAKE_SCREENSHOT_FULLSCREEN);
-    }
-
-    public void notifyMotionEvent(MotionEvent event) {
-        if (mSwipeToScreenshotListener != null && isThreeFingerGestureEnabled()) {
-            mSwipeToScreenshotListener.onTouchEvent(event);
-        }
-    }
-
-    private boolean isThreeFingerGestureEnabled() {
-        return Settings.System.getInt(mContext.getContentResolver(), 
-                Settings.System.THREE_FINGER_GESTURE, 0) != 0;
-    }
-
     @Override
     public void showGlobalActions() {
         mHandler.removeMessages(MSG_DISPATCH_SHOW_GLOBAL_ACTIONS);
@@ -2583,17 +2567,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mHandler = new PolicyHandler(injector.getLooper());
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
-        
-        // Initialize SwipeToScreenshotListener
-        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-        mSwipeToScreenshotListener = new SwipeToScreenshotListener(mContext, displayMetrics, 
-                new SwipeToScreenshotListener.Callbacks() {
-                    @Override
-                    public void onSwipeThreeFinger() {
-                        takeScreenshot();
-                    }
-                });
-        
         mSettingsObserver = new SettingsObserver(mHandler);
         mSettingsObserver.observe();
 

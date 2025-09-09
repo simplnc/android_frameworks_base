@@ -11997,12 +11997,7 @@ public final class Settings {
          */
         public static final String QS_TRANSPARENCY = "qs_transparency";
 
-        /**
-         * Three Finger Gesture from Oppo
-         * @hide
-         */
-        public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
-
+       
         /**
          * Whether this user has enabled Quick controls.
          *

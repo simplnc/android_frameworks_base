@@ -22,12 +22,12 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical|start"
     android:paddingStart="@*android:dimen/notification_2025_content_margin_start"
-    android:paddingEnd="12dp">
+    android:paddingEnd="@dimen/notification_shade_content_margin_horizontal">
 
     <FrameLayout
         android:layout_width="@dimen/notification_2025_single_line_face_pile_size"
         android:layout_height="@dimen/notification_2025_single_line_face_pile_size"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/notification_children_padding"
     >
         <com.android.internal.widget.CachingIconView
             android:id="@*android:id/conversation_icon"

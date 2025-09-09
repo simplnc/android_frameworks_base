@@ -136,7 +136,7 @@ public class InstallFailed extends Activity {
                 int accent;
                 {
                     android.util.TypedValue tv = new android.util.TypedValue();
-                    getTheme().resolveAttribute(com.android.internal.R.attr.colorAccent, tv, true);
+                    getTheme().resolveAttribute(android.R.attr.colorAccent, tv, true);
                     accent = tv.data;
                 }
                 android.widget.Button positive = mDialog.getButton(DialogInterface.BUTTON_POSITIVE);

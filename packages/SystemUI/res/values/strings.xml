@@ -4003,12 +4003,6 @@
     <!-- Education notification text for All Apps [CHAR_LIMIT=100] -->
     <string name="all_apps_edu_notification_content">Press the action key at any time. Tap to learn more gestures.</string>
 
-    <!-- Three-finger gesture strings -->
-    <string name="three_finger_gesture_title">Three-finger swipe</string>
-    <string name="three_finger_gesture_summary">Swipe down with three fingers to take a screenshot</string>
-    <string name="accessibility_quick_settings_three_finger_gesture_changed_on">Three-finger gesture enabled</string>
-    <string name="accessibility_quick_settings_three_finger_gesture_changed_off">Three-finger gesture disabled</string>
-
     <!-- Title for Extra Dim dialog [CHAR LIMIT=NONE] -->
     <string name="accessibility_deprecate_extra_dim_dialog_title">Extra dim is now part of the brightness slider</string>
     <!-- Content description for Extra Dim dialog. This helps users understand that we could make screen much dimmer by lowering the brightness through the brightness bar in a dark environment. [CHAR LIMIT=NONE] -->
