@@ -51,10 +51,12 @@ import com.android.systemui.qs.tileimpl.SliderQSTileViewImpl;
 import com.android.systemui.qs.tileimpl.SlideableQSTile;
 import com.android.systemui.scene.shared.flag.SceneContainerFlag;
 import com.android.systemui.statusbar.policy.SplitShadeStateController;
+import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.ViewController;
 import com.android.systemui.util.animation.DisappearParameters;
 import com.android.systemui.util.kotlin.JavaAdapterKt;
+import com.android.systemui.dagger.qualifiers.ShadeDisplayAware;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -90,7 +92,7 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
     private final UiEventLogger mUiEventLogger;
     protected final QSLogger mQSLogger;
     private final DumpManager mDumpManager;
-    private final TunerService mTunerService;
+    protected final TunerService mTunerService;
     protected final ArrayList<TileRecord> mRecords = new ArrayList<>();
     protected boolean mShouldUseSplitNotificationShade;
 
