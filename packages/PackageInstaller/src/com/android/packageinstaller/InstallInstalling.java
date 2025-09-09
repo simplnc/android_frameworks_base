@@ -103,7 +103,8 @@ public class InstallInstalling extends Activity {
 
             builder.setIcon(as.icon);
             builder.setTitle(as.label);
-            builder.setView(R.layout.install_content_view);
+            // Use enhanced installer layout with richer progress and details
+            builder.setView(R.layout.enhanced_install_content_view);
             builder.setNegativeButton(getString(R.string.cancel),
                     (ignored, ignored2) -> {
                         if (mInstallingTask != null) {
