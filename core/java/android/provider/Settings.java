@@ -11985,13 +11985,7 @@ public final class Settings {
         public static final String QS_TILES = "sysui_qs_tiles";
 
         /**
-         * QS Header Clock Style
-         * 0 = Default, 1 = Simple, 2 = Chip, 3 = Analog, 4 = OOS
-         * @hide
-         */
-        public static final String QS_HEADER_CLOCK_STYLE = "qs_header_clock_style";
-
-        /**
+        
          * QS Transparency
          * @hide
          */
