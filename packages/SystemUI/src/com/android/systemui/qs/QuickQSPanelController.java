@@ -39,7 +39,7 @@ import com.android.systemui.statusbar.policy.SplitShadeStateController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.util.leak.RotationUtils;
 import com.android.systemui.tuner.TunerService;
-import com.android.systemui.shade.ShadeDisplayAware;
+import com.android.systemui.dagger.qualifiers.ShadeDisplayAware;
 
 import kotlinx.coroutines.flow.StateFlow;
 
