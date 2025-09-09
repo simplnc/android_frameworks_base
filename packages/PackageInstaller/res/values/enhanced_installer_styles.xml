@@ -8,16 +8,16 @@
         <item name="android:colorAccent">@android:color/holo_blue_bright</item>
         <item name="android:textColorPrimary">@color/enhanced_installer_text_primary</item>
         <item name="android:textColorSecondary">@color/enhanced_installer_text_secondary</item>
-        <item name="android:windowAnimationStyle">@style/Animation.EnhancedInstaller</item>
+        <item name="android:windowAnimationStyle">@style/EnhancedInstallerAnimation</item>
     </style>
 
-    <style name="TextAppearance.EnhancedInstaller.Title" parent="@android:style/TextAppearance.Material.Headline6">
+    <style name="TextAppearance.EnhancedInstaller.Title" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:textColor">@color/enhanced_installer_text_primary</item>
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="TextAppearance.EnhancedInstaller.Subtitle" parent="@android:style/TextAppearance.Material.Subtitle1">
+    <style name="TextAppearance.EnhancedInstaller.Subtitle" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/enhanced_installer_text_primary</item>
         <item name="android:textSize">16sp</item>
     </style>
@@ -33,8 +33,8 @@
     </style>
 
     <!-- Enhanced Package Installer Animation -->
-    <style name="Animation.EnhancedInstaller">
-        <item name="windowEnterAnimation">@anim/enhanced_installer_enter</item>
-        <item name="windowExitAnimation">@anim/enhanced_installer_exit</item>
+    <style name="EnhancedInstallerAnimation">
+        <item name="android:windowEnterAnimation">@anim/enhanced_installer_enter</item>
+        <item name="android:windowExitAnimation">@anim/enhanced_installer_exit</item>
     </style>
 </resources>
