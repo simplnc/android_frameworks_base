@@ -52,15 +52,10 @@ import com.bosphere.fadingedgelayout.FadingEdgeLayout;
 import com.android.internal.graphics.ColorUtils;
 import com.android.internal.policy.SystemBarUtils;
 import com.android.settingslib.Utils;
-import com.android.systemui.R;
 import com.android.systemui.battery.BatteryMeterView;
 import com.android.systemui.Dependency;
 import com.android.systemui.plugins.ActivityStarter;
-import com.android.systemui.qs.QSDetail.Callback;
 import com.android.systemui.statusbar.phone.StatusBarContentInsetsProvider;
-import com.android.systemui.statusbar.phone.StatusBarIconController;
-import com.android.systemui.statusbar.phone.StatusBarIconController.TintedIconManager;
-import com.android.systemui.statusbar.phone.StatusIconContainer;
 import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.statusbar.policy.VariableDateView;
 import com.android.systemui.tuner.TunerService;
@@ -74,8 +69,7 @@ import java.lang.Math;
 public class QuickStatusBarHeader extends FrameLayout
             implements StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
 
-    private static final String QS_HEADER_IMAGE =
-            "system:" + Settings.System.QS_HEADER_IMAGE;
+    // No QS_HEADER_IMAGE in AOSP; feature uses StatusBarHeaderMachine providers
 
     private boolean mExpanded;
     private boolean mQsDisabled;
@@ -138,7 +132,7 @@ public class QuickStatusBarHeader extends FrameLayout
         if (mSceneContainerEnabled) {
             updateResources();
         }
-        updateAnimators();
+        // updateAnimators() not present in this tree
     }
 
     @Override
