@@ -41,7 +41,7 @@
                     android:id="@+id/app_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Material.Headline6"
+                    android:textAppearance="@android:style/TextAppearance.Material.Title"
                     android:textColor="?android:attr/textColorPrimary"
                     android:maxLines="2"
                     android:ellipsize="end" />
@@ -50,7 +50,7 @@
                     android:id="@+id/app_version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Material.Body2"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginTop="4dp" />
 
@@ -58,7 +58,7 @@
                     android:id="@+id/app_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Material.Caption"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginTop="2dp" />
 
@@ -78,7 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Material.Subtitle1"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:text="@string/message_staging"
                 android:textColor="?android:attr/textColorPrimary" />
 
@@ -104,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Material.Subtitle1"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:text="@string/installing"
                 android:textColor="?android:attr/textColorPrimary" />
 
@@ -120,7 +120,7 @@
                 android:id="@+id/progress_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Material.Caption"
+                android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginTop="4dp"
                 android:text="0%" />
@@ -139,8 +139,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Material.Subtitle1"
-                android:text="@android:string/app_info"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:text="@string/enhanced_app_info"
                 android:textColor="?android:attr/textColorPrimary"
                 android:layout_marginBottom="8dp" />
 
@@ -154,8 +154,8 @@
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="@android:string/app_info"
-                    android:textAppearance="@style/TextAppearance.Material.Body2"
+                    android:text="@string/enhanced_package_name_label"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorSecondary" />
 
                 <TextView
@@ -163,7 +163,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textAppearance="@style/TextAppearance.Material.Body2"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorPrimary"
                     android:fontFamily="monospace"
                     android:textSize="12sp" />
@@ -180,8 +180,8 @@
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="@android:string/location_service"
-                    android:textAppearance="@style/TextAppearance.Material.Body2"
+                    android:text="@string/enhanced_install_location_label"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorSecondary" />
 
                 <TextView
@@ -189,7 +189,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textAppearance="@style/TextAppearance.Material.Body2"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorPrimary" />
 
             </LinearLayout>
@@ -204,8 +204,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@android:string/permgrouplab_storage"
-                    android:textAppearance="@style/TextAppearance.Material.Body2"
+                    android:text="@string/enhanced_required_permissions_label"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginBottom="4dp" />
 
@@ -213,7 +213,7 @@
                     android:id="@+id/permissions_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Material.Body2"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
                     android:textColor="?android:attr/textColorPrimary"
                     android:maxLines="3"
                     android:ellipsize="end" />
@@ -227,7 +227,7 @@
             android:id="@+id/install_confirm_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_confirm_question"
             android:textColor="?android:attr/textColorPrimary"
             android:visibility="invisible"
@@ -238,7 +238,7 @@
             android:id="@+id/install_confirm_question_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_confirm_question_update"
             android:textColor="?android:attr/textColorPrimary"
             android:visibility="invisible"
@@ -250,7 +250,7 @@
             android:id="@+id/install_success"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_done"
             android:textColor="@color/install_success_color"
             android:visibility="invisible"
@@ -260,7 +260,7 @@
             android:id="@+id/install_failed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_failed"
             android:textColor="@color/install_error_color"
             android:visibility="invisible"
@@ -270,7 +270,7 @@
             android:id="@+id/install_failed_blocked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_failed_blocked"
             android:textColor="@color/install_error_color"
             android:visibility="invisible"
@@ -280,7 +280,7 @@
             android:id="@+id/install_failed_conflict"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_failed_conflict"
             android:textColor="@color/install_error_color"
             android:visibility="invisible"
@@ -290,7 +290,7 @@
             android:id="@+id/install_failed_incompatible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_failed_incompatible"
             android:textColor="@color/install_error_color"
             android:visibility="invisible"
@@ -300,7 +300,7 @@
             android:id="@+id/install_failed_invalid_apk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Material.Body1"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
             android:text="@string/install_failed_invalid_apk"
             android:textColor="@color/install_error_color"
             android:visibility="invisible"

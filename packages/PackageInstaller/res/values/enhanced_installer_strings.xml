@@ -24,4 +24,10 @@
     <string name="enhanced_app_category">Category: %1$s</string>
     <string name="enhanced_minimum_sdk">Minimum Android: %1$s</string>
     <string name="enhanced_target_sdk">Target Android: %1$s</string>
+
+    <!-- Local labels to avoid private android string usage -->
+    <string name="enhanced_app_info">App information</string>
+    <string name="enhanced_package_name_label">Package name</string>
+    <string name="enhanced_install_location_label">Install location</string>
+    <string name="enhanced_required_permissions_label">Required permissions</string>
 </resources>
