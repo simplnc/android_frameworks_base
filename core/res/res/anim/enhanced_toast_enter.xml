@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Enhanced toast enter animation with smooth scale and fade -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/decelerate_interpolator">
+    
+    <!-- Scale animation with slight overshoot for bounce effect -->
+    <scale 
+        android:duration="300"
+        android:fromXScale="0.8"
+        android:toXScale="1.0"
+        android:fromYScale="0.8"
+        android:toYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:interpolator="@android:anim/overshoot_interpolator" />
+    
+    <!-- Fade in animation -->
+    <alpha 
+        android:duration="250"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0"
+        android:interpolator="@android:anim/decelerate_interpolator" />
+    
+    <!-- Subtle slide up animation -->
+    <translate 
+        android:duration="300"
+        android:fromYDelta="20dp"
+        android:toYDelta="0dp"
+        android:interpolator="@android:anim/decelerate_interpolator" />
+</set>

@@ -1,0 +1,11 @@
+    <!-- Enhanced Toast Colors -->
+    <color name="enhanced_toast_background">#F5F5F5</color>
+    <color name="enhanced_toast_text_color">#212121</color>
+    <color name="enhanced_toast_border">#E0E0E0</color>
+    
+    <!-- Enhanced Toast Dimensions -->
+    <dimen name="enhanced_toast_elevation">4dp</dimen>
+    <dimen name="enhanced_toast_corner_radius">12dp</dimen>
+    <dimen name="enhanced_toast_min_height">48dp</dimen>
+    <dimen name="enhanced_toast_padding_horizontal">16dp</dimen>
+    <dimen name="enhanced_toast_padding_vertical">12dp</dimen>

@@ -1,0 +1,15 @@
+    <!-- Enhanced Package Installer Colors -->
+    <color name="install_success_color">#4CAF50</color>
+    <color name="install_error_color">#F44336</color>
+    <color name="install_warning_color">#FF9800</color>
+    <color name="install_info_color">#2196F3</color>
+    
+    <!-- Enhanced Package Installer Background Colors -->
+    <color name="enhanced_installer_background">#FFFFFF</color>
+    <color name="enhanced_installer_card_background">#F8F9FA</color>
+    <color name="enhanced_installer_divider">#E0E0E0</color>
+    
+    <!-- Enhanced Package Installer Text Colors -->
+    <color name="enhanced_installer_text_primary">#212121</color>
+    <color name="enhanced_installer_text_secondary">#757575</color>
+    <color name="enhanced_installer_text_hint">#BDBDBD</color>
