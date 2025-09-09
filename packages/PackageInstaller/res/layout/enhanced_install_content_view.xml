@@ -152,12 +152,11 @@
                 android:layout_marginBottom="4dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="@android:string/app_info"
                     android:textAppearance="@style/TextAppearance.Material.Body2"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:layout_width="120dp" />
+                    android:textColor="?android:attr/textColorSecondary" />
 
                 <TextView
                     android:id="@+id/package_name_text"
