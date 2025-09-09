@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <!-- Enhanced Toast Colors -->
     <color name="enhanced_toast_background">#F5F5F5</color>
     <color name="enhanced_toast_text_color">#212121</color>
@@ -9,3 +11,4 @@
     <dimen name="enhanced_toast_min_height">48dp</dimen>
     <dimen name="enhanced_toast_padding_horizontal">16dp</dimen>
     <dimen name="enhanced_toast_padding_vertical">12dp</dimen>
+</resources>

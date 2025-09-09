@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <!-- Enhanced Package Installer Styles -->
     <style name="Theme.EnhancedPackageInstaller" parent="@android:style/Theme.Material.Dialog.Alert">
         <item name="android:windowBackground">@color/enhanced_installer_background</item>
@@ -35,3 +37,4 @@
         <item name="windowEnterAnimation">@anim/enhanced_installer_enter</item>
         <item name="windowExitAnimation">@anim/enhanced_installer_exit</item>
     </style>
+</resources>
