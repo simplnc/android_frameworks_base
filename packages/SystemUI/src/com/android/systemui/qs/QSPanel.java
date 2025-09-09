@@ -57,28 +57,8 @@ import java.util.List;
 /** View that represents the quick settings tile panel (when expanded/pulled down). **/
 public class QSPanel extends LinearLayout {
 
-    public static final String QS_SHOW_AUTO_BRIGHTNESS =
-            "lineagesecure:" + LineageSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS;
-    public static final String QS_SHOW_BRIGHTNESS_SLIDER =
-            "lineagesecure:" + LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER;
-    public static final String QS_BRIGHTNESS_SLIDER_POSITION =
-            "lineagesecure:" + LineageSettings.Secure.QS_BRIGHTNESS_SLIDER_POSITION;
-    public static final String QS_TILE_VERTICAL_LAYOUT =
-            "system:" + Settings.System.QS_TILE_VERTICAL_LAYOUT;
-    public static final String QS_TILE_LABEL_HIDE =
-            "system:" + Settings.System.QS_TILE_LABEL_HIDE;
-    public static final String QS_LAYOUT_COLUMNS =
-            "system:" + Settings.System.QS_LAYOUT_COLUMNS;
-    public static final String QS_LAYOUT_COLUMNS_LANDSCAPE =
-            "system:" + Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE;
-    public static final String QQS_LAYOUT_ROWS =
-            "system:" + Settings.System.QQS_LAYOUT_ROWS;
-    public static final String QQS_LAYOUT_ROWS_LANDSCAPE =
-            "system:" + Settings.System.QQS_LAYOUT_ROWS_LANDSCAPE;
-    public static final String QS_LAYOUT_ROWS =
-            "system:" + Settings.System.QS_LAYOUT_ROWS;
-    public static final String QS_LAYOUT_ROWS_LANDSCAPE =
-            "system:" + Settings.System.QS_LAYOUT_ROWS_LANDSCAPE;
+    public static final String QS_SHOW_BRIGHTNESS = "qs_show_brightness";
+    public static final String QS_SHOW_HEADER = "qs_show_header";
 
     private static final String TAG = "QSPanel";
 
@@ -409,41 +389,8 @@ public class QSPanel extends LinearLayout {
         return TAG;
     }
 
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        switch (key) {
-            case QS_SHOW_BRIGHTNESS_SLIDER:
-                boolean value =
-                       TunerService.parseInteger(newValue, 1) >= 1;
-                if (mBrightnessView != null) {
-                    mBrightnessView.setVisibility(value ? VISIBLE : GONE);
-                }
-                break;
-            case QS_BRIGHTNESS_SLIDER_POSITION:
-                mTop = TunerService.parseInteger(newValue, 0) == 0;
-                updateBrightnessSliderPosition();
-                break;
-            case QS_SHOW_AUTO_BRIGHTNESS:
-                if (mAutoBrightnessView != null) {
-                    mAutoBrightnessView.setVisibility(mIsAutomaticBrightnessAvailable &&
-                            TunerService.parseIntegerSwitch(newValue, true) ? View.VISIBLE : View.GONE);
-                }
-                break;
-            case QS_LAYOUT_COLUMNS:
-            case QS_LAYOUT_COLUMNS_LANDSCAPE:
-            case QS_LAYOUT_ROWS:
-            case QS_LAYOUT_ROWS_LANDSCAPE:
-            case QQS_LAYOUT_ROWS:
-            case QQS_LAYOUT_ROWS_LANDSCAPE:
-                needsDynamicRowsAndColumns();
-                break;
-            default:
-                break;
-         }
-    }
-
-    public void setBrightnessRunnable(Runnable runnable) {
-        mBrightnessRunnable = runnable;
+    private void updateViewVisibilityForTuningValue(View view, @Nullable String newValue) {
+        view.setVisibility(TunerService.parseIntegerSwitch(newValue, true) ? VISIBLE : GONE);
     }
 
 
@@ -519,7 +466,6 @@ public class QSPanel extends LinearLayout {
         }
         mOnConfigurationChangedListeners.forEach(
                 listener -> listener.onConfigurationChange(newConfig));
-        needsDynamicRowsAndColumns();
     }
 
     final boolean hadConfigurationChangeWhileDetached() {
@@ -564,14 +510,8 @@ public class QSPanel extends LinearLayout {
         return false;
     }
 
-    public void needsDynamicRowsAndColumns() {
-        if (mTileLayout != null) {
-            boolean rowUpdate = mTileLayout.setMinRows(mTileLayout.getResourceRows());
-            boolean colUpdate = mTileLayout.setMaxColumns(mTileLayout.getResourceColumns());
-            if (rowUpdate || colUpdate) {
-                mTileLayout.updateSettings();
-            }
-        }
+    private boolean needsDynamicRowsAndColumns() {
+        return !SceneContainerFlag.isEnabled();
     }
 
     private void switchAllContentToParent(ViewGroup parent, QSTileLayout newLayout) {
@@ -764,15 +704,20 @@ public class QSPanel extends LinearLayout {
             if (SceneContainerFlag.isEnabled()) return;
             switchAllContentToParent(newParent, mTileLayout);
             reAttachMediaHost(mediaHostView, horizontal);
-            needsDynamicRowsAndColumns();
-            if (SceneContainerFlag.isEnabled()) {
-                placeTileLayoutForScene(horizontal);
+            if (needsDynamicRowsAndColumns()) {
+                setColumnRowLayout(horizontal);
             }
             updateMargins(mediaHostView);
             if (mHorizontalLinearLayout != null) {
                 mHorizontalLinearLayout.setVisibility(horizontal ? View.VISIBLE : View.GONE);
             }
         }
+    }
+
+    void setColumnRowLayout(boolean withMedia) {
+        mTileLayout.setMinRows(withMedia ? 2 : 1);
+        mTileLayout.setMaxColumns(withMedia ? 2 : 4);
+        placeTileLayoutForScene(withMedia);
     }
 
     protected void placeTileLayoutForScene(boolean withMedia) {
@@ -932,12 +877,6 @@ public class QSPanel extends LinearLayout {
         int getNumVisibleTiles();
 
         default void setLogger(QSLogger qsLogger) { }
-
-        int getResourceColumns();
-
-        int getResourceRows();
-
-        void updateSettings();
     }
 
     interface OnConfigurationChangedListener {
