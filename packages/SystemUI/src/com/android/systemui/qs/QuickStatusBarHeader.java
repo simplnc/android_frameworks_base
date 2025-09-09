@@ -247,8 +247,22 @@ public class QuickStatusBarHeader extends FrameLayout
     public void disableHeader() {
         post(new Runnable() {
             public void run() {
-                mCurrentBackground = null;
-                mQsHeaderImageView.setVisibility(View.GONE);
+                // When custom header is disabled, show a default/fallback header instead of hiding
+                try {
+                    mCurrentBackground = getContext().getDrawable(com.android.systemui.res.R.drawable.qs_header_image_1);
+                } catch (Exception ignored) {
+                    try {
+                        mCurrentBackground = getContext().getDrawable(com.android.systemui.res.R.drawable.default_qs_header);
+                    } catch (Exception e) {
+                        mCurrentBackground = null;
+                    }
+                }
+                if (mCurrentBackground != null) {
+                    mQsHeaderImageView.setImageDrawable(mCurrentBackground);
+                    mQsHeaderImageView.setVisibility(View.VISIBLE);
+                } else {
+                    mQsHeaderImageView.setVisibility(View.GONE);
+                }
                 mHeaderImageEnabled = false;
                 updateResources();
             }
