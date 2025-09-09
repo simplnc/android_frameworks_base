@@ -5,4 +5,9 @@
         <item name="android:windowEnterAnimation">@anim/enhanced_toast_enter</item>
         <item name="android:windowExitAnimation">@anim/enhanced_toast_exit</item>
     </style>
+
+    <!-- Text appearance for enhanced toast text -->
+    <style name="TextAppearance.EnhancedToast" parent="@android:style/TextAppearance.Material.Body2">
+        <item name="android:textColor">@color/enhanced_toast_text_color</item>
+    </style>
 </resources>
