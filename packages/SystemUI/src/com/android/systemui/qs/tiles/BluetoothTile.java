@@ -58,7 +58,6 @@ import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.res.R;
 import com.android.systemui.statusbar.policy.BluetoothController;
-import com.android.systemui.statusbar.policy.KeyguardStateController;
 
 import kotlinx.coroutines.Job;
 
@@ -68,7 +67,7 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 /** Quick settings tile: Bluetooth **/
-public class BluetoothTile extends SecureQSTile<BooleanState> {
+public class BluetoothTile extends QSTileImpl<BooleanState> {
 
     public static final String TILE_SPEC = "bt";
 
@@ -100,13 +99,12 @@ public class BluetoothTile extends SecureQSTile<BooleanState> {
             StatusBarStateController statusBarStateController,
             ActivityStarter activityStarter,
             QSLogger qsLogger,
-            KeyguardStateController keyguardStateController,
             BluetoothController bluetoothController,
             FeatureFlags featureFlags,
             BluetoothTileDialogViewModel dialogViewModel
     ) {
         super(host, uiEventLogger, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger, keyguardStateController);
+                statusBarStateController, activityStarter, qsLogger);
         mController = bluetoothController;
         mController.observe(getLifecycle(), mCallback);
         mExecutor = new HandlerExecutor(mainHandler);
@@ -122,11 +120,7 @@ public class BluetoothTile extends SecureQSTile<BooleanState> {
     }
 
     @Override
-    protected void handleClick(@Nullable Expandable expandable, boolean keyguardShowing) {
-        if (checkKeyguard(expandable, keyguardShowing)) {
-            return;
-        }
-        
+    protected void handleClick(@Nullable Expandable expandable) {
         if (com.android.internal.telephony.flags.Flags.oemEnabledSatelliteFlag()) {
             if (mClickJob != null && !mClickJob.isCompleted()) {
                 return;
