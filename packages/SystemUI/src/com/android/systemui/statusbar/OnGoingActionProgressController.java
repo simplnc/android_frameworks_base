@@ -40,6 +40,7 @@ import com.android.systemui.res.R;
 import com.android.systemui.util.IconFetcher;
 import com.android.systemui.statusbar.OnGoingActionProgressGroup;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
+import com.android.systemui.statusbar.NotificationListener;
 
 /** Controls the ongoing progress chip based on notifcations @LineageExtension */
 public class OnGoingActionProgressController implements NotificationListener.NotificationHandler, KeyguardStateController.Callback {
@@ -132,6 +133,10 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         mIconView = progressGroup.iconView;
         mIconFetcher = new IconFetcher(context);
         mNotificationListener.addNotificationHandler(this);
+
+        // Pre-enable the chip by default
+        mActionChipEnabled = true;
+        mActionChipAllowed = true;
 
         // Register settings observer
         mSettingsObserver.register();
@@ -312,8 +317,11 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     }
 
     private void updateSettings() {
-        mActionChipEnabled = Settings.System.getIntForUser(mContentResolver,
-            ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
+        // Pre-enable the ongoing action chip by default
+        mActionChipEnabled = true; // Always enabled for now
+        // Original code commented out for later toggle implementation:
+        // mActionChipEnabled = Settings.System.getIntForUser(mContentResolver,
+        //     ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
         updateViews();
     }
 
