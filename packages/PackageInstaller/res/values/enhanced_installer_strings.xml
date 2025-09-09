@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Enhanced Package Installer Strings - Only unique functionality strings -->
+    
+    <!-- Enhanced progress and status strings -->
+    <string name="enhanced_install_progress">Installing %1$s... %2$d%%</string>
+    <string name="enhanced_staging_progress">Preparing installation...</string>
+    <string name="enhanced_verifying_package">Verifying package integrity...</string>
+    <string name="enhanced_extracting_files">Extracting files...</string>
+    <string name="enhanced_installing_components">Installing components...</string>
+    <string name="enhanced_optimizing_app">Optimizing app...</string>
+    <string name="enhanced_installation_complete">Installation complete!</string>
+    
+    <!-- Enhanced UI control strings -->
+    <string name="enhanced_show_details">Show Details</string>
+    <string name="enhanced_hide_details">Hide Details</string>
+    
+    <!-- Enhanced information strings -->
+    <string name="enhanced_permissions_none">No special permissions required</string>
+    <string name="enhanced_permissions_count">%1$d permissions required</string>
+    <string name="enhanced_install_time_estimate">Estimated time: %1$s</string>
+    <string name="enhanced_storage_required">Storage required: %1$s</string>
+    <string name="enhanced_install_source">Source: %1$s</string>
+    <string name="enhanced_app_category">Category: %1$s</string>
+    <string name="enhanced_minimum_sdk">Minimum Android: %1$s</string>
+    <string name="enhanced_target_sdk">Target Android: %1$s</string>
+
+    <!-- Local labels to avoid private android string usage -->
+    <string name="enhanced_app_info">App information</string>
+    <string name="enhanced_package_name_label">Package name</string>
+    <string name="enhanced_install_location_label">Install location</string>
+    <string name="enhanced_required_permissions_label">Required permissions</string>
+    <string name="enhanced_version_label">Version</string>
+    <string name="enhanced_size_label">Size</string>
+</resources>

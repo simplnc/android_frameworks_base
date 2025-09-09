@@ -136,16 +136,48 @@ public class PackageUtil {
                 icon);
     }
 
+    /**
+     * Enhanced method to get comprehensive app snippet with all APK information
+     */
+    public static AppSnippet getEnhancedAppSnippet(Context context, ApplicationInfo appInfo, File sourceFile) {
+        PackageInfo pkgInfo = getPackageInfo(context, sourceFile, PackageManager.GET_PERMISSIONS);
+        if (pkgInfo == null) {
+            return getAppSnippet(context, appInfo, sourceFile);
+        }
+
+        CharSequence label = appInfo.loadLabel(context.getPackageManager());
+        Drawable icon = appInfo.loadIcon(context.getPackageManager());
+        
+        // Create enhanced snippet with additional information
+        AppSnippet snippet = new AppSnippet(label, icon, context);
+        
+        // Add version information
+        if (pkgInfo.versionName != null) {
+            snippet.versionName = pkgInfo.versionName;
+        }
+        
+        // Add package size
+        if (sourceFile.exists()) {
+            snippet.packageSize = sourceFile.length();
+        }
+        
+        return snippet;
+    }
+
     static final class AppSnippet implements Parcelable {
         @NonNull public CharSequence label;
         @NonNull public Drawable icon;
         public int iconSize;
+        public String versionName;
+        public long packageSize;
 
         AppSnippet(@NonNull CharSequence label, @NonNull Drawable icon, Context context) {
             this.label = label;
             this.icon = icon;
             final ActivityManager am = context.getSystemService(ActivityManager.class);
             this.iconSize = am.getLauncherLargeIconSize();
+            this.versionName = null;
+            this.packageSize = 0;
         }
 
         private AppSnippet(Parcel in) {
@@ -154,6 +186,8 @@ public class PackageUtil {
             Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
             icon = new BitmapDrawable(Resources.getSystem(), bmp);
             iconSize = in.readInt();
+            versionName = in.readString();
+            packageSize = in.readLong();
         }
 
         @Override
@@ -175,6 +209,8 @@ public class PackageUtil {
             bmp.recycle();
 
             dest.writeInt(iconSize);
+            dest.writeString(versionName);
+            dest.writeLong(packageSize);
         }
 
         private Bitmap getBitmapFromDrawable(Drawable drawable) {

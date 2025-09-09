@@ -1835,6 +1835,13 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
         if (handlingGesture) {
             mandatoryGestureProvider.setInsetsSize(Insets.of(0, 0, 0, gestureHeight));
         }
+        // When the IME (keyboard) is visible in fully gestural mode, do not reserve
+        // any bottom space for navigation or mandatory gesture areas. This removes
+        // the gap beneath the IME so it sits flush with the bottom edge.
+        if (isGesturalMode(mNavBarMode) && mImeVisible) {
+            navBarProvider.setInsetsSize(Insets.NONE);
+            mandatoryGestureProvider.setInsetsSize(Insets.NONE);
+        }
         final int gestureInsetsLeft = handlingGesture
                 ? mEdgeBackGestureHandler.getEdgeWidthLeft() : 0;
         final int gestureInsetsRight = handlingGesture

@@ -90,7 +90,8 @@ public class InstallSuccess extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(mAppSnippet.icon);
         builder.setTitle(mAppSnippet.label);
-        builder.setView(R.layout.install_content_view);
+        // Use the enhanced layout already in your tree for a richer, modern look
+        builder.setView(R.layout.enhanced_install_content_view);
         builder.setPositiveButton(getString(R.string.launch), null);
         builder.setNegativeButton(getString(R.string.done),
                 (ignored, ignored2) -> {
@@ -107,7 +108,23 @@ public class InstallSuccess extends Activity {
         });
         mDialog = builder.create();
         mDialog.show();
-        mDialog.requireViewById(R.id.install_success).setVisibility(View.VISIBLE);
+        // Mark success section visible if present in enhanced layout
+        View success = mDialog.findViewById(R.id.install_success);
+        if (success != null) success.setVisibility(View.VISIBLE);
+
+        // Style action buttons with current theme accent for a polished look
+        try {
+            int accent;
+            {
+                android.util.TypedValue tv = new android.util.TypedValue();
+                getTheme().resolveAttribute(android.R.attr.colorAccent, tv, true);
+                accent = tv.data;
+            }
+            Button positive = mDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button negative = mDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            if (positive != null) positive.setTextColor(accent);
+            if (negative != null) negative.setTextColor(accent);
+        } catch (Throwable ignored) { }
         // Show or hide "launch" button
         boolean visible = false;
         if (mLaunchIntent != null) {
