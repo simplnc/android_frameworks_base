@@ -24,6 +24,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -45,6 +46,7 @@ public class StorageUsageProgressBarPreference extends Preference {
 
     private final Pattern mNumberPattern = Pattern.compile("[\\d]*[\\٫.,]?[\\d]+");
     private static final int ANIM_DURATION = 1200;
+    private static final String TAG = "StorageUsagePBarPref";
 
     private CharSequence mUsageSummary;
     private CharSequence mTotalSummary;
@@ -102,9 +104,13 @@ public class StorageUsageProgressBarPreference extends Preference {
 
     /** Set percentage of the progress bar. */
     public void setPercent(long usage, long total) {
-        if (usage >  total) {
-            return;
+        if (total < 0L) total = 0L;
+        if (usage < 0L) usage = 0L;
+        if (usage > total) {
+            Log.w(TAG, "usage > total, clamping values: usage=" + usage + " total=" + total);
+            usage = Math.min(usage, total);
         }
+
         if (total == 0L) {
             if (mPercent != 0) {
                 mPercent = 0;
@@ -112,7 +118,13 @@ public class StorageUsageProgressBarPreference extends Preference {
             }
             return;
         }
-        final int percent = (int) (usage / (double) total * 100);
+
+        // Many callers pass FREE instead of USED for storage. Convert FREE->USED here so
+        // color thresholds (high/medium/low) reflect used percentage intuitively.
+        final long used = total - usage;
+        final int percent = (int) (used / (double) total * 100);
+        Log.d(TAG, "setPercent: usage(raw)=" + usage + " total=" + total + " used(computed)=" + used + " -> " + percent + "%");
+
         if (mPercent == percent) {
             return;
         }
