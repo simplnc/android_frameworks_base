@@ -103,8 +103,8 @@ public class InstallInstalling extends Activity {
 
             builder.setIcon(as.icon);
             builder.setTitle(as.label);
-            // Use enhanced installer layout with richer progress and details
-            builder.setView(R.layout.enhanced_install_content_view);
+            // Show a minimal progress UI during install; defer rich app info until success
+            builder.setView(R.layout.install_content_view);
             builder.setNegativeButton(getString(R.string.cancel),
                     (ignored, ignored2) -> {
                         if (mInstallingTask != null) {
@@ -172,6 +172,8 @@ public class InstallInstalling extends Activity {
         successIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
 
         startActivity(successIntent);
+        overridePendingTransition(com.android.packageinstaller.R.anim.activity_enter_slide,
+                com.android.packageinstaller.R.anim.activity_exit_slide);
         finish();
     }
 
@@ -191,6 +193,8 @@ public class InstallInstalling extends Activity {
         failureIntent.putExtra(PackageInstaller.EXTRA_STATUS_MESSAGE, statusMessage);
 
         startActivity(failureIntent);
+        overridePendingTransition(com.android.packageinstaller.R.anim.activity_enter_slide,
+                com.android.packageinstaller.R.anim.activity_exit_slide);
         finish();
     }
 
