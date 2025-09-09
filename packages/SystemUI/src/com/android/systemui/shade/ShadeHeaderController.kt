@@ -70,11 +70,9 @@ import com.android.systemui.statusbar.policy.Clock
 import com.android.systemui.statusbar.policy.ConfigurationController
 import com.android.systemui.statusbar.policy.NextAlarmController
 import com.android.systemui.statusbar.policy.VariableDateView
-import com.android.systemui.statusbar.policy.VariableDateViewController
-import com.android.systemui.util.ViewController
-import java.io.PrintWriter
-import javax.inject.Inject
-import javax.inject.Named
+import android.provider.Settings
+import com.android.systemui.tuner.TunerService
+import com.android.systemui.statusbar.policy.CustomClockViewStub
 
 /**
  * Controller for QS header.
@@ -106,7 +104,8 @@ constructor(
     private val nextAlarmController: NextAlarmController,
     private val activityStarter: ActivityStarter,
     private val statusOverlayHoverListenerFactory: StatusOverlayHoverListenerFactory,
-) : ViewController<View>(header), Dumpable {
+    private val tunerService: TunerService,
+) : ViewController<View>(header), Dumpable, TunerService.Tunable {
 
     private val insetsProvider = insetsProviderStore.defaultDisplay
 
@@ -121,6 +120,9 @@ constructor(
         internal val LARGE_SCREEN_HEADER_CONSTRAINT = R.id.large_screen_header_constraint
 
         @VisibleForTesting internal val DEFAULT_CLOCK_INTENT = Intent(AlarmClock.ACTION_SHOW_ALARMS)
+
+        internal val QS_HEADER_CLOCK_STYLE =
+            "system:" + Settings.System.QS_HEADER_CLOCK_STYLE
 
         private fun Int.stateToString() =
             when (this) {
@@ -139,6 +141,7 @@ constructor(
 
     private val batteryIcon: BatteryMeterView = header.requireViewById(R.id.batteryRemainingIcon)
     private val clock: Clock = header.requireViewById(R.id.clock)
+    private val customClock: CustomClockViewStub = header.requireViewById(R.id.custom_clock)
     private val date: TextView = header.requireViewById(R.id.date)
     private val iconContainer: StatusIconContainer = header.requireViewById(R.id.statusIcons)
     private val mShadeCarrierGroup: ShadeCarrierGroup = header.requireViewById(R.id.carrier_group)
@@ -150,6 +153,7 @@ constructor(
     private var lastInsets: WindowInsets? = null
     private var nextAlarmIntent: PendingIntent? = null
     private var textColorPrimary = Color.TRANSPARENT
+    private var qsClockStyle = 0
 
     private var qsDisabled = false
     private var visible = false
@@ -290,6 +294,7 @@ constructor(
             override fun onDensityOrFontScaleChanged() {
                 clock.setTextAppearance(R.style.TextAppearance_QS_Status)
                 date.setTextAppearance(R.style.TextAppearance_QS_Status)
+                updateQsHeaderClockDateVisibility()
                 mShadeCarrierGroup.updateTextAppearance(R.style.TextAppearance_QS_Status_Carriers)
                 loadConstraints()
                 header.minHeight =
@@ -307,6 +312,7 @@ constructor(
             override fun onThemeChanged() {
                 clock.setTextAppearance(R.style.TextAppearance_QS_Status)
                 date.setTextAppearance(R.style.TextAppearance_QS_Status)
+                updateQsHeaderClockDateVisibility()
                 mShadeCarrierGroup.updateTextAppearance(R.style.TextAppearance_QS_Status_Carriers)
             }
         }
@@ -371,6 +377,10 @@ constructor(
         statusBarIconController.addIconGroup(iconManager)
         nextAlarmController.addCallback(nextAlarmCallback)
         updateResources()
+        updateQsHeaderClockDateVisibility()
+        
+        tunerService.addTunable(this, QS_HEADER_CLOCK_STYLE)
+        
         systemIconsHoverContainer.setOnHoverListener(
             statusOverlayHoverListenerFactory.createListener(systemIconsHoverContainer)
         )
@@ -385,6 +395,24 @@ constructor(
         statusBarIconController.removeIconGroup(iconManager)
         nextAlarmController.removeCallback(nextAlarmCallback)
         systemIconsHoverContainer.setOnHoverListener(null)
+    }
+
+    fun updateQsHeaderClockDateVisibility() {
+        val color = if (qsClockStyle != 0) Color.TRANSPARENT else Color.WHITE
+        val colorStateList = ColorStateList.valueOf(color)
+        clock.setTextColor(colorStateList)
+        date.setTextColor(colorStateList)
+        
+        // Update custom clock visibility and style
+        if (qsClockStyle != 0) {
+            customClock.visibility = View.VISIBLE
+            clock.visibility = View.GONE
+            customClock.setClockStyle(qsClockStyle)
+            customClock.setSystemClock(clock)
+        } else {
+            customClock.visibility = View.GONE
+            clock.visibility = View.VISIBLE
+        }
     }
 
     fun disable(state1: Int, state2: Int, animate: Boolean) {
@@ -642,6 +670,15 @@ constructor(
     }
 
     @VisibleForTesting internal fun simulateViewDetached() = this.onViewDetached()
+
+    override fun onTuningChanged(key: String?, newValue: String?) {
+        when (key) {
+            QS_HEADER_CLOCK_STYLE -> {
+                qsClockStyle = TunerService.parseInteger(newValue, 0)
+                updateQsHeaderClockDateVisibility()
+            }
+        }
+    }
 
     inner class CustomizerAnimationListener(private val enteringCustomizing: Boolean) :
         AnimatorListenerAdapter() {
