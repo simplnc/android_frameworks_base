@@ -23,6 +23,9 @@
     android:layout_height="wrap_content"
     android:focusable="true"
     android:clickable="true"
+    android:background="@drawable/notification_enhanced_touch_feedback"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:stateListAnimator="@animator/notification_spring_animator"
     >
 
     <!-- Menu displayed behind notification added here programmatically -->
