@@ -55,6 +55,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.text.format.Formatter;
 
 import androidx.annotation.NonNull;
 
@@ -494,7 +496,7 @@ public class PackageInstallerActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setIcon(mAppSnippet.icon);
         builder.setTitle(mAppSnippet.label);
-        builder.setView(R.layout.install_content_view);
+        builder.setView(R.layout.enhanced_install_content_view);
         builder.setPositiveButton(getString(R.string.install),
                 (ignored, ignored2) -> {
                     if (mOk.isEnabled()) {
@@ -520,11 +522,125 @@ public class PackageInstallerActivity extends Activity {
         mDialog = builder.create();
         mDialog.show();
 
+        // Populate enhanced app information
+        populateAppInformation();
+
         mOk = mDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         mOk.setEnabled(false);
 
         if (!mOk.isInTouchMode()) {
             mDialog.getButton(DialogInterface.BUTTON_NEGATIVE).requestFocus();
+        }
+    }
+
+    /**
+     * Populate the enhanced app information in the dialog
+     */
+    private void populateAppInformation() {
+        if (mDialog == null || mPkgInfo == null) {
+            return;
+        }
+
+        // Set app icon and name
+        ImageView appIcon = mDialog.findViewById(R.id.app_icon);
+        if (appIcon != null && mAppSnippet != null) {
+            appIcon.setImageDrawable(mAppSnippet.icon);
+        }
+
+        TextView appName = mDialog.findViewById(R.id.app_name);
+        if (appName != null && mAppSnippet != null) {
+            appName.setText(mAppSnippet.label);
+        }
+
+        // Set app version
+        TextView appVersion = mDialog.findViewById(R.id.app_version);
+        if (appVersion != null && mPkgInfo.versionName != null) {
+            appVersion.setText("Version " + mPkgInfo.versionName);
+        }
+
+        // Set app size
+        TextView appSize = mDialog.findViewById(R.id.app_size);
+        if (appSize != null) {
+            long sizeBytes = 0;
+            if (mPkgInfo.applicationInfo != null) {
+                sizeBytes = mPkgInfo.applicationInfo.sourceDir != null ? 
+                    new File(mPkgInfo.applicationInfo.sourceDir).length() : 0;
+            }
+            appSize.setText(Formatter.formatFileSize(this, sizeBytes));
+        }
+
+        // Set package name
+        TextView packageNameText = mDialog.findViewById(R.id.package_name_text);
+        if (packageNameText != null) {
+            packageNameText.setText(mPkgInfo.packageName);
+        }
+
+        // Set install location
+        TextView installLocationText = mDialog.findViewById(R.id.install_location_text);
+        if (installLocationText != null) {
+            String location = "Internal storage";
+            if (mPkgInfo.applicationInfo != null) {
+                if ((mPkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0) {
+                    location = "External storage";
+                }
+            }
+            installLocationText.setText(location);
+        }
+
+        // Set permissions
+        TextView permissionsText = mDialog.findViewById(R.id.permissions_text);
+        if (permissionsText != null) {
+            StringBuilder permissions = new StringBuilder();
+            if (mPkgInfo.requestedPermissions != null && mPkgInfo.requestedPermissions.length > 0) {
+                for (int i = 0; i < Math.min(mPkgInfo.requestedPermissions.length, 5); i++) {
+                    if (i > 0) permissions.append(", ");
+                    String permission = mPkgInfo.requestedPermissions[i];
+                    // Get user-friendly permission name
+                    String friendlyName = getPermissionFriendlyName(permission);
+                    permissions.append(friendlyName);
+                }
+                if (mPkgInfo.requestedPermissions.length > 5) {
+                    permissions.append(" and ").append(mPkgInfo.requestedPermissions.length - 5).append(" more");
+                }
+            } else {
+                permissions.append("No special permissions required");
+            }
+            permissionsText.setText(permissions.toString());
+        }
+    }
+
+    /**
+     * Get user-friendly name for permission
+     */
+    private String getPermissionFriendlyName(String permission) {
+        if (permission == null) return "Unknown";
+        
+        // Map common permissions to user-friendly names
+        switch (permission) {
+            case "android.permission.CAMERA":
+                return "Camera";
+            case "android.permission.RECORD_AUDIO":
+                return "Microphone";
+            case "android.permission.ACCESS_FINE_LOCATION":
+            case "android.permission.ACCESS_COARSE_LOCATION":
+                return "Location";
+            case "android.permission.READ_CONTACTS":
+                return "Contacts";
+            case "android.permission.READ_SMS":
+                return "SMS";
+            case "android.permission.READ_PHONE_STATE":
+                return "Phone";
+            case "android.permission.READ_EXTERNAL_STORAGE":
+            case "android.permission.WRITE_EXTERNAL_STORAGE":
+                return "Storage";
+            case "android.permission.INTERNET":
+                return "Internet";
+            case "android.permission.ACCESS_NETWORK_STATE":
+                return "Network";
+            default:
+                // Extract the last part of the permission name
+                String[] parts = permission.split("\\.");
+                return parts.length > 0 ? parts[parts.length - 1] : permission;
         }
     }
 

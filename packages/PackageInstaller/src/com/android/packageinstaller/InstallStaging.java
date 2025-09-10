@@ -79,7 +79,7 @@ public class InstallStaging extends Activity {
 
         builder.setIcon(R.drawable.ic_file_download);
         builder.setTitle(getString(R.string.app_name_unknown));
-        builder.setView(R.layout.install_content_view);
+        builder.setView(R.layout.enhanced_install_content_view);
         builder.setNegativeButton(getString(R.string.cancel),
                 (ignored, ignored2) -> {
                     if (mStagingTask != null) {
