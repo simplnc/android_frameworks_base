@@ -2935,18 +2935,18 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
     private static class VolumeRow {
         private static final SliderHapticFeedbackConfig sSliderHapticFeedbackConfig =
                 new SliderHapticFeedbackConfig(
-                /* velocityInterpolatorFactor= */ 1f,
-                /* progressInterpolatorFactor= */ 1f,
-                /* progressBasedDragMinScale= */ 0f,
-                /* progressBasedDragMaxScale= */ 0.2f,
-                /* additionalVelocityMaxBump= */ 0.25f,
+                /* velocityInterpolatorFactor= */ 0.8f,        // Reduced from 1f for gentler haptics
+                /* progressInterpolatorFactor= */ 0.8f,        // Reduced from 1f for gentler haptics
+                /* progressBasedDragMinScale= */ 0.1f,         // Increased from 0f for subtle feedback
+                /* progressBasedDragMaxScale= */ 0.3f,         // Increased from 0.2f but still gentle
+                /* additionalVelocityMaxBump= */ 0.15f,        // Reduced from 0.25f for gentler velocity response
                 /* deltaMillisForDragInterval= */ 0f,
-                /* deltaProgressForDragThreshold= */ 0.05f,
-                /* numberOfLowTicks= */ 4,
+                /* deltaProgressForDragThreshold= */ 0.03f,    // Increased from 0.05f for less frequent haptics
+                /* numberOfLowTicks= */ 3,                     // Reduced from 4 for gentler texture
                 /* maxVelocityToScale= */ 200,
                 /* velocityAxis= */ MotionEvent.AXIS_Y,
-                /* upperBookendScale= */ 1f,
-                /* lowerBookendScale= */ 0.05f,
+                /* upperBookendScale= */ 0.6f,                 // Reduced from 1f for gentler bookend
+                /* lowerBookendScale= */ 0.3f,                 // Increased from 0.05f for more consistent feedback
                 /* exponent= */ 1f / 0.89f,
                 /* sliderStepSize = */ 0f);
         private static final SeekableSliderTrackerConfig sSliderTrackerConfig =
