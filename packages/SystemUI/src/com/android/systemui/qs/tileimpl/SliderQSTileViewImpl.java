@@ -96,12 +96,12 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
     }
 
     @Override
-    public int getBackgroundColorForState(int state, boolean disabledByPolicy) {
+    public int getBackgroundColorForState(int state, boolean disabledByPolicy, String spec) {
         if (mSlideableQSTile != null && mSlideableQSTile.isSlideable()
                 && state == STATE_ACTIVE && mCurrentPercent >= 0.90f) {
             return mWarnColor;
         } else {
-            return super.getBackgroundColorForState(state, disabledByPolicy);
+            return super.getBackgroundColorForState(state, disabledByPolicy, spec);
         }
     }
 
@@ -118,7 +118,7 @@ public class SliderQSTileViewImpl extends QSTileViewImpl {
         percentageDrawable.setAlpha(isActive ? ACTIVE_STATE_PERCENTAGE_ALPHA
                 : INACTIVE_STATE_PERCENTAGE_ALPHA);
         if (isActive) {
-            setColor(getBackgroundColorForState(state, false));
+            setColor(getBackgroundColorForState(state, false, null));
         }
         LayerDrawable layerDrawable =
                 new LayerDrawable(new Drawable[] {backgroundBaseDrawable, percentageDrawable});
