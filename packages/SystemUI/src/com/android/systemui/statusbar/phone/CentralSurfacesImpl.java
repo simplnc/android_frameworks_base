@@ -236,6 +236,8 @@ import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.MessageRouter;
 import com.android.systemui.util.kotlin.JavaAdapter;
 import com.android.systemui.volume.VolumeComponent;
+import com.android.systemui.tuner.TunerService;
+import com.android.systemui.tuner.TunerService.Tunable;
 import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.startingsurface.SplashscreenContentDrawer;
 import com.android.wm.shell.startingsurface.StartingSurface;
@@ -286,6 +288,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
     private CentralSurfacesCommandQueueCallbacks mCommandQueueCallbacks;
     private float mTransitionToFullShadeProgress = 0f;
     private final NotificationListContainer mNotifListContainer;
+    private final TunerService mTunerService;
 
     private final KeyguardStateController.Callback mKeyguardStateControllerCallback =
             new KeyguardStateController.Callback() {
@@ -717,7 +720,8 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
             BrightnessMirrorShowingInteractor brightnessMirrorShowingInteractor,
             GlanceableHubContainerController glanceableHubContainerController,
             EmergencyGestureIntentFactory emergencyGestureIntentFactory,
-            ViewCaptureAwareWindowManager viewCaptureAwareWindowManager
+            ViewCaptureAwareWindowManager viewCaptureAwareWindowManager,
+            TunerService tunerService
     ) {
         mContext = context;
         mNotificationsController = notificationsController;
@@ -817,6 +821,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
             mGlanceableHubContainerController = null;
         }
         mEmergencyGestureIntentFactory = emergencyGestureIntentFactory;
+        mTunerService = tunerService;
 
         mLockscreenShadeTransitionController = lockscreenShadeTransitionController;
         mStartingSurfaceOptional = startingSurfaceOptional;
