@@ -140,7 +140,9 @@ import com.android.internal.util.IndentingPrintWriter;
 import com.android.internal.util.Preconditions;
 import com.android.modules.utils.TypedXmlSerializer;
 import com.android.server.LocalManagerRegistry;
+import com.android.server.LocalServices;
 import com.android.server.ondeviceintelligence.OnDeviceIntelligenceManagerLocal;
+import com.android.server.SystemServiceManager;
 import com.android.server.pm.dex.DexManager;
 import com.android.server.pm.dex.PackageDexUsage;
 import com.android.server.pm.parsing.PackageInfoUtils;
@@ -1027,7 +1029,8 @@ public class ComputerEngine implements Computer {
     }
     
      private boolean canHideApp(int callingUid, String packageName) {
-        if (!isBootCompleted() || mContext == null || mContext.getPackageManager() == null) {
+        if (!LocalServices.getService(SystemServiceManager.class).isBootCompleted() || 
+            mContext == null || mContext.getPackageManager() == null) {
             return false;
         }
 
@@ -1061,7 +1064,7 @@ public class ComputerEngine implements Computer {
 
         // this is for banking apps, but we need to make sure first that 
         // we arent hiding app infos from sandbox/system processes
-        return !isCallerSystem(callingUid) 
+        return callingUid != Process.SYSTEM_UID 
             && !Process.isIsolated(callingUid)
             && !Process.isSdkSandboxUid(callingUid);
     }
@@ -2638,13 +2641,6 @@ public class ComputerEngine implements Computer {
         }
     }
 
-        // if the target is included in Settings.Secure.HIDE_APPLIST, do filter
-        if (canHideApp(Binder.getCallingUid(), packageName) && HideAppListUtils.shouldHideAppList(
-                mContext, packageName)) {
-            return true;
-        }
-
-
     /**
      * Returns whether or not access to the application should be filtered.
      * <p>
@@ -2657,6 +2653,11 @@ public class ComputerEngine implements Computer {
             int callingUid, @Nullable ComponentName component,
             @PackageManager.ComponentType int componentType, int userId, boolean filterUninstall,
             boolean filterArchived) {
+        // if the target is included in Settings.Secure.HIDE_APPLIST, do filter
+        if (ps != null && canHideApp(Binder.getCallingUid(), ps.getPackageName()) && 
+            HideAppListUtils.shouldHideAppList(mContext, ps.getPackageName())) {
+            return true;
+        }
         if (Process.isSdkSandboxUid(callingUid)) {
             int clientAppUid = Process.getAppUidForSdkSandboxUid(callingUid);
             // SDK sandbox should be able to see it's client app
