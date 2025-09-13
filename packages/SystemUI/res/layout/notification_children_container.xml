@@ -18,6 +18,4 @@
 <com.android.systemui.statusbar.notification.stack.NotificationChildrenContainer
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="@*android:dimen/notification_content_margin_start"
-    android:paddingEnd="@*android:dimen/notification_content_margin_end" />
+    android:layout_height="wrap_content" />

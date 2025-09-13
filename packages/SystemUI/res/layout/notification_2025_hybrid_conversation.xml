@@ -22,12 +22,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical|start"
     android:paddingStart="@*android:dimen/notification_2025_content_margin_start"
-    android:paddingEnd="@dimen/notification_shade_content_margin_horizontal"
-    android:background="@drawable/notification_enhanced_touch_feedback"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:stateListAnimator="@animator/notification_spring_animator">
+    android:paddingEnd="@dimen/notification_shade_content_margin_horizontal">
 
     <FrameLayout
         android:layout_width="@dimen/notification_2025_single_line_face_pile_size"
