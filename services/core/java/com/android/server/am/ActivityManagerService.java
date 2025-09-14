@@ -3231,7 +3231,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             // Set strict sandbox properties
             android.os.SystemProperties.set("persist.security.strict_sandbox_active", "1");
             android.os.SystemProperties.set("persist.security.sandbox_process_" + 
-                                          processRecord.pid, "1");
+                                          processRecord.mPid, "1");
 
             // Configure sandbox parameters
             android.os.SystemProperties.set("persist.security.sandbox_memory_limit", "256m");
@@ -3254,7 +3254,7 @@ public class ActivityManagerService extends IActivityManager.Stub
         try {
             // Set inter-app communication restrictions
             android.os.SystemProperties.set("persist.security.inter_app_comm_disabled_" + 
-                                          processRecord.pid, "1");
+                                          processRecord.mPid, "1");
 
             // Configure communication restrictions
             android.os.SystemProperties.set("persist.security.comm_restriction_mode", "strict");
@@ -3278,7 +3278,7 @@ public class ActivityManagerService extends IActivityManager.Stub
         try {
             // Set memory isolation properties
             android.os.SystemProperties.set("persist.security.memory_isolation_" + 
-                                          processRecord.pid, "1");
+                                          processRecord.mPid, "1");
 
             // Configure memory protection
             android.os.SystemProperties.set("persist.security.memory_protection", "enhanced");
@@ -3301,7 +3301,7 @@ public class ActivityManagerService extends IActivityManager.Stub
         try {
             // Set network isolation properties
             android.os.SystemProperties.set("persist.security.network_isolation_" + 
-                                          processRecord.pid, "1");
+                                          processRecord.mPid, "1");
 
             // Configure network restrictions
             android.os.SystemProperties.set("persist.security.network_monitoring", "1");
