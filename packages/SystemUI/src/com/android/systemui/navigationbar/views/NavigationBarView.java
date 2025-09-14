@@ -39,6 +39,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -611,7 +612,8 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
         // Update IME button visibility, a11y and rotate button always overrides the appearance
         boolean disableImeSwitcher =
                 (mNavigationIconHints & StatusBarManager.NAVIGATION_HINT_IME_SWITCHER_SHOWN) == 0
-                || isImeRenderingNavButtons();
+                || isImeRenderingNavButtons()
+                || isHideIMESpaceEnabled();
         mContextualButtonGroup.setButtonVisibility(R.id.ime_switcher, !disableImeSwitcher);
 
         mBarTransitions.reapplyDarkIntensity();
@@ -653,7 +655,7 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
             }
         }
 
-        getBackButton().setVisibility(disableBack       ? View.INVISIBLE : View.VISIBLE);
+        getBackButton().setVisibility(disableBack || (isHideIMESpaceEnabled() && isGesturalMode(mNavBarMode)) ? View.GONE : View.VISIBLE);
         getHomeButton().setVisibility(disableHome       ? View.INVISIBLE : View.VISIBLE);
         getRecentsButton().setVisibility(disableRecent  ? View.INVISIBLE : View.VISIBLE);
         getHomeHandle().setVisibility(disableHomeHandle ? View.INVISIBLE : View.VISIBLE);
@@ -991,8 +993,42 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
                             com.android.internal.R.dimen.navigation_bar_height_landscape)
                     : getResources().getDimensionPixelSize(
                             com.android.internal.R.dimen.navigation_bar_height);
-            int frameHeight = getResources().getDimensionPixelSize(
-                    com.android.internal.R.dimen.navigation_bar_frame_height);
+            
+            // Check if hide navbar is enabled
+            boolean hideNavbarEnabled = Settings.System.getIntForUser(
+                    getContext().getContentResolver(),
+                    Settings.System.HIDE_NAVBAR_ENABLE,
+                    1, // Default to enabled
+                    UserHandle.USER_CURRENT) != 0;
+            
+            // When hide navbar is enabled, set minimal height
+            if (hideNavbarEnabled) {
+                height = 1; // Minimal height to effectively hide navbar
+            } else if (isHideIMESpaceEnabled()) {
+                // When IME space hiding is enabled, use zero height for gesture navigation
+                if (isGesturalMode(mNavBarMode)) {
+                    height = 0; // Completely remove IME space in gesture navigation
+                } else {
+                    height = getResources().getDimensionPixelSize(
+                            com.android.internal.R.dimen.navigation_bar_height_hide_ime);
+                }
+            }
+            
+            int frameHeight;
+            if (hideNavbarEnabled) {
+                // Hide navbar - minimal frame height
+                frameHeight = 1;
+            } else if (isHideIMESpaceEnabled()) {
+                if (isGesturalMode(mNavBarMode)) {
+                    frameHeight = 0; // Completely remove IME frame space in gesture navigation
+                } else {
+                    frameHeight = getResources().getDimensionPixelSize(
+                            com.android.internal.R.dimen.navigation_bar_frame_height_hide_ime);
+                }
+            } else {
+                frameHeight = getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_frame_height);
+            }
             mBarTransitions.setBackgroundFrame(new Rect(0, frameHeight - height, w, h));
         } else {
             mBarTransitions.setBackgroundFrame(null);
@@ -1002,11 +1038,29 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
     }
 
     int getNavBarHeight() {
-        return mIsVertical
+        int height = mIsVertical
                 ? getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.navigation_bar_height_landscape)
                 : getResources().getDimensionPixelSize(
                         com.android.internal.R.dimen.navigation_bar_height);
+        
+        // Check if hide navbar is enabled
+        boolean hideNavbarEnabled = Settings.System.getIntForUser(
+                getContext().getContentResolver(),
+                Settings.System.HIDE_NAVBAR_ENABLE,
+                1, // Default to enabled
+                UserHandle.USER_CURRENT) != 0;
+        
+        // When hide navbar is enabled, return minimal height
+        if (hideNavbarEnabled) {
+            return 1; // Minimal height to effectively hide navbar
+        } else if (isHideIMESpaceEnabled()) {
+            // When IME space hiding is enabled, use specific height for minimal space
+            return getResources().getDimensionPixelSize(
+                    com.android.internal.R.dimen.navigation_bar_height_hide_ime);
+        }
+        
+        return height;
     }
 
     private void notifyVerticalChangedListener(boolean newVertical) {
@@ -1218,5 +1272,14 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
 
     interface UpdateActiveTouchRegionsCallback {
         void update();
+    }
+
+    public boolean isHideIMESpaceEnabled() {
+        // Automatically enable Hide IME Space when using gesture navigation
+        if (isGesturalMode(mNavBarMode)) {
+            return true;
+        }
+        return Settings.System.getInt(getContext().getContentResolver(),
+                Settings.System.HIDE_IME_SPACE_ENABLE, 0) != 0;
     }
 }
