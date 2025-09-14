@@ -163,6 +163,137 @@ public class Build {
     @NonNull
     public static final String SOC_MODEL = SocProperties.soc_model().orElse(UNKNOWN);
 
+    /**
+     * GrapheneOS Device Privacy: Enhanced device identification protection.
+     * Prevents apps from collecting device identifiers for tracking.
+     */
+    private static final String DEVICE_PRIVACY_ENABLED = "persist.security.device_privacy";
+    private static final String IDENTIFIER_RANDOMIZATION_ENABLED = "persist.security.identifier_randomization";
+    
+    /**
+     * Get device manufacturer with privacy protection.
+     * Returns randomized manufacturer for non-privileged apps.
+     * 
+     * @return device manufacturer or privacy-protected identifier
+     * @hide
+     */
+    public static String getPrivacyProtectedManufacturer() {
+        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
+            return generatePrivacyIdentifier("MANUFACTURER");
+        }
+        return SystemProperties.get("ro.product.manufacturer", "unknown");
+    }
+
+    /**
+     * Get device brand with privacy protection.
+     * Returns randomized brand for non-privileged apps.
+     * 
+     * @return device brand or privacy-protected identifier
+     * @hide
+     */
+    public static String getPrivacyProtectedBrand() {
+        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
+            return generatePrivacyIdentifier("BRAND");
+        }
+        return SystemProperties.get("ro.product.brand", "unknown");
+    }
+
+    /**
+     * Get device model with privacy protection.
+     * Returns randomized model for non-privileged apps.
+     * 
+     * @return device model or privacy-protected identifier
+     * @hide
+     */
+    public static String getPrivacyProtectedModel() {
+        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
+            return generatePrivacyIdentifier("MODEL");
+        }
+        return SystemProperties.get("ro.product.model", "unknown");
+    }
+
+    /**
+     * Check if device privacy protection is enabled.
+     * 
+     * @return true if device privacy is enabled
+     * @hide
+     */
+    private static boolean isDevicePrivacyEnabled() {
+        try {
+            return android.os.SystemProperties.getBoolean(DEVICE_PRIVACY_ENABLED, true);
+        } catch (Exception e) {
+            return true; // Default to enabled for privacy
+        }
+    }
+
+    /**
+     * Check if the calling app has access to device identifiers.
+     * Only system apps and privileged apps should have access.
+     * 
+     * @return true if access is allowed, false otherwise
+     * @hide
+     */
+    private static boolean hasDeviceIdentifierAccess() {
+        try {
+            // Check if caller is system process
+            if (Process.myUid() == Process.SYSTEM_UID) {
+                return true;
+            }
+            
+            // Check if caller has READ_PHONE_STATE permission
+            Application application = ActivityThread.currentApplication();
+            if (application != null) {
+                return application.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) 
+                    == android.content.pm.PackageManager.PERMISSION_GRANTED;
+            }
+            
+            return false;
+        } catch (Exception e) {
+            // Default to denying access for privacy
+            return false;
+        }
+    }
+
+    /**
+     * Generate a privacy-protected identifier for device information.
+     * 
+     * @param type the type of identifier to generate
+     * @return privacy-protected identifier
+     * @hide
+     */
+    private static String generatePrivacyIdentifier(String type) {
+        try {
+            if (isIdentifierRandomizationEnabled()) {
+                // Generate cryptographically secure random identifier
+                java.security.SecureRandom random = new java.security.SecureRandom();
+                int randomValue = random.nextInt(1000000);
+                return "PRIVACY_" + type + "_" + Integer.toHexString(randomValue);
+            } else {
+                // Use deterministic but privacy-protected identifier
+                return "PRIVACY_" + type + "_" + Integer.toHexString(
+                    System.identityHashCode(Thread.currentThread()) ^ type.hashCode());
+            }
+        } catch (Exception e) {
+            // Fallback to simple privacy identifier
+            return "PRIVACY_" + type + "_" + Integer.toHexString(
+                System.currentTimeMillis() % 1000000);
+        }
+    }
+
+    /**
+     * Check if identifier randomization is enabled.
+     * 
+     * @return true if randomization is enabled
+     * @hide
+     */
+    private static boolean isIdentifierRandomizationEnabled() {
+        try {
+            return android.os.SystemProperties.getBoolean(IDENTIFIER_RANDOMIZATION_ENABLED, true);
+        } catch (Exception e) {
+            return true; // Default to enabled for privacy
+        }
+    }
+
     /** The system bootloader version number. */
     public static final String BOOTLOADER = getString("ro.bootloader");
 
@@ -276,6 +407,51 @@ public class Build {
             e.rethrowFromSystemServer();
         }
         return UNKNOWN;
+    }
+
+    /**
+     * GrapheneOS Privacy Hardening: Enhanced privacy protection for serial number access.
+     * Returns a randomized identifier instead of actual serial for non-privileged apps.
+     * 
+     * @return privacy-protected serial identifier
+     * @hide
+     */
+    public static String getPrivacySerial() {
+        // Check if caller has permission to access serial number
+        if (checkSerialAccessPermission()) {
+            return SystemProperties.get("ro.serialno", "unknown");
+        }
+        
+        // Generate a privacy-protected identifier
+        return "PRIVACY_" + Integer.toHexString(System.identityHashCode(Thread.currentThread()));
+    }
+
+    /**
+     * GrapheneOS Privacy Hardening: Check if the calling application has permission to access serial number.
+     * Only system apps and privileged apps should have access.
+     * 
+     * @return true if access is allowed, false otherwise
+     * @hide
+     */
+    private static boolean checkSerialAccessPermission() {
+        try {
+            // Check if caller is system process
+            if (Process.myUid() == Process.SYSTEM_UID) {
+                return true;
+            }
+            
+            // Check if caller has READ_PHONE_STATE permission
+            Application application = ActivityThread.currentApplication();
+            if (application != null) {
+                return application.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) 
+                    == android.content.pm.PackageManager.PERMISSION_GRANTED;
+            }
+            
+            return false;
+        } catch (Exception e) {
+            // Default to denying access for privacy
+            return false;
+        }
     }
 
     /**
