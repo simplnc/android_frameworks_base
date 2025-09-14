@@ -2127,6 +2127,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
             loadDefaultHapticSettings(stmt);
 
+            // Load hide navbar setting
+            loadBooleanSetting(stmt, Settings.System.HIDE_NAVBAR_ENABLE,
+                    R.bool.def_hide_navbar_enable);
+
+            // Load notification squishy animations setting
+            loadBooleanSetting(stmt, Settings.System.NOTIFICATION_SQUISHY_ANIMATIONS,
+                    R.bool.def_notification_squishy_animations);
+
             loadBooleanSetting(stmt, Settings.System.NOTIFICATION_LIGHT_PULSE,
                     R.bool.def_notification_pulse);
 

@@ -6591,6 +6591,13 @@ public final class Settings {
          */
         public static final String POWERMENU_SCREENSHOT = "powermenu_screenshot";
 
+        /**
+         * Whether to hide IME space when using gesture navigation
+         *
+         * @hide
+         */
+        public static final String HIDE_IME_SPACE_ENABLE = "hide_ime_space_enable";
+
          /**
          * Whether to display settings in the power menu
          *
@@ -6726,6 +6733,18 @@ public final class Settings {
          * @hide
          */
         public static final String SMART_PIXELS_ON_POWER_SAVE = "smart_pixels_on_power_save";
+
+        /**
+         * Whether to enable hide navbar (gesture navigation) by default
+         * @hide
+         */
+        public static final String HIDE_NAVBAR_ENABLE = "hide_navbar_enable";
+
+        /**
+         * Whether to enable squishy animations for notifications
+         * @hide
+         */
+        public static final String NOTIFICATION_SQUISHY_ANIMATIONS = "notification_squishy_animations";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
@@ -6868,6 +6887,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(PREFERRED_REGION);
             PRIVATE_SETTINGS.add(TRANSPARENT_POWER_MENU);
             PRIVATE_SETTINGS.add(TRANSPARENT_POWER_DIALOG_DIM);
+            PRIVATE_SETTINGS.add(HIDE_IME_SPACE_ENABLE);
         }
 
         /**
