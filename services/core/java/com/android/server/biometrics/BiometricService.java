@@ -779,6 +779,131 @@ public class BiometricService extends SystemService {
             mHandler.post(() -> handleCancelAuthentication(requestId));
         }
 
+        /**
+         * GrapheneOS Privacy Hardening: Fingerprint lockout protection.
+         * Disables fingerprint authentication after multiple failed attempts.
+         */
+        private static final int MAX_FINGERPRINT_ATTEMPTS = 5;
+        private static final long LOCKOUT_DURATION_MS = 30 * 1000; // 30 seconds
+        private static final long EXTENDED_LOCKOUT_DURATION_MS = 300 * 1000; // 5 minutes
+        
+        private int mFailedFingerprintAttempts = 0;
+        private long mLastFailedAttemptTime = 0;
+        private boolean mFingerprintLockoutActive = false;
+
+        /**
+         * Check if fingerprint authentication should be blocked due to lockout.
+         * 
+         * @return true if fingerprint is locked out, false otherwise
+         * @hide
+         */
+        public boolean isFingerprintLockedOut() {
+            if (!mFingerprintLockoutActive) {
+                return false;
+            }
+            
+            long currentTime = System.currentTimeMillis();
+            long timeSinceLastAttempt = currentTime - mLastFailedAttemptTime;
+            
+            // Check if lockout period has expired
+            long lockoutDuration = getLockoutDuration();
+            if (timeSinceLastAttempt >= lockoutDuration) {
+                resetFingerprintLockout();
+                return false;
+            }
+            
+            return true;
+        }
+
+        /**
+         * Record a failed fingerprint attempt and apply lockout if necessary.
+         * 
+         * @hide
+         */
+        public void recordFailedFingerprintAttempt() {
+            mFailedFingerprintAttempts++;
+            mLastFailedAttemptTime = System.currentTimeMillis();
+            
+            android.util.Log.w(TAG, "Failed fingerprint attempt " + mFailedFingerprintAttempts + 
+                              " of " + MAX_FINGERPRINT_ATTEMPTS);
+            
+            if (mFailedFingerprintAttempts >= MAX_FINGERPRINT_ATTEMPTS) {
+                activateFingerprintLockout();
+            }
+        }
+
+        /**
+         * Reset fingerprint lockout after successful authentication.
+         * 
+         * @hide
+         */
+        public void resetFingerprintLockout() {
+            mFailedFingerprintAttempts = 0;
+            mFingerprintLockoutActive = false;
+            mLastFailedAttemptTime = 0;
+            
+            android.util.Log.i(TAG, "Fingerprint lockout reset - authentication successful");
+        }
+
+        /**
+         * Activate fingerprint lockout protection.
+         * 
+         * @hide
+         */
+        private void activateFingerprintLockout() {
+            mFingerprintLockoutActive = true;
+            long lockoutDuration = getLockoutDuration();
+            
+            android.util.Log.w(TAG, "Fingerprint lockout activated for " + 
+                              (lockoutDuration / 1000) + " seconds");
+            
+            // Notify system UI about lockout
+            notifyFingerprintLockoutState(true);
+            
+            // Schedule lockout reset
+            android.os.Handler handler = new android.os.Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mFingerprintLockoutActive) {
+                        resetFingerprintLockout();
+                        notifyFingerprintLockoutState(false);
+                    }
+                }
+            }, lockoutDuration);
+        }
+
+        /**
+         * Get the appropriate lockout duration based on attempt count.
+         * 
+         * @return lockout duration in milliseconds
+         * @hide
+         */
+        private long getLockoutDuration() {
+            if (mFailedFingerprintAttempts >= MAX_FINGERPRINT_ATTEMPTS * 2) {
+                return EXTENDED_LOCKOUT_DURATION_MS;
+            }
+            return LOCKOUT_DURATION_MS;
+        }
+
+        /**
+         * Notify system UI about fingerprint lockout state changes.
+         * 
+         * @param locked true if locked out, false if unlocked
+         * @hide
+         */
+        private void notifyFingerprintLockoutState(boolean locked) {
+            try {
+                android.content.Intent intent = new android.content.Intent(
+                    "android.intent.action.FINGERPRINT_LOCKOUT_STATE_CHANGED");
+                intent.putExtra("locked", locked);
+                intent.putExtra("attempts", mFailedFingerprintAttempts);
+                getContext().sendBroadcast(intent);
+            } catch (Exception e) {
+                android.util.Log.e(TAG, "Error notifying fingerprint lockout state", e);
+            }
+        }
+
         @android.annotation.EnforcePermission(android.Manifest.permission.USE_BIOMETRIC_INTERNAL)
         @Override // Binder call
         public int canAuthenticate(String opPackageName, int userId, int callingUserId,
