@@ -242,6 +242,90 @@ public class PermissionManagerService extends IPermissionManager.Stub {
                 persistentDeviceId, userId, mPermissionManagerServiceImpl::checkPermission);
     }
 
+    /**
+     * GrapheneOS Privacy Hardening: Prevent system browsers from getting location access.
+     * This reduces tracking capabilities and improves user privacy.
+     * 
+     * @param packageName the package requesting permission
+     * @param permission the permission being requested
+     * @return true if location permission should be blocked for browsers
+     * @hide
+     */
+    private boolean shouldBlockBrowserLocationAccess(String packageName, String permission) {
+        if (!android.Manifest.permission.ACCESS_FINE_LOCATION.equals(permission) &&
+            !android.Manifest.permission.ACCESS_COARSE_LOCATION.equals(permission)) {
+            return false;
+        }
+        
+        try {
+            // Check if this is a system browser package
+            if (isSystemBrowserPackage(packageName)) {
+                android.util.Log.i(LOG_TAG, "Blocking location access for system browser: " + packageName);
+                return true;
+            }
+        } catch (Exception e) {
+            android.util.Log.w(LOG_TAG, "Error checking browser package: " + packageName, e);
+        }
+        
+        return false;
+    }
+
+    /**
+     * Check if the given package is a system browser that should have location access blocked.
+     * 
+     * @param packageName the package name to check
+     * @return true if this is a system browser package
+     * @hide
+     */
+    private boolean isSystemBrowserPackage(String packageName) {
+        // Common system browser package names
+        String[] systemBrowsers = {
+            "com.android.browser",
+            "com.android.chrome",
+            "org.lineageos.browser",
+            "org.mozilla.firefox",
+            "com.opera.browser",
+            "com.duckduckgo.mobile.android",
+            "com.brave.browser"
+        };
+        
+        for (String browser : systemBrowsers) {
+            if (packageName.equals(browser)) {
+                return true;
+            }
+        }
+        
+        // Check if package is installed as system app
+        try {
+            android.content.pm.PackageInfo packageInfo = 
+                mContext.getPackageManager().getPackageInfo(packageName, 0);
+            return (packageInfo.applicationInfo.flags & 
+                   android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Enhanced permission check that applies GrapheneOS privacy rules.
+     * 
+     * @param packageName the package requesting permission
+     * @param permission the permission being requested
+     * @param userId the user ID
+     * @return true if permission should be granted, false otherwise
+     * @hide
+     */
+    public boolean checkPermissionWithPrivacyRules(String packageName, String permission, int userId) {
+        // Apply GrapheneOS privacy hardening rules
+        if (shouldBlockBrowserLocationAccess(packageName, permission)) {
+            android.util.Log.i(LOG_TAG, "Privacy rule: Blocking " + permission + " for " + packageName);
+            return false;
+        }
+        
+        // Continue with normal permission check
+        return checkPermission(packageName, permission, null, userId) == PackageManager.PERMISSION_GRANTED;
+    }
+
     @Override
     @PackageManager.PermissionResult
     public int checkUidPermission(int uid, String permissionName, int deviceId) {

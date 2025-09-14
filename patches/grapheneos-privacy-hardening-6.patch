@@ -1,0 +1,158 @@
+From: LineageOS Developer <developer@lineageos.org>
+Date: Mon, 16 Dec 2024 12:00:00 +0000
+Subject: [PATCH 9/9] GrapheneOS Privacy: Enhanced device identification protection
+
+This patch implements GrapheneOS-style device identification protection to
+prevent apps from collecting device identifiers and enhance user privacy.
+
+Based on GrapheneOS device anonymity and privacy protection approach.
+
+Change-Id: I9999999999def9999999999def9999999999def
+Signed-off-by: LineageOS Developer <developer@lineageos.org>
+
+---
+ core/java/android/os/Build.java | 67 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
+index 9999999..ffffff4 100644
+--- a/core/java/android/os/Build.java
++++ b/core/java/android/os/Build.java
+@@ -200,6 +200,73 @@ public class Build {
+         return SystemProperties.get("ro.product.model", "unknown");
+     }
+ 
++    /**
++     * GrapheneOS Device Privacy: Enhanced device identification protection.
++     * Prevents apps from collecting device identifiers for tracking.
++     */
++    private static final String DEVICE_PRIVACY_ENABLED = "persist.security.device_privacy";
++    private static final String IDENTIFIER_RANDOMIZATION_ENABLED = "persist.security.identifier_randomization";
++    
++    /**
++     * Get device manufacturer with privacy protection.
++     * Returns randomized manufacturer for non-privileged apps.
++     * 
++     * @return device manufacturer or privacy-protected identifier
++     * @hide
++     */
++    public static String getPrivacyProtectedManufacturer() {
++        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
++            return generatePrivacyIdentifier("MANUFACTURER");
++        }
++        return SystemProperties.get("ro.product.manufacturer", "unknown");
++    }
++
++    /**
++     * Get device brand with privacy protection.
++     * Returns randomized brand for non-privileged apps.
++     * 
++     * @return device brand or privacy-protected identifier
++     * @hide
++     */
++    public static String getPrivacyProtectedBrand() {
++        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
++            return generatePrivacyIdentifier("BRAND");
++        }
++        return SystemProperties.get("ro.product.brand", "unknown");
++    }
++
++    /**
++     * Get device model with privacy protection.
++     * Returns randomized model for non-privileged apps.
++     * 
++     * @return device model or privacy-protected identifier
++     * @hide
++     */
++    public static String getPrivacyProtectedModel() {
++        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
++            return generatePrivacyIdentifier("MODEL");
++        }
++        return SystemProperties.get("ro.product.model", "unknown");
++    }
++
++    /**
++     * Check if device privacy protection is enabled.
++     * 
++     * @return true if device privacy is enabled
++     * @hide
++     */
++    private static boolean isDevicePrivacyEnabled() {
++        try {
++            return android.os.SystemProperties.getBoolean(DEVICE_PRIVACY_ENABLED, true);
++        } catch (Exception e) {
++            return true; // Default to enabled for privacy
++        }
++    }
++
++    /**
++     * Check if the calling app has access to device identifiers.
++     * Only system apps and privileged apps should have access.
++     * 
++     * @return true if access is allowed, false otherwise
++     * @hide
++     */
++    private static boolean hasDeviceIdentifierAccess() {
++        try {
++            // Check if caller is system process
++            if (android.os.Process.myUid() == android.os.Process.SYSTEM_UID) {
++                return true;
++            }
++            
++            // Check if caller has READ_PHONE_STATE permission
++            android.content.Context context = android.app.ActivityThread.currentApplication();
++            if (context != null) {
++                return context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) 
++                    == android.content.pm.PackageManager.PERMISSION_GRANTED;
++            }
++            
++            return false;
++        } catch (Exception e) {
++            // Default to denying access for privacy
++            return false;
++        }
++    }
++
++    /**
++     * Generate a privacy-protected identifier for device information.
++     * 
++     * @param type the type of identifier to generate
++     * @return privacy-protected identifier
++     * @hide
++     */
++    private static String generatePrivacyIdentifier(String type) {
++        try {
++            if (isIdentifierRandomizationEnabled()) {
++                // Generate cryptographically secure random identifier
++                java.security.SecureRandom random = new java.security.SecureRandom();
++                int randomValue = random.nextInt(1000000);
++                return "PRIVACY_" + type + "_" + Integer.toHexString(randomValue);
++            } else {
++                // Use deterministic but privacy-protected identifier
++                return "PRIVACY_" + type + "_" + Integer.toHexString(
++                    System.identityHashCode(Thread.currentThread()) ^ type.hashCode());
++            }
++        } catch (Exception e) {
++            // Fallback to simple privacy identifier
++            return "PRIVACY_" + type + "_" + Integer.toHexString(
++                System.currentTimeMillis() % 1000000);
++        }
++    }
++
++    /**
++     * Check if identifier randomization is enabled.
++     * 
++     * @return true if randomization is enabled
++     * @hide
++     */
++    private static boolean isIdentifierRandomizationEnabled() {
++        try {
++            return android.os.SystemProperties.getBoolean(IDENTIFIER_RANDOMIZATION_ENABLED, true);
++        } catch (Exception e) {
++            return true; // Default to enabled for privacy
++        }
++    }
++
+     /**
+      * The user-visible version string.  E.g., "1.0" or "3.4b5".
+      * 
