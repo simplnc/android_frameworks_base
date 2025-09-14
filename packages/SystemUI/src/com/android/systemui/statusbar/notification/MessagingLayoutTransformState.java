@@ -122,15 +122,15 @@ public class MessagingLayoutTransformState extends TransformState {
                                 to);
                         float newPosition = ownGroup.getTop() + currentTranslation;
 
+                        // RESTORED: Normal fade behavior with improved text preservation
                         if (!mTransformInfo.isAnimating()) {
-                            // We fade the group away as soon as 1/2 of it is translated away on top
-                            float fadeStart = -ownGroup.getHeight() * 0.5f;
+                            // We fade the group away as soon as 3/4 of it is translated away on top (less aggressive)
+                            float fadeStart = -ownGroup.getHeight() * 0.75f;
                             groupTransformationAmount = (newPosition - fadeStart)
                                     / Math.abs(fadeStart);
                         } else {
-                            float fadeStart = -ownGroup.getHeight() * 0.75f;
-                            // We want to fade out as soon as the animation starts, let's add the
-                            // complete top in addition
+                            float fadeStart = -ownGroup.getHeight() * 0.9f;
+                            // Less aggressive fade out to preserve text visibility
                             groupTransformationAmount = (newPosition - fadeStart)
                                     / (Math.abs(fadeStart) + ownGroup.getTop());
                         }

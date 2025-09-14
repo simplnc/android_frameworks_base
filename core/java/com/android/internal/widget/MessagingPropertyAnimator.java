@@ -223,6 +223,7 @@ public class MessagingPropertyAnimator implements View.OnLayoutChangeListener {
             }
             return;
         }
+        // RESTORED: Normal fade out with improved text preservation
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA,
                 view.getAlpha(), 0.0f);
         animator.setInterpolator(ALPHA_OUT);
