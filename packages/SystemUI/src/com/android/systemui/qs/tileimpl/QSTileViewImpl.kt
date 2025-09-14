@@ -244,9 +244,14 @@ constructor(
     }
 
     private fun getAdvancedPhysicsHandler(): QSTileAdvancedPhysicsHandler? {
-        // Create per-tile handler; each tile gets its own instance
+        // Create per-tile handler with safety checks to prevent bootloops
         if (advancedPhysicsHandler == null) {
-            advancedPhysicsHandler = QSTileAdvancedPhysicsHandler(this)
+            try {
+                advancedPhysicsHandler = QSTileAdvancedPhysicsHandler(this)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to create physics handler, falling back to standard behavior", e)
+                return null
+            }
         }
         return advancedPhysicsHandler
     }
@@ -347,6 +352,8 @@ constructor(
         qsTileBackground =
             if (Flags.qsTileFocusState()) {
                 mContext.getDrawable(R.drawable.qs_tile_background_flagged) as RippleDrawable
+            } else if (android.os.SystemProperties.getBoolean("sysui.qs.bg_enhanced", true)) {
+                mContext.getDrawable(R.drawable.qs_tile_background_enhanced) as RippleDrawable
             } else if (android.os.SystemProperties.getBoolean("sysui.qs.bg_advanced", true)) {
                 mContext.getDrawable(R.drawable.qs_tile_background_advanced) as RippleDrawable
             } else {
@@ -663,8 +670,12 @@ constructor(
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         // Always handle physics first for all tiles - this provides immediate tactile feedback
         if (event != null) {
-            val physicsHandled = getAdvancedPhysicsHandler()?.handleTouchEvent(event) ?: false
-            // If physics handler consumed the event, we still need to process it for clicks
+            try {
+                val physicsHandled = getAdvancedPhysicsHandler()?.handleTouchEvent(event) ?: false
+                // If physics handler consumed the event, we still need to process it for clicks
+            } catch (e: Exception) {
+                Log.w(TAG, "Physics handler error, continuing with standard touch", e)
+            }
         }
         
         // let the View run the onTouch logic for click and long-click detection
@@ -935,21 +946,24 @@ constructor(
         if (state == Tile.STATE_UNAVAILABLE || disabledByPolicy) return colorUnavailable
         if (state == Tile.STATE_INACTIVE) return colorInactive
         if (state == Tile.STATE_ACTIVE) {
+            // Use theme-aware colors that respect user's theme customization
             val pastelOrange = Color.parseColor("#c99a20")
             val pastelRed = Color.parseColor("#e6294f")
             val pastelBlue = Color.parseColor("#0e67ab")
 
             when (spec) {
-                // Flashlight
+                // Flashlight - keep orange for consistency
                 "flashlight" -> return pastelOrange
 
-                // Privacy tiles
+                // Privacy tiles - pastel red when enabled (respects privacy theme)
                 "mictoggle", "cameratoggle", "location" -> return pastelRed
 
-                // Connectivity tiles
-                "sync", "cell", "internet", "wifi", "mobile_data" -> return pastelBlue
+                // Connectivity tiles - pastel blue when enabled (respects connectivity theme)
+                "sync", "cell", "internet", "wifi", "mobile_data", "hotspot" -> return pastelBlue
+                
+                // Default tiles use theme's colorAccent to respect user customization
+                else -> return colorActive
             }
-            return colorActive
         }
         Log.e(TAG, "Invalid state $state")
         return 0
@@ -1189,7 +1203,8 @@ constructor(
 }
 
 fun constrainSquishiness(squish: Float): Float {
-    return 0.1f + squish * 0.9f
+    // ENHANCED: More aggressive squishiness range for better tactile feedback
+    return 0.05f + squish * 0.95f  // Allow more squishiness range (5% to 100%)
 }
 
 private fun colorValuesHolder(name: String, vararg values: Int): PropertyValuesHolder {
