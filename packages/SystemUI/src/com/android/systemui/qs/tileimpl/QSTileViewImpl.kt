@@ -1203,7 +1203,8 @@ constructor(
 }
 
 fun constrainSquishiness(squish: Float): Float {
-    return 0.1f + squish * 0.9f
+    // ENHANCED: More aggressive squishiness range for better tactile feedback
+    return 0.05f + squish * 0.95f  // Allow more squishiness range (5% to 100%)
 }
 
 private fun colorValuesHolder(name: String, vararg values: Int): PropertyValuesHolder {

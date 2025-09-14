@@ -15,19 +15,32 @@ import android.content.Context
  */
 class QSTileAdvancedPhysicsHandler(private val targetView: View) {
 
-    // Enhanced depression parameters for realistic button feel
-    private val pressScale: Float = 0.88f  // More pronounced depression for better squishiness
-    private val pressAlpha: Float = 0.85f  // More noticeable fade
-    private val pressElevation: Float = -8f  // Stronger push down effect with more depression
-    private val releaseDurationMs: Long = 320L  // Longer release for better elasticity
-    private val pressDurationMs: Long = 100L   // Quick press for immediate feedback
-    private val bounceScale: Float = 1.05f  // Slight bounce back effect
-    private val bounceDurationMs: Long = 150L  // Bounce animation duration
+    // ENHANCED: More aggressive squishiness for better tactile feedback
+    private val pressScale: Float = 0.82f  // Much more pronounced depression for maximum squishiness
+    private val pressAlpha: Float = 0.80f  // More noticeable fade for better visual feedback
+    private val pressElevation: Float = -12f  // Stronger push down effect for better depression feel
+    private val releaseDurationMs: Long = 380L  // Longer release for more elasticity
+    private val pressDurationMs: Long = 80L   // Faster press for immediate tactile feedback
+    private val bounceScale: Float = 1.08f  // More pronounced bounce back effect
+    private val bounceDurationMs: Long = 180L  // Longer bounce for better elasticity
+    
+    // ENHANCED: Shadow parameters for better depth and visual appeal
+    private val normalElevation: Float = 8f  // Base shadow elevation for depth
+    private val pressElevationShadow: Float = 2f  // Reduced shadow when pressed
+    private val bounceElevation: Float = 12f  // Enhanced shadow during bounce
+    private val shadowBlurRadius: Float = 16f  // Blur radius for softer shadows
+    private val shadowOffsetX: Float = 0f  // Horizontal shadow offset
+    private val shadowOffsetY: Float = 4f  // Vertical shadow offset
     private val vibrator: Vibrator? = targetView.context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
     
     // Track animation state to prevent conflicts
     private var isAnimating = false
     private var isPressed = false
+    
+    init {
+        // ENHANCED: Initialize with normal shadow elevation for better depth
+        targetView.elevation = normalElevation
+    }
 
     fun handleTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled()) return false
@@ -57,7 +70,7 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
         targetView.alpha = 1.0f
         targetView.translationX = 0.0f
         targetView.translationY = 0.0f
-        targetView.elevation = 0.0f
+        targetView.elevation = normalElevation // ENHANCED: Reset to normal shadow elevation
         isAnimating = false
         isPressed = false
     }
@@ -76,6 +89,9 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
         targetView.alpha = pressAlpha
         targetView.translationY = pressElevation
         
+        // ENHANCED: Instant shadow reduction for pressed state
+        targetView.elevation = pressElevationShadow
+        
         // Strong haptic feedback for immediate response
         vibrator?.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
     }
@@ -91,23 +107,25 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
         
         isAnimating = true
         
-        // Enhanced press animation with bounce effect
+        // Enhanced press animation with bounce effect and shadow
         targetView.animate()
             .setDuration(duration)
             .scaleX(pressScale * 0.95f) // Extra squish for bounce
             .scaleY(pressScale * 0.95f)
             .alpha(pressAlpha * 0.9f) // Deeper fade
             .translationY(pressElevation * 1.2f) // Deeper depression
+            .elevation(pressElevationShadow) // ENHANCED: Shadow reduction when pressed
             .setInterpolator(ACCEL_DECEL)
             .withLayer()
             .withEndAction {
-                // Bounce back to normal press state
+                // Bounce back to normal press state with shadow
                 targetView.animate()
                     .setDuration(duration / 2)
                     .scaleX(pressScale)
                     .scaleY(pressScale)
                     .alpha(pressAlpha)
                     .translationY(pressElevation)
+                    .elevation(pressElevationShadow) // ENHANCED: Maintain reduced shadow in pressed state
                     .setInterpolator(ACCEL_DECEL)
                     .start()
             }
@@ -124,21 +142,23 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
             releaseDurationMs
         }
         
-        // Enhanced release with overshoot bounce
+        // Enhanced release with overshoot bounce and shadow
         targetView.animate()
             .setDuration(duration)
             .scaleX(1.05f) // Overshoot bounce
             .scaleY(1.05f)
             .alpha(1.0f)
             .translationY(0.0f)
+            .elevation(bounceElevation) // ENHANCED: Enhanced shadow during bounce
             .setInterpolator(ACCEL_DECEL)
             .withLayer()
             .withEndAction {
-                // Settle back to normal size
+                // Settle back to normal size with normal shadow
                 targetView.animate()
                     .setDuration(duration / 3)
                     .scaleX(1.0f)
                     .scaleY(1.0f)
+                    .elevation(normalElevation) // ENHANCED: Return to normal shadow elevation
                     .setInterpolator(ACCEL_DECEL)
                     .withEndAction {
                         isAnimating = false
@@ -153,9 +173,9 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
     }
 
     private fun animateEnhancedShake() {
-        // Enhanced shake with more pronounced movement
-        val shakeDistance = 3f // More noticeable shake
-        val shakeDuration = 80L // Slightly longer for better feel
+        // ENHANCED: More pronounced shake for better tactile feedback
+        val shakeDistance = 4f // Much more noticeable shake for better feel
+        val shakeDuration = 100L // Longer duration for more pronounced effect
         
         targetView.animate()
             .setDuration(shakeDuration / 4)
