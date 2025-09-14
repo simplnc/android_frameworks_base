@@ -290,6 +290,9 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
     private OnExpandClickListener mOnExpandClickListener;
     private View.OnClickListener mOnFeedbackClickListener;
     private Path mExpandingClipPath;
+    
+    // Enhanced physics handler for notification interactions
+    private NotificationPhysicsHandler mPhysicsHandler;
 
     private static boolean shouldSimulateSlowMeasure() {
         return Compile.IS_DEBUG && RefactorFlag.forView(
@@ -1127,6 +1130,15 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // Apply enhanced physics for notification interactions with safety checks
+        if (mPhysicsHandler != null) {
+            try {
+                mPhysicsHandler.handleTouchEvent(event);
+            } catch (Exception e) {
+                Log.w(TAG, "Physics handler error, falling back to standard touch", e);
+            }
+        }
+        
         if (event.getActionMasked() != MotionEvent.ACTION_DOWN
                 || !isChildInGroup() || isGroupExpanded()) {
             return super.onTouchEvent(event);
@@ -2062,6 +2074,42 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
         mColorUpdateLogger = colorUpdateLogger;
         mDismissibilityProvider = dismissibilityProvider;
         setHapticFeedbackEnabled(!Flags.msdlFeedback());
+        
+        // Initialize physics handler for enhanced interactions with safety checks
+        try {
+            mPhysicsHandler = new NotificationPhysicsHandler(this);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to initialize notification physics handler", e);
+            mPhysicsHandler = null;
+        }
+    }
+    
+    /**
+     * Trigger enhanced dismissal animation with improved elasticity
+     */
+    public void performEnhancedDismissal() {
+        if (mPhysicsHandler != null) {
+            mPhysicsHandler.animateDismissal(() -> {
+                // Call the standard dismissal after animation
+                performDismiss(false);
+            });
+        } else {
+            performDismiss(false);
+        }
+    }
+    
+    /**
+     * Trigger enhanced swipe dismissal with direction-based animation
+     */
+    public void performEnhancedSwipeDismiss(float direction) {
+        if (mPhysicsHandler != null) {
+            mPhysicsHandler.animateSwipeDismiss(direction, () -> {
+                // Call the standard dismissal after animation  
+                performDismiss(false);
+            });
+        } else {
+            performDismiss(false);
+        }
     }
 
     private void initDimens() {
@@ -4143,6 +4191,15 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
         }
         logRemoveFromTransientContainer(transientContainer);
         super.removeFromTransientContainer();
+    }
+    
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        // Cleanup physics handler resources
+        if (mPhysicsHandler != null) {
+            mPhysicsHandler.cleanup();
+        }
     }
 
     /**
