@@ -30,13 +30,21 @@
     android:clipChildren="false"
     android:layout_width="0dp"
     android:layout_height="wrap_content">
+    <!-- ONEPLUS STYLE: Enhanced status container with OnePlus styling -->
     <com.android.keyguard.KeyguardStatusContainer
         android:id="@+id/status_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/oneplus_notification_card_bg"
+        android:padding="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="4dp"
+        android:visibility="gone">
         <include
             layout="@layout/keyguard_clock_switch"
             android:id="@+id/keyguard_clock_container"

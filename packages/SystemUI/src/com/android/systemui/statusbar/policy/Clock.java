@@ -67,6 +67,7 @@ import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
 import lineageos.providers.LineageSettings;
+import com.android.systemui.lineage.LineageLockScreenSettings;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -114,6 +115,12 @@ public class Clock extends TextView implements
     private static final int AM_PM_STYLE_GONE    = 2;
 
     private int mAmPmStyle = AM_PM_STYLE_GONE;
+    
+    // ENHANCED: Lock screen clock styles using LineageLockScreenSettings
+    private int mClockStyle = LineageLockScreenSettings.CLOCK_STYLE_DIGITAL;
+    private String mCustomFontFamily = null;
+    private boolean mShowDate = false;
+    private String mDateFormat = LineageLockScreenSettings.DEFAULT_DATE_FORMAT;
     private ContentObserver mContentObserver;
     private boolean mShowSeconds;
     private Handler mSecondsHandler;
@@ -154,6 +161,14 @@ public class Clock extends TextView implements
         try {
             mAmPmStyle = LineageSettings.System.getInt(mContext.getContentResolver(),
                     LineageSettings.System.STATUS_BAR_AM_PM, AM_PM_STYLE_GONE);
+            
+            // ENHANCED: Initialize lock screen clock settings
+            mClockStyle = LineageSettings.System.getInt(mContext.getContentResolver(),
+                    LineageLockScreenSettings.LOCKSCREEN_CLOCK_STYLE, LineageLockScreenSettings.CLOCK_STYLE_DIGITAL);
+            mShowDate = LineageSettings.System.getInt(mContext.getContentResolver(),
+                    LineageLockScreenSettings.LOCKSCREEN_SHOW_DATE, 0) == 1;
+            mDateFormat = LineageSettings.System.getString(mContext.getContentResolver(),
+                    LineageLockScreenSettings.LOCKSCREEN_DATE_FORMAT, LineageLockScreenSettings.DEFAULT_DATE_FORMAT);
             mContentObserver = new ContentObserver(null) {
                 @Override
                 public void onChange(boolean selfChange, Uri uri) {
@@ -173,6 +188,27 @@ public class Clock extends TextView implements
                         handleTaskStackListener(
                                 LineageSettings.System.getInt(mContext.getContentResolver(),
                                         LineageSettings.System.STATUS_BAR_CLOCK_AUTO_HIDE, 0) != 0);
+                    } else if (LineageSettings.System.getUriFor(
+                            LineageLockScreenSettings.LOCKSCREEN_CLOCK_STYLE).equals(uri)) {
+                        mClockStyle = LineageSettings.System.getInt(mContext.getContentResolver(),
+                                LineageLockScreenSettings.LOCKSCREEN_CLOCK_STYLE, LineageLockScreenSettings.CLOCK_STYLE_DIGITAL);
+                        mContext.getMainExecutor().execute(() -> {
+                            updateClockStyle();
+                        });
+                    } else if (LineageSettings.System.getUriFor(
+                            LineageLockScreenSettings.LOCKSCREEN_SHOW_DATE).equals(uri)) {
+                        mShowDate = LineageSettings.System.getInt(mContext.getContentResolver(),
+                                LineageLockScreenSettings.LOCKSCREEN_SHOW_DATE, 0) == 1;
+                        mContext.getMainExecutor().execute(() -> {
+                            updateClock(true);
+                        });
+                    } else if (LineageSettings.System.getUriFor(
+                            LineageLockScreenSettings.LOCKSCREEN_DATE_FORMAT).equals(uri)) {
+                        mDateFormat = LineageSettings.System.getString(mContext.getContentResolver(),
+                                LineageLockScreenSettings.LOCKSCREEN_DATE_FORMAT, LineageLockScreenSettings.DEFAULT_DATE_FORMAT);
+                        mContext.getMainExecutor().execute(() -> {
+                            updateClock(true);
+                        });
                     }
                 }
             };
@@ -362,16 +398,52 @@ public class Clock extends TextView implements
         int visibility = visible ? View.VISIBLE : View.GONE;
         super.setVisibility(visibility);
     }
+    
+    // ENHANCED: Update clock style for lock screen
+    private void updateClockStyle() {
+        switch (mClockStyle) {
+            case LineageLockScreenSettings.CLOCK_STYLE_ANALOG:
+                // For analog style, we'll keep digital but with different appearance
+                setTypeface(Typeface.DEFAULT_BOLD);
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 48);
+                break;
+            case LineageLockScreenSettings.CLOCK_STYLE_CUSTOM:
+                // Custom font style
+                if (mCustomFontFamily != null) {
+                    Typeface customTypeface = Typeface.create(mCustomFontFamily, Typeface.NORMAL);
+                    setTypeface(customTypeface);
+                } else {
+                    setTypeface(Typeface.MONOSPACE);
+                }
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 42);
+                break;
+            case LineageLockScreenSettings.CLOCK_STYLE_DIGITAL:
+            default:
+                // Default digital style
+                setTypeface(Typeface.DEFAULT);
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+                break;
+        }
+        updateClock(true);
+    }
 
     final void updateClock(boolean forceTextUpdate) {
         if (mDemoMode || mCalendar == null) return;
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         CharSequence smallTime = getSmallTime();
-        // Setting text actually triggers a layout pass (because the text view is set to
-        // wrap_content width and TextView always relayouts for this). Avoid needless
-        // relayout if the text didn't actually change.
-        if (forceTextUpdate || !TextUtils.equals(smallTime, getText())) {
-            setText(smallTime);
+        
+        // ENHANCED: Add date display for lock screen
+        if (mShowDate && !mIsStatusBar) {
+            String dateText = new SimpleDateFormat(mDateFormat, Locale.getDefault())
+                    .format(mCalendar.getTime());
+            CharSequence fullText = smallTime + "\n" + dateText;
+            if (forceTextUpdate || !TextUtils.equals(fullText, getText())) {
+                setText(fullText);
+            }
+        } else {
+            if (forceTextUpdate || !TextUtils.equals(smallTime, getText())) {
+                setText(smallTime);
+            }
         }
         setContentDescription(mContentDescriptionFormat.format(mCalendar.getTime()));
     }

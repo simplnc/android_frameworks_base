@@ -51,6 +51,8 @@ import com.android.settingslib.Utils;
 import com.android.systemui.keyguard.KeyguardSliceProvider;
 import com.android.systemui.res.R;
 import com.android.systemui.util.wakelock.KeepAwakeAnimationListener;
+import com.android.systemui.lineage.LineageLockScreenSettings;
+import lineageos.providers.LineageSettings;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -73,6 +75,13 @@ public class KeyguardSliceView extends LinearLayout {
     private Row mRow;
     private int mTextColor;
     private float mDarkAmount = 0;
+    
+    // ENHANCED: Weather widget components
+    private LinearLayout mWeatherContainer;
+    private TextView mWeatherTemperature;
+    private TextView mWeatherCondition;
+    private TextView mWeatherLocation;
+    private boolean mShowWeather = false;
 
     private int mIconSize;
     private int mIconSizeWithHeader;
@@ -108,6 +117,17 @@ public class KeyguardSliceView extends LinearLayout {
         mIconSize = (int) mContext.getResources().getDimension(R.dimen.widget_icon_size);
         mIconSizeWithHeader = (int) mContext.getResources().getDimension(R.dimen.header_icon_size);
         mTitle.setBreakStrategy(LineBreaker.BREAK_STRATEGY_BALANCED);
+        
+        // ENHANCED: Initialize weather widget
+        mWeatherContainer = findViewById(R.id.weather_container);
+        mWeatherTemperature = findViewById(R.id.weather_temperature);
+        mWeatherCondition = findViewById(R.id.weather_condition);
+        mWeatherLocation = findViewById(R.id.weather_location);
+        
+        // Initialize weather settings
+        mShowWeather = LineageSettings.System.getInt(mContext.getContentResolver(),
+                LineageLockScreenSettings.LOCKSCREEN_SHOW_WEATHER, 0) == 1;
+        updateWeatherVisibility();
     }
 
     @Override
@@ -478,6 +498,42 @@ public class KeyguardSliceView extends LinearLayout {
                     drawable.setTint(color);
                 }
             }
+        }
+    }
+    
+    // ENHANCED: Weather widget methods
+    private void updateWeatherVisibility() {
+        if (mWeatherContainer != null) {
+            mWeatherContainer.setVisibility(mShowWeather ? View.VISIBLE : View.GONE);
+        }
+    }
+    
+    private void updateWeatherData() {
+        if (!mShowWeather || mWeatherContainer == null) return;
+        
+        // For now, show mock weather data
+        // In a real implementation, this would fetch from a weather service
+        mWeatherTemperature.setText("22°C");
+        mWeatherCondition.setText("Sunny");
+        mWeatherLocation.setText("San Francisco, CA");
+        
+        // Apply text color based on wallpaper
+        if (mWeatherTemperature != null) {
+            mWeatherTemperature.setTextColor(mTextColor);
+        }
+        if (mWeatherCondition != null) {
+            mWeatherCondition.setTextColor(ColorUtils.setAlphaComponent(mTextColor, 180));
+        }
+        if (mWeatherLocation != null) {
+            mWeatherLocation.setTextColor(ColorUtils.setAlphaComponent(mTextColor, 160));
+        }
+    }
+    
+    public void setShowWeather(boolean show) {
+        mShowWeather = show;
+        updateWeatherVisibility();
+        if (show) {
+            updateWeatherData();
         }
     }
 }

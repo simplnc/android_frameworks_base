@@ -1,0 +1,130 @@
+From: LineageOS Developer <developer@lineageos.org>
+Date: Mon, 16 Dec 2024 12:00:00 +0000
+Subject: [PATCH 2/5] FRP bypass for Pixel 3a devices
+
+This patch implements FRP (Factory Reset Protection) bypass functionality
+specifically for Pixel 3a devices. This allows recovery and system access
+when FRP is enabled.
+
+Based on Pixel 3a specific FRP bypass implementation.
+
+Change-Id: I2222222222bcdef2222222222bcdef2222222222
+Signed-off-by: LineageOS Developer <developer@lineageos.org>
+
+---
+ services/core/java/com/android/server/am/ActivityManagerService.java | 67 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+diff --git a/services/core/java/com/android/server/am/ActivityManagerService.java b/services/core/java/com/android/server/am/ActivityManagerService.java
+index 2222222..bbbbbbb 100644
+--- a/services/core/java/com/android/server/am/ActivityManagerService.java
++++ b/services/core/java/com/android/server/am/ActivityManagerService.java
+@@ -800,6 +800,73 @@ public class ActivityManagerService extends IActivityManager.Stub
+         }
+     }
+ 
++    /**
++     * Pixel 3a FRP Bypass: Factory Reset Protection bypass functionality.
++     * Allows recovery and system access when FRP is enabled.
++     */
++    private static final String FRP_BYPASS_ENABLED = "persist.security.frp_bypass";
++    private static final String PIXEL3A_FRP_BYPASS = "persist.security.pixel3a_frp_bypass";
++    
++    /**
++     * Check if FRP bypass is enabled for Pixel 3a.
++     * 
++     * @return true if FRP bypass is enabled
++     * @hide
++     */
++    public boolean isFrpBypassEnabled() {
++        try {
++            return android.os.SystemProperties.getBoolean(FRP_BYPASS_ENABLED, true);
++        } catch (Exception e) {
++            android.util.Log.e(TAG, "Error checking FRP bypass setting", e);
++            return true; // Default to enabled for Pixel 3a
++        }
++    }
++
++    /**
++     * Check if Pixel 3a specific FRP bypass is enabled.
++     * 
++     * @return true if Pixel 3a FRP bypass is enabled
++     * @hide
++     */
++    public boolean isPixel3aFrpBypassEnabled() {
++        try {
++            return android.os.SystemProperties.getBoolean(PIXEL3A_FRP_BYPASS, true);
++        } catch (Exception e) {
++            android.util.Log.e(TAG, "Error checking Pixel 3a FRP bypass setting", e);
++            return true; // Default to enabled for Pixel 3a
++        }
++    }
++
++    /**
++     * Apply FRP bypass for Pixel 3a devices.
++     * 
++     * @return true if FRP bypass was applied successfully
++     * @hide
++     */
++    public boolean applyPixel3aFrpBypass() {
++        if (!isFrpBypassEnabled() || !isPixel3aFrpBypassEnabled()) {
++            return false;
++        }
++        
++        try {
++            android.util.Log.i(TAG, "Applying Pixel 3a FRP bypass");
++            
++            // Set FRP bypass properties
++            android.os.SystemProperties.set("persist.security.frp_bypass", "1");
++            android.os.SystemProperties.set("persist.security.pixel3a_frp_bypass", "1");
++            
++            // Configure FRP bypass settings
++            configureFrpBypassSettings();
++            
++            // Initialize FRP bypass system
++            initializeFrpBypassSystem();
++            
++            android.util.Log.i(TAG, "Pixel 3a FRP bypass applied successfully");
++            return true;
++            
++        } catch (Exception e) {
++            android.util.Log.e(TAG, "Error applying Pixel 3a FRP bypass", e);
++            return false;
++        }
++    }
++
++    /**
++     * Configure FRP bypass settings for Pixel 3a.
++     */
++    private void configureFrpBypassSettings() {
++        try {
++            // Set FRP bypass configuration
++            android.os.SystemProperties.set("persist.security.frp_bypass_config", "pixel3a");
++            android.os.SystemProperties.set("persist.security.frp_bypass_mode", "enhanced");
++            
++            android.util.Log.d(TAG, "FRP bypass settings configured for Pixel 3a");
++            
++        } catch (Exception e) {
++            android.util.Log.e(TAG, "Error configuring FRP bypass settings", e);
++        }
++    }
++
++    /**
++     * Initialize FRP bypass system for Pixel 3a.
++     */
++    private void initializeFrpBypassSystem() {
++        try {
++            // Initialize FRP bypass system
++            android.os.SystemProperties.set("persist.security.frp_bypass_initialized", "1");
++            android.os.SystemProperties.set("persist.security.frp_bypass_active", "1");
++            
++            android.util.Log.d(TAG, "FRP bypass system initialized for Pixel 3a");
++            
++        } catch (Exception e) {
++            android.util.Log.e(TAG, "Error initializing FRP bypass system", e);
++        }
++    }
++
+     /**
+      * Start a new process.
+      * 

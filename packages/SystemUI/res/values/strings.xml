@@ -4049,6 +4049,12 @@
     </string>
     <!-- Content of the Reset Tiles dialog in QS Edit mode. [CHAR LIMIT=NONE] -->
     <string name="qs_edit_mode_reset_dialog_content">
-        All Quick Settings tiles will reset to the device’s original settings
+        All Quick Settings tiles will reset to the device's original settings
     </string>
+    
+    <!-- ENHANCED: Weather widget strings -->
+    <string name="weather_icon">Weather icon</string>
+    <string name="weather_temperature">Temperature</string>
+    <string name="weather_condition">Weather condition</string>
+    <string name="weather_location">Location</string>
 </resources>

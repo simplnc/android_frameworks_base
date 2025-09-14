@@ -58,6 +58,7 @@
 
     </LinearLayout>
 
+    <!-- ENHANCED: Quick action buttons with improved styling -->
     <com.android.systemui.animation.view.LaunchableImageView
         android:id="@+id/start_button"
         android:layout_height="@dimen/keyguard_affordance_fixed_height"
@@ -68,8 +69,9 @@
         android:scaleType="fitCenter"
         android:padding="@dimen/keyguard_affordance_fixed_padding"
         android:tint="?android:attr/textColorPrimary"
-        android:background="@drawable/keyguard_bottom_affordance_bg"
-        android:foreground="@drawable/keyguard_bottom_affordance_selected_border"
+        android:background="@drawable/keyguard_enhanced_affordance_bg"
+        android:foreground="@drawable/keyguard_enhanced_affordance_selected_border"
+        android:elevation="6dp"
         android:visibility="invisible" />
 
     <com.android.systemui.animation.view.LaunchableImageView
@@ -82,9 +84,25 @@
         android:scaleType="fitCenter"
         android:padding="@dimen/keyguard_affordance_fixed_padding"
         android:tint="?android:attr/textColorPrimary"
-        android:background="@drawable/keyguard_bottom_affordance_bg"
-        android:foreground="@drawable/keyguard_bottom_affordance_selected_border"
+        android:background="@drawable/keyguard_enhanced_affordance_bg"
+        android:foreground="@drawable/keyguard_enhanced_affordance_selected_border"
+        android:elevation="6dp"
         android:visibility="invisible" />
+        
+    <!-- ENHANCED: Center quick action button for additional shortcuts -->
+    <com.android.systemui.animation.view.LaunchableImageView
+        android:id="@+id/center_button"
+        android:layout_height="@dimen/keyguard_affordance_fixed_height"
+        android:layout_width="@dimen/keyguard_affordance_fixed_width"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="@dimen/keyguard_affordance_vertical_offset"
+        android:scaleType="fitCenter"
+        android:padding="@dimen/keyguard_affordance_fixed_padding"
+        android:tint="?android:attr/textColorPrimary"
+        android:background="@drawable/keyguard_enhanced_affordance_bg"
+        android:foreground="@drawable/keyguard_enhanced_affordance_selected_border"
+        android:elevation="6dp"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/keyguard_settings_button"

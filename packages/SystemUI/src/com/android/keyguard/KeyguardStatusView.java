@@ -32,6 +32,8 @@ import android.widget.GridLayout;
 import com.android.systemui.res.R;
 import com.android.systemui.shade.TouchLogger;
 import com.android.systemui.statusbar.CrossFadeHelper;
+import com.android.systemui.lineage.LineageLockScreenSettings;
+import lineageos.providers.LineageSettings;
 
 import java.util.Set;
 
@@ -47,6 +49,9 @@ public class KeyguardStatusView extends GridLayout {
     private ViewGroup mStatusViewContainer;
     private KeyguardClockSwitch mClockView;
     private KeyguardSliceView mKeyguardSlice;
+    
+    // ONEPLUS STYLE: OnePlus lock screen controller
+    private OnePlusLockScreenController mOnePlusController;
     private View mMediaHostContainer;
 
     private int mDrawAlpha = 255;
@@ -77,6 +82,9 @@ public class KeyguardStatusView extends GridLayout {
         mKeyguardSlice = findViewById(R.id.keyguard_slice_view);
 
         mMediaHostContainer = findViewById(R.id.status_view_media_container);
+
+        // ONEPLUS STYLE: Initialize OnePlus lock screen controller
+        initializeOnePlusController();
 
         updateDark();
     }
@@ -147,5 +155,24 @@ public class KeyguardStatusView extends GridLayout {
                     super.dispatchDraw(c);
                     return kotlin.Unit.INSTANCE;
                 });
+    }
+    
+    // ONEPLUS STYLE: Initialize OnePlus lock screen controller
+    private void initializeOnePlusController() {
+        boolean onePlusStyleEnabled = LineageSettings.System.getInt(mContext.getContentResolver(),
+                LineageLockScreenSettings.LOCKSCREEN_ONEPLUS_STYLE, 0) == 1;
+        
+        if (onePlusStyleEnabled) {
+            mOnePlusController = new OnePlusLockScreenController(mContext);
+            mOnePlusController.initializeViews(this);
+        }
+    }
+    
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mOnePlusController != null) {
+            mOnePlusController.onDestroy();
+        }
     }
 }

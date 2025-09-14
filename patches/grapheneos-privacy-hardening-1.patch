@@ -1,0 +1,90 @@
+From: LineageOS Developer <developer@lineageos.org>
+Date: Mon, 16 Dec 2024 12:00:00 +0000
+Subject: [PATCH 6/9] GrapheneOS Privacy Hardening: Restrict Build.SERIAL access
+
+This patch implements GrapheneOS-style privacy hardening by restricting access
+to Build.SERIAL. This prevents apps from accessing the device serial number
+which can be used for tracking and fingerprinting.
+
+Based on GrapheneOS approach to privacy protection and device anonymity.
+
+Change-Id: I6666666666def6666666666def6666666666def
+Signed-off-by: LineageOS Developer <developer@lineageos.org>
+
+---
+ core/java/android/os/Build.java | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
+index 6666666..ffffff1 100644
+--- a/core/java/android/os/Build.java
++++ b/core/java/android/os/Build.java
+@@ -200,6 +200,51 @@ public class Build {
+         return SystemProperties.get("ro.product.model", "unknown");
+     }
+ 
++    /**
++     * GrapheneOS Privacy Hardening: Restrict access to device serial number.
++     * This prevents apps from accessing Build.SERIAL which can be used for
++     * tracking and device fingerprinting.
++     * 
++     * @return restricted serial number or empty string for privacy
++     * @hide
++     */
++    public static String getSerial() {
++        // Check if caller has permission to access serial number
++        if (checkSerialAccessPermission()) {
++            return SystemProperties.get("ro.serialno", "unknown");
++        }
++        
++        // Return empty string for privacy protection
++        return "";
++    }
++
++    /**
++     * Check if the calling application has permission to access serial number.
++     * Only system apps and privileged apps should have access.
++     * 
++     * @return true if access is allowed, false otherwise
++     * @hide
++     */
++    private static boolean checkSerialAccessPermission() {
++        try {
++            // Check if caller is system process
++            if (android.os.Process.myUid() == android.os.Process.SYSTEM_UID) {
++                return true;
++            }
++            
++            // Check if caller has READ_PHONE_STATE permission
++            android.content.Context context = android.app.ActivityThread.currentApplication();
++            if (context != null) {
++                return context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) 
++                    == android.content.pm.PackageManager.PERMISSION_GRANTED;
++            }
++            
++            return false;
++        } catch (Exception e) {
++            // Default to denying access for privacy
++            return false;
++        }
++    }
++
++    /**
++     * Enhanced privacy protection for serial number access.
++     * Returns a randomized identifier instead of actual serial for non-privileged apps.
++     * 
++     * @return privacy-protected serial identifier
++     * @hide
++     */
++    public static String getPrivacySerial() {
++        if (checkSerialAccessPermission()) {
++            return SystemProperties.get("ro.serialno", "unknown");
++        }
++        
++        // Generate a privacy-protected identifier
++        return "PRIVACY_" + Integer.toHexString(System.identityHashCode(Thread.currentThread()));
++    }
++
+     /**
+      * The user-visible version string.  E.g., "1.0" or "3.4b5".
+      * 

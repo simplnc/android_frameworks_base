@@ -22,12 +22,162 @@
     android:id="@+id/presentation"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <!-- ONEPLUS STYLE: Large centered clock container -->
+    <LinearLayout
+        android:id="@+id/oneplus_clock_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="60dp"
+        android:paddingBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        
+        <!-- ONEPLUS STYLE: Large time display -->
+        <TextView
+            android:id="@+id/oneplus_clock_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="14:30"
+            android:textSize="96sp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="?android:attr/textColorPrimary"
+            android:gravity="center"
+            android:letterSpacing="0.02"
+            android:lineSpacingExtra="0dp"
+            android:includeFontPadding="false" />
+            
+        <!-- ONEPLUS STYLE: Date and weather row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+            
+            <!-- Date -->
+            <TextView
+                android:id="@+id/oneplus_clock_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Monday, January 15"
+                android:textSize="18sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:gravity="center" />
+                
+            <!-- Weather separator dot -->
+            <View
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                android:layout_marginHorizontal="12dp"
+                android:background="@drawable/oneplus_separator_dot"
+                android:alpha="0.6" />
+                
+            <!-- Weather -->
+            <TextView
+                android:id="@+id/oneplus_clock_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="22° Sunny"
+                android:textSize="18sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:gravity="center" />
+        </LinearLayout>
+        
+        <!-- ONEPLUS STYLE: Battery and notification count -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="24dp"
+            android:visibility="gone">
+            
+            <ImageView
+                android:id="@+id/oneplus_battery_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/oneplus_battery_icon"
+                android:tint="?android:attr/textColorSecondary" />
+                
+            <TextView
+                android:id="@+id/oneplus_battery_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="85%"
+                android:textSize="14sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:layout_marginStart="4dp" />
+                
+            <View
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                android:layout_marginHorizontal="12dp"
+                android:background="@drawable/oneplus_separator_dot"
+                android:alpha="0.6" />
+                
+            <TextView
+                android:id="@+id/oneplus_notification_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 notifications"
+                android:textSize="14sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:gravity="center" />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <!-- ONEPLUS STYLE: Bottom area with quick actions -->
+    <LinearLayout
+        android:id="@+id/oneplus_bottom_area"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingBottom="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        
+        <!-- ONEPLUS STYLE: Quick action buttons -->
+        <ImageView
+            android:id="@+id/oneplus_flashlight_button"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/oneplus_flashlight_icon"
+            android:background="@drawable/oneplus_quick_action_bg"
+            android:padding="16dp"
+            android:contentDescription="@string/flashlight"
+            android:clickable="true"
+            android:focusable="true" />
+            
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+            
+        <ImageView
+            android:id="@+id/oneplus_camera_button"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/oneplus_camera_icon"
+            android:background="@drawable/oneplus_quick_action_bg"
+            android:padding="16dp"
+            android:contentDescription="@string/camera"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
     <com.android.keyguard.KeyguardStatusView
         android:id="@+id/clock"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
