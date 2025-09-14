@@ -248,7 +248,7 @@ constructor(
         if (advancedPhysicsHandler == null) {
             try {
                 advancedPhysicsHandler = QSTileAdvancedPhysicsHandler(this)
-            } catch (Exception e) {
+            } catch (e: Exception) {
                 Log.w(TAG, "Failed to create physics handler, falling back to standard behavior", e)
                 return null
             }
@@ -673,7 +673,7 @@ constructor(
             try {
                 val physicsHandled = getAdvancedPhysicsHandler()?.handleTouchEvent(event) ?: false
                 // If physics handler consumed the event, we still need to process it for clicks
-            } catch (Exception e) {
+            } catch (e: Exception) {
                 Log.w(TAG, "Physics handler error, continuing with standard touch", e)
             }
         }
