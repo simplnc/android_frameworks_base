@@ -2089,13 +2089,9 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
      */
     public void performEnhancedDismissal() {
         if (mPhysicsHandler != null) {
-            mPhysicsHandler.animateDismissal(new kotlin.jvm.functions.Function0<kotlin.Unit>() {
-                @Override
-                public kotlin.Unit invoke() {
-                    // Call the standard dismissal after animation
-                    performDismiss(false);
-                    return kotlin.Unit.INSTANCE;
-                }
+            mPhysicsHandler.animateDismissal(() -> {
+                // Call the standard dismissal after animation
+                performDismiss(false);
             });
         } else {
             performDismiss(false);
@@ -2107,13 +2103,9 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
      */
     public void performEnhancedSwipeDismiss(float direction) {
         if (mPhysicsHandler != null) {
-            mPhysicsHandler.animateSwipeDismiss(direction, new kotlin.jvm.functions.Function0<kotlin.Unit>() {
-                @Override
-                public kotlin.Unit invoke() {
-                    // Call the standard dismissal after animation  
-                    performDismiss(false);
-                    return kotlin.Unit.INSTANCE;
-                }
+            mPhysicsHandler.animateSwipeDismiss(direction, () -> {
+                // Call the standard dismissal after animation  
+                performDismiss(false);
             });
         } else {
             performDismiss(false);
