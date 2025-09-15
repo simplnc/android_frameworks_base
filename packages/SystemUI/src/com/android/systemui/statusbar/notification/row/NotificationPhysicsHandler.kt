@@ -16,19 +16,19 @@ import android.content.Context
  */
 class NotificationPhysicsHandler(private val targetView: View) {
 
-    // RESTORED: Light squishiness for notification cards with normal behavior
-    private val pressScale: Float = 0.96f  // Very light scaling for subtle squishiness
-    private val pressAlpha: Float = 0.95f  // Very subtle fade to maintain text visibility
-    private val pressElevation: Float = -2f  // Light elevation change
-    private val releaseDurationMs: Long = 200L  // Quick release for normal feel
-    private val pressDurationMs: Long = 100L   // Quick press response
-    private val bounceScale: Float = 1.01f  // Very light bounce back
-    private val bounceDurationMs: Long = 100L  // Quick bounce
+    // Physics parameters matching QS tiles for consistency
+    private val pressScale: Float = 0.95f  // Slightly less aggressive than QS tiles
+    private val pressAlpha: Float = 0.90f  // Subtle fade
+    private val pressElevation: Float = -4f  // Moderate depression
+    private val releaseDurationMs: Long = 300L  // Smooth release
+    private val pressDurationMs: Long = 120L   // Quick press
+    private val bounceScale: Float = 1.02f  // Subtle bounce back
+    private val bounceDurationMs: Long = 200L  // Bounce animation duration
     
-    // RESTORED: Normal dismissal animations
-    private val dismissScale: Float = 0.85f
-    private val dismissAlpha: Float = 0.4f
-    private val dismissDurationMs: Long = 300L
+    // Dismissal animation parameters
+    private val dismissScale: Float = 0.8f
+    private val dismissAlpha: Float = 0.3f
+    private val dismissDurationMs: Long = 400L
     
     private val vibrator: Vibrator? = targetView.context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
     
@@ -74,6 +74,9 @@ class NotificationPhysicsHandler(private val targetView: View) {
                 onComplete()
             }
             .start()
+            
+        // No haptic feedback for notifications to avoid interference with system feedback
+        // vibrator?.vibrate(VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
     fun animateSwipeDismiss(direction: Float, onComplete: () -> Unit = {}) {
@@ -168,7 +171,6 @@ class NotificationPhysicsHandler(private val targetView: View) {
     }
 
     private fun isEnabled(): Boolean {
-        // RESTORED: Enable light squishiness for notification cards
         return SystemProperties.getBoolean("sysui.notification.physics", true)
     }
 
