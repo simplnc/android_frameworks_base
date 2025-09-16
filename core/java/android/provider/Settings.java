@@ -12023,14 +12023,6 @@ public final class Settings {
         public static final String QS_TILES = "sysui_qs_tiles";
 
         /**
-        
-         * QS Transparency
-         * @hide
-         */
-        public static final String QS_TRANSPARENCY = "qs_transparency";
-
-       
-        /**
          * Whether this user has enabled Quick controls.
          *
          * 0 indicates disabled and 1 indicates enabled. A non existent value should be treated as

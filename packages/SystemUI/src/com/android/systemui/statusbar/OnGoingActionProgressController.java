@@ -45,8 +45,7 @@ import com.android.systemui.statusbar.NotificationListener;
 /** Controls the ongoing progress chip based on notifcations @LineageExtension */
 public class OnGoingActionProgressController implements NotificationListener.NotificationHandler, KeyguardStateController.Callback {
     private static final String TAG = "OngoingActionProgressController";
-    // Follow upstream key name defined in Settings.System
-    private static final String ONGOING_ACTION_CHIP_ENABLED = Settings.System.ONGOING_ACTION_CHIP;
+    private static final String ONGOING_ACTION_CHIP_ENABLED = "ongoing_action_chip";
 
     private Context mContext;
     private ContentResolver mContentResolver;
@@ -63,7 +62,6 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     // Progress tracking variables
     private boolean mIsTrackingProgress = false;
-    private boolean mIsIndeterminate = false;
     private int mCurrentProgress = 0;
     private int mCurrentProgressMax = 0;
     private Drawable mCurrentDrawable = null;
@@ -148,15 +146,14 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private static boolean hasProgress(final Notification notification) {
         Bundle extras = notification.extras;
         boolean indeterminate =
-                extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false);
+                notification.extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false);
 
-        // Show chip for both determinate and indeterminate progress notifications
-        if (indeterminate) return true;
-
-        boolean maxProgressValid = extras.getInt(Notification.EXTRA_PROGRESS_MAX, 0) > 0;
+        boolean maxProgressValid =
+                notification.extras.getInt(Notification.EXTRA_PROGRESS_MAX, 0) > 0;
 
         return extras.containsKey(Notification.EXTRA_PROGRESS)
                 && extras.containsKey(Notification.EXTRA_PROGRESS_MAX)
+                && !indeterminate
                 && maxProgressValid;
     }
 
@@ -166,8 +163,6 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         mIsTrackingProgress = true;
         mTrackedNotificationKey = sbn.getKey();
         Notification notification = sbn.getNotification();
-        mIsIndeterminate = notification.extras.getBoolean(
-                Notification.EXTRA_PROGRESS_INDETERMINATE, false);
         mCurrentProgressMax = notification.extras.getInt(Notification.EXTRA_PROGRESS_MAX, 100);
         mCurrentProgress = notification.extras.getInt(Notification.EXTRA_PROGRESS, 0);
         IconFetcher.AdaptiveDrawableResult drawable =
@@ -179,8 +174,13 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     /** Updates icon based on result from IconFetcher @AsyncUnsafe */
     private void updateIconImageView(IconFetcher.AdaptiveDrawableResult drawable) {
-        // Do not tint chip icon to preserve app branding per reference implementation
-        mIconView.setImageTintList(null);
+        if (drawable.isAdaptive) {
+            mIconView.setImageTintList(
+                    ColorStateList.valueOf(
+                            getThemeColor(mContext, android.R.attr.colorForeground)));
+        } else {
+            mIconView.setImageTintList(null);
+        }
         mIconView.setImageDrawable(drawable.drawable);
     }
 
@@ -193,8 +193,6 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         // Log.d(TAG, "updateProgressIfNeeded: got notification update");
         Notification notification = sbn.getNotification();
         if (sbn.getKey().equals(mTrackedNotificationKey)) {
-            mIsIndeterminate = notification.extras.getBoolean(
-                    Notification.EXTRA_PROGRESS_INDETERMINATE, false);
             mCurrentProgressMax = notification.extras.getInt(Notification.EXTRA_PROGRESS_MAX, 100);
             mCurrentProgress = notification.extras.getInt(Notification.EXTRA_PROGRESS, 0);
             Log.d(TAG, "updateProgressIfNeeded: about to updateViews()");
@@ -208,23 +206,16 @@ public class OnGoingActionProgressController implements NotificationListener.Not
             // TODO: make it a bit faster by checking wether mIsTrackingProgress has changed between
             // calls
             mProgressRootView.setVisibility(View.VISIBLE);
-            // Apply tint to ensure visibility on dark/light backgrounds
-            final int fg = getThemeColor(mContext, android.R.attr.colorForeground);
-            final int accent = getThemeColor(mContext, android.R.attr.colorAccent);
-            mProgressBar.setProgressTintList(ColorStateList.valueOf(accent));
-            mProgressBar.setIndeterminateTintList(ColorStateList.valueOf(fg));
-
-            mProgressBar.setIndeterminate(mIsIndeterminate);
-            if (!mIsIndeterminate) {
-                if (mCurrentProgressMax <= 0) {
-                    Log.w(TAG, "updateViews: invalid max progress " + mCurrentProgressMax + ", using 100");
-                    mCurrentProgressMax = 100;
-                }
-                Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
-                mProgressBar.setMax(mCurrentProgressMax);
-                mProgressBar.setProgress(mCurrentProgress);
+            if (mCurrentProgressMax <= 0) {
+                Log.w(TAG, "updateViews: invalid max progress " + mCurrentProgressMax + ", using 100");
+                mCurrentProgressMax = 100;
             }
-            // Icon drawable is already set in updateIconImageView(); avoid redundant sets
+            Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
+            mProgressBar.setMax(mCurrentProgressMax);
+            mProgressBar.setProgress(mCurrentProgress);
+            if (mCurrentDrawable != null) {
+                mIconView.setImageDrawable(mCurrentDrawable);
+            }
         }
         else {
             mProgressRootView.setVisibility(View.GONE);
@@ -326,12 +317,11 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     }
 
     private void updateSettings() {
-        // Respect user setting; default enabled
-        mActionChipEnabled = Settings.System.getIntForUser(
-                mContentResolver,
-                ONGOING_ACTION_CHIP_ENABLED,
-                /* def */ 1,
-                UserHandle.USER_CURRENT) == 1;
+        // Pre-enable the ongoing action chip by default
+        mActionChipEnabled = true; // Always enabled for now
+        // Original code commented out for later toggle implementation:
+        // mActionChipEnabled = Settings.System.getIntForUser(mContentResolver,
+        //     ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
         updateViews();
     }
 

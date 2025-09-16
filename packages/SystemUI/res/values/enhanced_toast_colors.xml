@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Enhanced Toast Colors - Theme Aware -->
-    <color name="enhanced_toast_background">?android:attr/colorBackground</color>
-    <color name="enhanced_toast_text_color">?android:attr/textColorPrimary</color>
-    <color name="enhanced_toast_border">?android:attr/colorOutline</color>
-
-</resources>

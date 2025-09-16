@@ -118,8 +118,7 @@ public class InstallFailed extends Activity {
 
             builder.setIcon(as.icon);
             builder.setTitle(as.label);
-            // Use enhanced layout for a consistent, modern failure UI
-            builder.setView(R.layout.enhanced_install_content_view);
+            builder.setView(R.layout.install_content_view);
             builder.setPositiveButton(getString(R.string.done),
                     (ignored, ignored2) -> finish());
             builder.setOnCancelListener(dialog -> {
@@ -127,21 +126,6 @@ public class InstallFailed extends Activity {
             });
             mDialog = builder.create();
             mDialog.show();
-            // Optionally indicate failure area if present
-            View failed = mDialog.findViewById(R.id.install_failed);
-            if (failed != null) failed.setVisibility(View.VISIBLE);
-
-            // Tint primary action with accent color if possible
-            try {
-                int accent;
-                {
-                    android.util.TypedValue tv = new android.util.TypedValue();
-                    getTheme().resolveAttribute(android.R.attr.colorAccent, tv, true);
-                    accent = tv.data;
-                }
-                android.widget.Button positive = mDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                if (positive != null) positive.setTextColor(accent);
-            } catch (Throwable ignored) { }
 
             // Show out of space dialog if needed
             if (statusCode == PackageInstaller.STATUS_FAILURE_STORAGE) {
