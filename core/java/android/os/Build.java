@@ -276,7 +276,7 @@ public class Build {
         } catch (Exception e) {
             // Fallback to simple privacy identifier
             return "PRIVACY_" + type + "_" + Integer.toHexString(
-                System.currentTimeMillis() % 1000000);
+                (int) (System.currentTimeMillis() % 1000000));
         }
     }
 

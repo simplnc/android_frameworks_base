@@ -260,11 +260,11 @@ public class PermissionManagerService extends IPermissionManager.Stub {
         try {
             // Check if this is a system browser package
             if (isSystemBrowserPackage(packageName)) {
-                android.util.Log.i(TAG, "Blocking location access for system browser: " + packageName);
+                android.util.Log.i(LOG_TAG, "Blocking location access for system browser: " + packageName);
                 return true;
             }
         } catch (Exception e) {
-            android.util.Log.w(TAG, "Error checking browser package: " + packageName, e);
+            android.util.Log.w(LOG_TAG, "Error checking browser package: " + packageName, e);
         }
         
         return false;
@@ -318,7 +318,7 @@ public class PermissionManagerService extends IPermissionManager.Stub {
     public boolean checkPermissionWithPrivacyRules(String packageName, String permission, int userId) {
         // Apply GrapheneOS privacy hardening rules
         if (shouldBlockBrowserLocationAccess(packageName, permission)) {
-            android.util.Log.i(TAG, "Privacy rule: Blocking " + permission + " for " + packageName);
+            android.util.Log.i(LOG_TAG, "Privacy rule: Blocking " + permission + " for " + packageName);
             return false;
         }
         
