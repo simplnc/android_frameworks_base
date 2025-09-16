@@ -114,7 +114,7 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
             .scaleY(pressScale * 0.95f)
             .alpha(pressAlpha * 0.9f) // Deeper fade
             .translationY(pressElevation * 1.2f) // Deeper depression
-            .elevation(pressElevationShadow) // ENHANCED: Shadow reduction when pressed
+            .withStartAction { targetView.elevation = pressElevationShadow } // ENHANCED: Shadow reduction when pressed
             .setInterpolator(ACCEL_DECEL)
             .withLayer()
             .withEndAction {
@@ -125,7 +125,7 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
                     .scaleY(pressScale)
                     .alpha(pressAlpha)
                     .translationY(pressElevation)
-                    .elevation(pressElevationShadow) // ENHANCED: Maintain reduced shadow in pressed state
+                    .withStartAction { targetView.elevation = pressElevationShadow } // ENHANCED: Maintain reduced shadow in pressed state
                     .setInterpolator(ACCEL_DECEL)
                     .start()
             }
@@ -149,7 +149,7 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
             .scaleY(1.05f)
             .alpha(1.0f)
             .translationY(0.0f)
-            .elevation(bounceElevation) // ENHANCED: Enhanced shadow during bounce
+            .withStartAction { targetView.elevation = bounceElevation } // ENHANCED: Enhanced shadow during bounce
             .setInterpolator(ACCEL_DECEL)
             .withLayer()
             .withEndAction {
@@ -158,7 +158,7 @@ class QSTileAdvancedPhysicsHandler(private val targetView: View) {
                     .setDuration(duration / 3)
                     .scaleX(1.0f)
                     .scaleY(1.0f)
-                    .elevation(normalElevation) // ENHANCED: Return to normal shadow elevation
+                    .withStartAction { targetView.elevation = normalElevation } // ENHANCED: Return to normal shadow elevation
                     .setInterpolator(ACCEL_DECEL)
                     .withEndAction {
                         isAnimating = false
