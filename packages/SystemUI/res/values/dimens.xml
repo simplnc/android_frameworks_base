@@ -1241,6 +1241,8 @@
 
     <!-- Height of the Ongoing App Ops chip -->
     <dimen name="ongoing_appops_chip_height">24sp</dimen>
+    <!-- Height of the Ongoing Activity chip -->
+    <dimen name="ongoing_activity_chip_height">32dp</dimen>
     <!-- Side padding between background of Ongoing App Ops chip and content -->
     <dimen name="ongoing_appops_chip_side_padding">4dp</dimen>
     <!-- Margin between icons of Ongoing App Ops chip -->
@@ -1798,6 +1800,8 @@
     <dimen name="internet_dialog_list_max_height">662dp</dimen>
     <!-- The height of the WiFi network in Internet panel. -->
     <dimen name="internet_dialog_wifi_network_height">72dp</dimen>
+    <!-- The height of the WiFi toggle in Internet panel. -->
+    <dimen name="internet_dialog_wifi_toggle_height">48dp</dimen>
 
     <!-- The width of large/content heavy dialogs (e.g. Internet, Media output, etc) -->
     <dimen name="large_dialog_width">@dimen/match_parent</dimen>
