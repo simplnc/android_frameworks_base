@@ -75,19 +75,16 @@
         </activity>
 
         <activity android:name=".InstallStaging"
-                android:theme="@style/Theme.Lineage.PackageInstaller.Main"
                 android:exported="false" />
 
         <activity android:name=".DeleteStagedFileOnResult"
             android:exported="false" />
 
         <activity android:name=".PackageInstallerActivity"
-                android:theme="@style/Theme.Lineage.PackageInstaller.Main"
                 android:exported="false"
                 android:enableOnBackInvokedCallback="false" />
 
         <activity android:name=".InstallInstalling"
-                android:theme="@style/Theme.Lineage.PackageInstaller.Main.NoAnim"
                 android:exported="false"
                 android:enableOnBackInvokedCallback="false" />
 
@@ -100,11 +97,9 @@
         </receiver>
 
         <activity android:name=".InstallSuccess"
-                android:theme="@style/Theme.Lineage.PackageInstaller.Main.NoAnim"
                 android:exported="false" />
 
         <activity android:name=".InstallFailed"
-                android:theme="@style/Theme.Lineage.PackageInstaller.Main.NoAnim"
                 android:exported="false" />
 
         <activity android:name=".UninstallerActivity"
