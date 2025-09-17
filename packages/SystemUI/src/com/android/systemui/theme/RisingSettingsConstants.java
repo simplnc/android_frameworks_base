@@ -55,5 +55,18 @@ public class RisingSettingsConstants {
     };
     
     public static final String[] LINEAGE_SYSTEM_SETTINGS_KEYS = {
+        // OnePlus Lock Screen Settings
+        "lockscreen_oneplus_style",
+        "lockscreen_show_battery",
+        "lockscreen_show_notifications",
+        "lockscreen_show_weather",
+        "lockscreen_show_date",
+        "lockscreen_clock_style",
+        "lockscreen_date_format",
+        // Media Art Settings (for future use)
+        "lockscreen_show_media_art",
+        "lockscreen_media_art_style",
+        "lockscreen_media_art_blur",
+        "lockscreen_media_controls"
     };
 }

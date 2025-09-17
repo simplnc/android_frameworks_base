@@ -48,6 +48,7 @@ public class KeyguardStatusView extends GridLayout {
     private KeyguardClockSwitch mClockView;
     private KeyguardSliceView mKeyguardSlice;
     private View mMediaHostContainer;
+    private OnePlusLockScreenController mOnePlusController;
 
     private int mDrawAlpha = 255;
     private float mDarkAmount = 0;
@@ -77,6 +78,16 @@ public class KeyguardStatusView extends GridLayout {
         mKeyguardSlice = findViewById(R.id.keyguard_slice_view);
 
         mMediaHostContainer = findViewById(R.id.status_view_media_container);
+
+        // Initialize OnePlus lockscreen controller
+        try {
+            View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+            if (onePlusContainer != null) {
+                mOnePlusController = new OnePlusLockScreenController(mContext, onePlusContainer);
+            }
+        } catch (Exception e) {
+            // OnePlus lockscreen not available, continue with normal keyguard
+        }
 
         updateDark();
     }
@@ -147,5 +158,32 @@ public class KeyguardStatusView extends GridLayout {
                     super.dispatchDraw(c);
                     return kotlin.Unit.INSTANCE;
                 });
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mOnePlusController != null) {
+            mOnePlusController.onDestroy();
+            mOnePlusController = null;
+        }
+    }
+
+    /**
+     * Update notification count for OnePlus lockscreen
+     */
+    public void setNotificationCount(int count) {
+        if (mOnePlusController != null) {
+            mOnePlusController.setNotificationCount(count);
+        }
+    }
+
+    /**
+     * Refresh OnePlus lockscreen display
+     */
+    public void refreshOnePlusLockScreen() {
+        if (mOnePlusController != null) {
+            mOnePlusController.refresh();
+        }
     }
 }
