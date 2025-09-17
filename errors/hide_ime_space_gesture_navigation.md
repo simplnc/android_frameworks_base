@@ -16,19 +16,27 @@ Implemented the Hide IME Space feature that automatically activates when using g
 
 2. **core/res/res/values/dimens.xml**
    - Added `navigation_bar_frame_height_hide_ime` dimension (0dp)
+   - Added `navigation_bar_height_hide_ime` dimension (12dp)
    - Used when Hide IME Space is enabled
 
-3. **packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBarView.java**
+3. **core/res/res/values/symbols.xml**
+   - Added `navigation_bar_frame_height_hide_ime` symbol for SystemUI access
+   - Added `navigation_bar_height_hide_ime` symbol for SystemUI access
+
+4. **packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBarView.java**
+   - Added missing `UserHandle` import statement
    - Modified `updateNavButtonIcons()` to hide IME switcher when Hide IME Space is enabled
    - Modified back button visibility to hide when Hide IME Space is enabled in gesture mode
-   - Updated `onMeasure()` to use hide_ime dimension when enabled
+   - Updated `onMeasure()` to properly use `navigation_bar_frame_height_hide_ime` dimension
+   - Updated `onMeasure()` to use specific `navigation_bar_height_hide_ime` dimension instead of calculated height
+   - Updated `getNavBarHeight()` to properly handle IME space hiding
    - Added `isHideIMESpaceEnabled()` method that automatically enables for gesture navigation
 
-4. **packages/SystemUI/src/com/android/systemui/navigationbar/views/buttons/KeyButtonDrawable.java**
+5. **packages/SystemUI/src/com/android/systemui/navigationbar/views/buttons/KeyButtonDrawable.java**
    - Added try-catch block to handle missing resources gracefully
    - Returns null if drawable resource not found
 
-5. **packages/SystemUI/src/com/android/systemui/navigationbar/views/buttons/ContextualButton.java**
+6. **packages/SystemUI/src/com/android/systemui/navigationbar/views/buttons/ContextualButton.java**
    - Added null check before setting drawable to prevent crashes
 
 ### Key Features
@@ -36,6 +44,7 @@ Implemented the Hide IME Space feature that automatically activates when using g
 - **Automatic Activation**: Feature automatically enables when using gesture navigation
 - **No Toggle Required**: No user setting needed - works automatically
 - **Gesture-Only**: Only affects gesture navigation mode, not button navigation
+- **Proper Resource Usage**: Uses specific dimensions for consistent behavior
 - **Crash Prevention**: Handles missing resources gracefully
 - **Clean Implementation**: Follows Android development best practices
 
