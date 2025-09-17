@@ -21,8 +21,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical|start"
-    android:paddingStart="@*android:dimen/notification_2025_content_margin_start"
-    android:paddingEnd="12dp">
+    android:paddingStart="@dimen/notification_side_paddings"
+    android:paddingEnd="@dimen/notification_side_paddings">
 
     <FrameLayout
         android:layout_width="@dimen/notification_2025_single_line_face_pile_size"

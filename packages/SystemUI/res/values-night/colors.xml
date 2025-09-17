@@ -26,7 +26,7 @@
     <color name="notification_legacy_background_color">@color/GM2_grey_900</color>
 
     <!-- The color of the dividing line between grouped notifications. -->
-    <color name="notification_divider_color">@*android:color/background_device_default_dark</color>
+    <color name="notification_divider_color">@android:color/system_outline_variant_dark</color>
 
     <!-- The color of the gear shown behind a notification -->
     <color name="notification_gear_color">@color/GM2_grey_500</color>
@@ -35,7 +35,7 @@
     <color name="notification_ripple_untinted_color">#30ffffff</color>
 
     <!-- The color of the text inside a notification -->
-    <color name="notification_primary_text_color">@*android:color/notification_primary_text_color_dark</color>
+    <color name="notification_primary_text_color">@android:color/system_on_surface_dark</color>
 
     <color name="notif_pill_text">@android:color/system_on_surface_dark</color>
 
@@ -46,8 +46,8 @@
     <color name="notification_guts_priority_button_bg_fill_color">@color/transparent</color>
     <color name="notification_guts_priority_button_bg_fill_color_selected">@color/GM2_grey_800</color>
     <color name="notification_guts_priority_button_bg_stroke_color">@color/GM2_grey_700</color>
-    <color name="notification_section_header_label_color">@color/GM2_grey_200</color>
-    <color name="notification_section_clear_all_btn_color">@color/GM2_grey_500</color>
+    <color name="notification_section_header_label_color">@android:color/system_on_surface_dark</color>
+    <color name="notification_section_clear_all_btn_color">@android:color/system_on_surface_dark</color>
     <color name="notification_channel_dialog_separator">@color/GM2_grey_700</color>
 
     <!-- The color of the background in the separated list of the Global Actions menu -->
@@ -122,4 +122,8 @@
     <!-- Volume UI -->
      <color name="dot_color">@android:color/system_neutral1_700</color>
      <color name="volume_dot_color">@android:color/system_neutral1_700</color>
+     
+    <!-- Ongoing chip colors for better dark mode contrast -->
+    <color name="ongoing_chip_background_light">#F0F0F0</color>
+    <color name="ongoing_chip_background_dark">#3A3A3A</color>
 </resources>
