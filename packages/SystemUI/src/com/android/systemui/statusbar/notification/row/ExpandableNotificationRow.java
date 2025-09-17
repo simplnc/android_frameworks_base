@@ -419,9 +419,6 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
     private float mTranslationWhenRemoved;
     private boolean mWasChildInGroupWhenRemoved;
     private final NotificationInlineImageResolver mImageResolver;
-
-    // Squishy animation for touch interactions
-    private NotificationSquishyAnimator mSquishyAnimator;
     private BigPictureIconManager mBigPictureIconManager;
     @Nullable
     private OnExpansionChangedListener mExpansionChangedListener;
@@ -1120,11 +1117,6 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Handle squishy animations for intercept
-        if (mSquishyAnimator != null && ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            mSquishyAnimator.onTouchDown();
-        }
-        
         // Other parts of the system may intercept and handle all the falsing.
         // Otherwise, if we see motion and follow-on events, try to classify them as a tap.
         if (ev.getActionMasked() != MotionEvent.ACTION_DOWN) {
@@ -1135,19 +1127,6 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // Handle squishy animations
-        if (mSquishyAnimator != null) {
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    mSquishyAnimator.onTouchDown();
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    mSquishyAnimator.onTouchUp();
-                    break;
-            }
-        }
-        
         if (event.getActionMasked() != MotionEvent.ACTION_DOWN
                 || !isChildInGroup() || isGroupExpanded()) {
             return super.onTouchEvent(event);
@@ -2013,10 +1992,6 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
                 new NotificationInlineImageCache());
         float radius = getResources().getDimension(R.dimen.notification_corner_radius_small);
         mSmallRoundness = radius / getMaxRadius();
-        
-        // Initialize squishy animator
-        mSquishyAnimator = new NotificationSquishyAnimator(this);
-        
         initDimens();
     }
 
