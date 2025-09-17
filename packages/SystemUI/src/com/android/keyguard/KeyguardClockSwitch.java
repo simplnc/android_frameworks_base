@@ -99,6 +99,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
     private KeyguardClockFrame mSmallClockFrame;
     private KeyguardClockFrame mLargeClockFrame;
     private ClockController mClock;
+    private OnePlusLockScreenController mOnePlusController;
 
     // It's bc_smartspace_view, assigned by KeyguardClockSwitchController
     // to get the top padding for translating smartspace for weather clock
@@ -174,6 +175,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mStatusBarHeight = mContext.getResources().getDimensionPixelSize(
                 R.dimen.status_bar_height);
         updateStatusArea(/* animate= */false);
+        updateOnePlusLockScreenVisibility();
     }
 
     /** Get bc_smartspace_view from KeyguardClockSwitchController
@@ -218,6 +220,17 @@ public class KeyguardClockSwitch extends RelativeLayout {
             removeView(findViewById(
                     com.android.systemui.customization.R.id.lockscreen_clock_view_large));
         }
+        
+        // Initialize OnePlus lockscreen controller
+        try {
+            View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+            if (onePlusContainer != null) {
+                mOnePlusController = new OnePlusLockScreenController(mContext, onePlusContainer);
+            }
+        } catch (Exception e) {
+            // OnePlus lockscreen not available, continue with normal keyguard
+        }
+        
         onConfigChanged();
     }
 
@@ -514,5 +527,72 @@ public class KeyguardClockSwitch extends RelativeLayout {
         }
         pw.println("  mStatusArea = " + mStatusArea);
         pw.println("  mDisplayedClockSize = " + mDisplayedClockSize);
+    }
+
+    /**
+     * Update OnePlus lockscreen visibility based on settings
+     */
+    public void updateOnePlusLockScreenVisibility() {
+        if (mOnePlusController != null) {
+            try {
+                int onePlusEnabled = android.provider.Settings.System.getInt(mContext.getContentResolver(),
+                    "lockscreen_oneplus_style", 1);
+                if (onePlusEnabled == 1) {
+                // OnePlus style enabled - show OnePlus lockscreen, hide default clocks
+                View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+                if (onePlusContainer != null) {
+                    onePlusContainer.setVisibility(View.VISIBLE);
+                }
+                if (mSmallClockFrame != null) {
+                    mSmallClockFrame.setVisibility(View.GONE);
+                }
+                if (mLargeClockFrame != null) {
+                    mLargeClockFrame.setVisibility(View.GONE);
+                }
+                if (mStatusArea != null) {
+                    mStatusArea.setVisibility(View.GONE);
+                }
+                } else {
+                    // OnePlus style disabled - show default clocks, hide OnePlus lockscreen
+                    View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+                    if (onePlusContainer != null) {
+                        onePlusContainer.setVisibility(View.GONE);
+                    }
+                    if (mSmallClockFrame != null) {
+                        mSmallClockFrame.setVisibility(View.VISIBLE);
+                    }
+                    if (mLargeClockFrame != null) {
+                        mLargeClockFrame.setVisibility(View.VISIBLE);
+                    }
+                    if (mStatusArea != null) {
+                        mStatusArea.setVisibility(View.VISIBLE);
+                    }
+                }
+            } catch (Exception e) {
+                // Error reading settings - default to disabled state
+                View onePlusContainer = findViewById(R.id.oneplus_lockscreen_container);
+                if (onePlusContainer != null) {
+                    onePlusContainer.setVisibility(View.GONE);
+                }
+                if (mSmallClockFrame != null) {
+                    mSmallClockFrame.setVisibility(View.VISIBLE);
+                }
+                if (mLargeClockFrame != null) {
+                    mLargeClockFrame.setVisibility(View.VISIBLE);
+                }
+                if (mStatusArea != null) {
+                    mStatusArea.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mOnePlusController != null) {
+            mOnePlusController.onDestroy();
+            mOnePlusController = null;
+        }
     }
 }
