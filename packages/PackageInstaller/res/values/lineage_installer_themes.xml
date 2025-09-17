@@ -28,7 +28,7 @@
     <!-- Button styles using LineageOS colors -->
     <style name="Widget.Lineage.Button.Positive" parent="@android:style/Widget.DeviceDefault.Button">
         <item name="android:background">@drawable/lineage_positive_button</item>
-        <item name="android:textColor">?android:attr/textColorOnAccent</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:paddingHorizontal">24dp</item>
@@ -43,7 +43,7 @@
     </style>
 
     <!-- App Icon Styles -->
-    <style name="Widget.Lineage.AppIcon" parent="@android:style/Widget.ImageView">
+    <style name="Widget.Lineage.AppIcon" parent="@android:style/Widget.DeviceDefault.ImageButton">
         <item name="android:scaleType">fitCenter</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:background">@drawable/lineage_app_icon_container</item>
