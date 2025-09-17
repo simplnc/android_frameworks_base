@@ -6735,6 +6735,18 @@ public final class Settings {
         public static final String SMART_PIXELS_ON_POWER_SAVE = "smart_pixels_on_power_save";
 
         /**
+         * Whether to enable hide navbar (gesture navigation) by default
+         * @hide
+         */
+        public static final String HIDE_NAVBAR_ENABLE = "hide_navbar_enable";
+
+        /**
+         * Whether to enable squishy animations for notifications
+         * @hide
+         */
+        public static final String NOTIFICATION_SQUISHY_ANIMATIONS = "notification_squishy_animations";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
