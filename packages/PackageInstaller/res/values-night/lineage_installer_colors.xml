@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LineageOS Package Installer Colors - Dark theme variant -->
+    
+    <!-- Button Colors - Using LineageOS accent colors for dark theme -->
+    <color name="lineage_positive_button_color">@color/accent_device_default_dark</color>
+    <color name="lineage_positive_button_color_rippled">@color/system_primary_container_dark</color>
+    <color name="lineage_negative_button_color">@color/system_surface_container_high_dark</color>
+    <color name="lineage_negative_button_color_rippled">@color/system_surface_container_highest_dark</color>
+    
+    <!-- Status Colors - Using existing system colors for dark theme -->
+    <color name="lineage_install_done_color">@color/system_tertiary_light</color>
+    <color name="lineage_install_failed_color">@color/error_color_device_default_dark</color>
+</resources>
+

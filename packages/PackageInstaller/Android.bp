@@ -47,6 +47,7 @@ android_app {
     sdk_version: "system_current",
     rename_resources_package: false,
     static_libs: [
+        "androidx.appcompat_appcompat",
         "androidx.leanback_leanback",
         "androidx.annotation_annotation",
         "androidx.fragment_fragment",
