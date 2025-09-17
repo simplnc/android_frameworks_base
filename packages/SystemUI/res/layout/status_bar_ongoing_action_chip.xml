@@ -36,7 +36,7 @@
         android:contentDescription="App icon"
         android:gravity="center_vertical|start"
         android:scaleType="centerInside"
-        android:tint="?android:attr/colorForeground"
+        android:tint="?android:attr/textColorPrimary"
         android:src="@android:drawable/sym_def_app_icon" />
 
     <View
