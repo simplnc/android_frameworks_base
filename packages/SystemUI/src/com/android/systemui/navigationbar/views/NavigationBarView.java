@@ -39,6 +39,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -992,8 +993,28 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
                             com.android.internal.R.dimen.navigation_bar_height_landscape)
                     : getResources().getDimensionPixelSize(
                             com.android.internal.R.dimen.navigation_bar_height);
+            
+            // Check if hide navbar is enabled
+            boolean hideNavbarEnabled = Settings.System.getIntForUser(
+                    getContext().getContentResolver(),
+                    Settings.System.HIDE_NAVBAR_ENABLE,
+                    1, // Default to enabled
+                    UserHandle.USER_CURRENT) != 0;
+            
+            // When hide navbar is enabled, set minimal height
+            if (hideNavbarEnabled) {
+                height = 1; // Minimal height to effectively hide navbar
+            } else if (isHideIMESpaceEnabled()) {
+                // When IME space hiding is enabled, use specific height for minimal space
+                height = getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_height_hide_ime);
+            }
+            
             int frameHeight;
-            if (isHideIMESpaceEnabled()) {
+            if (hideNavbarEnabled) {
+                // Hide navbar - minimal frame height
+                frameHeight = 1;
+            } else if (isHideIMESpaceEnabled()) {
                 frameHeight = getResources().getDimensionPixelSize(
                         com.android.internal.R.dimen.navigation_bar_frame_height_hide_ime);
             } else {
@@ -1009,11 +1030,29 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
     }
 
     int getNavBarHeight() {
-        return mIsVertical
+        int height = mIsVertical
                 ? getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.navigation_bar_height_landscape)
                 : getResources().getDimensionPixelSize(
                         com.android.internal.R.dimen.navigation_bar_height);
+        
+        // Check if hide navbar is enabled
+        boolean hideNavbarEnabled = Settings.System.getIntForUser(
+                getContext().getContentResolver(),
+                Settings.System.HIDE_NAVBAR_ENABLE,
+                1, // Default to enabled
+                UserHandle.USER_CURRENT) != 0;
+        
+        // When hide navbar is enabled, return minimal height
+        if (hideNavbarEnabled) {
+            return 1; // Minimal height to effectively hide navbar
+        } else if (isHideIMESpaceEnabled()) {
+            // When IME space hiding is enabled, use specific height for minimal space
+            return getResources().getDimensionPixelSize(
+                    com.android.internal.R.dimen.navigation_bar_height_hide_ime);
+        }
+        
+        return height;
     }
 
     private void notifyVerticalChangedListener(boolean newVertical) {

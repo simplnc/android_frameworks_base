@@ -85,6 +85,8 @@
     <dimen name="navigation_bar_frame_height_landscape">@dimen/navigation_bar_frame_height</dimen>
     <!-- Height of the bottom navigation bar frame when hiding IME space -->
     <dimen name="navigation_bar_frame_height_hide_ime">0dp</dimen>
+    <!-- Height of the bottom navigation bar when hiding IME space -->
+    <dimen name="navigation_bar_height_hide_ime">12dp</dimen>
 
     <!-- The height of the navigation gesture area if the gesture is starting from the bottom. -->
     <dimen name="navigation_bar_gesture_height">@dimen/navigation_bar_frame_height</dimen>

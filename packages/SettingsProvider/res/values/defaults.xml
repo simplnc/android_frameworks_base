@@ -99,6 +99,12 @@
     <!-- Default for Settings.Secure.SYNC_PARENT_SOUNDS -->
     <bool name="def_sync_parent_sounds">true</bool>
 
+    <!-- Hide navbar (gesture navigation) enabled by default -->
+    <bool name="def_hide_navbar_enable">true</bool>
+
+    <!-- Squishy animations for notifications enabled by default -->
+    <bool name="def_notification_squishy_animations">true</bool>
+
     <!-- Default for Settings.Secure.ACCESSIBILITY_SPEAK_PASSWORD -->
     <bool name="def_accessibility_speak_password">true</bool>
 
