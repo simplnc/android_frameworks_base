@@ -33,9 +33,10 @@
         android:id="@+id/ongoing_action_app_icon"
         android:layout_width="@dimen/ongoing_activity_chip_icon_size"
         android:layout_height="@dimen/ongoing_activity_chip_icon_size"
+        android:layout_gravity="center_vertical"
         android:contentDescription="App icon"
-        android:gravity="center_vertical|start"
         android:scaleType="centerInside"
+        android:adjustViewBounds="true"
         android:tint="?android:attr/textColorPrimary"
         android:src="@android:drawable/sym_def_app_icon" />
 
