@@ -163,7 +163,16 @@ public class PackageInstallerActivity extends Activity {
                 mOk.setText(R.string.update);
             }
         } else {
-            // This is a new application with no permissions.
+            // This is a new application - show enhanced confirmation with app info and permissions
+            View confirmationContainer = mDialog.requireViewById(R.id.install_confirmation_container);
+            confirmationContainer.setVisibility(View.VISIBLE);
+            
+            // Set up app information
+            setupAppInformation();
+            
+            // Set up permissions display
+            setupPermissionsDisplay();
+            
             viewToEnable = mDialog.requireViewById(R.id.install_confirm_question);
         }
 
@@ -196,6 +205,158 @@ public class PackageInstallerActivity extends Activity {
             return mPm.getApplicationLabel(appInfo);
         } catch (NameNotFoundException e) {
             return null;
+        }
+    }
+
+    private void setupAppInformation() {
+        try {
+            // Set app icon
+            android.widget.ImageView appIcon = mDialog.requireViewById(R.id.app_icon);
+            if (mPkgInfo.applicationInfo != null) {
+                android.graphics.drawable.Drawable icon = mPkgInfo.applicationInfo.loadIcon(mPm);
+                appIcon.setImageDrawable(icon);
+            }
+
+            // Set app name
+            android.widget.TextView appName = mDialog.requireViewById(R.id.app_name);
+            CharSequence appLabel = getApplicationLabel(mPkgInfo.packageName);
+            if (appLabel != null) {
+                appName.setText(appLabel);
+            } else {
+                appName.setText(mPkgInfo.packageName);
+            }
+
+            // Set app version
+            android.widget.TextView appVersion = mDialog.requireViewById(R.id.app_version);
+            String versionText = getString(R.string.app_version_label, 
+                    mPkgInfo.versionName != null ? mPkgInfo.versionName : 
+                    String.valueOf(mPkgInfo.getLongVersionCode()));
+            appVersion.setText(versionText);
+
+        } catch (Exception e) {
+            Log.w(TAG, "Error setting up app information", e);
+        }
+    }
+
+    private void setupPermissionsDisplay() {
+        try {
+            android.widget.TextView permissionsToggle = mDialog.requireViewById(R.id.permissions_toggle);
+            android.widget.LinearLayout permissionsListContainer = mDialog.requireViewById(R.id.permissions_list_container);
+            android.widget.TextView permissionsSummary = mDialog.requireViewById(R.id.permissions_summary);
+            android.widget.TextView permissionsNone = mDialog.requireViewById(R.id.permissions_none);
+            android.widget.LinearLayout permissionsList = mDialog.requireViewById(R.id.permissions_list);
+
+            // Get permissions from package info
+            String[] requestedPermissions = mPkgInfo.requestedPermissions;
+            boolean hasPermissions = requestedPermissions != null && requestedPermissions.length > 0;
+
+            if (!hasPermissions) {
+                // No permissions required
+                permissionsNone.setVisibility(View.VISIBLE);
+                permissionsSummary.setVisibility(View.GONE);
+                permissionsList.setVisibility(View.GONE);
+                permissionsToggle.setVisibility(View.GONE);
+            } else {
+                // Has permissions - set up toggle functionality
+                permissionsNone.setVisibility(View.GONE);
+                permissionsSummary.setVisibility(View.VISIBLE);
+                permissionsToggle.setVisibility(View.VISIBLE);
+
+                // Set up permissions list
+                permissionsList.removeAllViews();
+                for (String permission : requestedPermissions) {
+                    if (permission != null && !permission.isEmpty()) {
+                        android.widget.TextView permissionView = new android.widget.TextView(this);
+                        permissionView.setLayoutParams(new android.widget.LinearLayout.LayoutParams(
+                                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+                        permissionView.setText("• " + getPermissionDisplayName(permission));
+                        permissionView.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Small);
+                        permissionView.setPadding(16, 4, 16, 4);
+                        permissionsList.addView(permissionView);
+                    }
+                }
+
+                // Set up toggle click listener
+                permissionsToggle.setOnClickListener(v -> {
+                    boolean isExpanded = permissionsListContainer.getVisibility() == View.VISIBLE;
+                    if (isExpanded) {
+                        permissionsListContainer.setVisibility(View.GONE);
+                        permissionsToggle.setText(R.string.show_permissions);
+                    } else {
+                        permissionsListContainer.setVisibility(View.VISIBLE);
+                        permissionsList.setVisibility(View.VISIBLE);
+                        permissionsToggle.setText(R.string.hide_permissions);
+                    }
+                });
+            }
+
+        } catch (Exception e) {
+            Log.w(TAG, "Error setting up permissions display", e);
+        }
+    }
+
+    private String getPermissionDisplayName(String permission) {
+        // Convert permission names to user-friendly display names
+        switch (permission) {
+            case android.Manifest.permission.READ_CONTACTS:
+                return "Read contacts";
+            case android.Manifest.permission.WRITE_CONTACTS:
+                return "Modify contacts";
+            case android.Manifest.permission.READ_CALENDAR:
+                return "Read calendar";
+            case android.Manifest.permission.WRITE_CALENDAR:
+                return "Modify calendar";
+            case android.Manifest.permission.READ_SMS:
+                return "Read SMS";
+            case android.Manifest.permission.SEND_SMS:
+                return "Send SMS";
+            case android.Manifest.permission.READ_PHONE_STATE:
+                return "Read phone status";
+            case android.Manifest.permission.CALL_PHONE:
+                return "Make phone calls";
+            case android.Manifest.permission.READ_CALL_LOG:
+                return "Read call log";
+            case android.Manifest.permission.WRITE_CALL_LOG:
+                return "Modify call log";
+            case android.Manifest.permission.ACCESS_FINE_LOCATION:
+                return "Precise location";
+            case android.Manifest.permission.ACCESS_COARSE_LOCATION:
+                return "Approximate location";
+            case android.Manifest.permission.CAMERA:
+                return "Camera";
+            case android.Manifest.permission.RECORD_AUDIO:
+                return "Microphone";
+            case android.Manifest.permission.READ_EXTERNAL_STORAGE:
+                return "Read storage";
+            case android.Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                return "Write storage";
+            case android.Manifest.permission.INTERNET:
+                return "Internet access";
+            case android.Manifest.permission.ACCESS_NETWORK_STATE:
+                return "Network state";
+            case android.Manifest.permission.ACCESS_WIFI_STATE:
+                return "Wi-Fi state";
+            case android.Manifest.permission.BLUETOOTH:
+                return "Bluetooth";
+            case android.Manifest.permission.BLUETOOTH_ADMIN:
+                return "Bluetooth administration";
+            case android.Manifest.permission.NFC:
+                return "NFC";
+            case android.Manifest.permission.VIBRATE:
+                return "Vibration";
+            case android.Manifest.permission.WAKE_LOCK:
+                return "Keep device awake";
+            case android.Manifest.permission.SYSTEM_ALERT_WINDOW:
+                return "Display over other apps";
+            case android.Manifest.permission.WRITE_SETTINGS:
+                return "Modify system settings";
+            default:
+                // For unknown permissions, try to make them more readable
+                return permission.replace("android.permission.", "")
+                        .replace("_", " ")
+                        .toLowerCase()
+                        .replaceAll("\\b\\w", s -> s.group().toUpperCase());
         }
     }
 
