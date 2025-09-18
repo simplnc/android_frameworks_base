@@ -32,7 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextClock;
 
-import com.android.systemui.R;
+import com.android.systemui.res.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -155,7 +155,7 @@
             android:layout_width="@dimen/keyguard_affordance_fixed_width"
             android:layout_height="@dimen/keyguard_affordance_fixed_height"
             android:layout_marginEnd="@dimen/keyguard_affordance_fixed_width"
-            android:src="@*android:drawable/ic_settings_display"
+            android:src="@android:drawable/ic_menu_preferences"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/quick_settings_flashlight_label"
             android:scaleType="center"
