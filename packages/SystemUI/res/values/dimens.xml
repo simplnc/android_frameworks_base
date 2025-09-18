@@ -1242,7 +1242,7 @@
     <!-- Height of the Ongoing App Ops chip -->
     <dimen name="ongoing_appops_chip_height">20dp</dimen>
     <!-- Height of the Ongoing Activity chip -->
-    <dimen name="ongoing_activity_chip_height">24dp</dimen>
+    <dimen name="ongoing_activity_chip_height">28dp</dimen>
     <!-- Side padding between background of Ongoing App Ops chip and content -->
     <dimen name="ongoing_appops_chip_side_padding">4dp</dimen>
     <!-- Margin between icons of Ongoing App Ops chip -->
@@ -1776,7 +1776,7 @@
     <!-- The activity chip side padding, used with an icon that has embedded padding (e.g. if the icon comes from the notification's smallIcon field). If the icon has padding, the chip itself can have less padding. -->
     <dimen name="ongoing_activity_chip_side_padding_for_embedded_padding_icon">4dp</dimen>
     <!-- The icon size, used with the default phone icon. -->
-    <dimen name="ongoing_activity_chip_icon_size">12dp</dimen>
+    <dimen name="ongoing_activity_chip_icon_size">14dp</dimen>
     <!-- The icon size, used with an icon that has embedded padding. (If the icon has embedded padding, we need to make the whole icon larger so the icon itself doesn't look small.) -->
     <dimen name="ongoing_activity_chip_embedded_padding_icon_size">22dp</dimen>
     <!-- The padding between the icon and the text. Only used if the default phone icon is used. -->
