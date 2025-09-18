@@ -76,14 +76,7 @@ public class InstallSuccessFragment extends DialogFragment {
         View successContainer = dialogView.requireViewById(R.id.install_success_container);
         successContainer.setVisibility(View.VISIBLE);
         
-        // Show package name if available
-        String packageName = mDialogData.getPackageName();
-        if (packageName != null) {
-            View packageView = dialogView.requireViewById(R.id.install_success_package);
-            String packageText = getString(R.string.app_package_label, packageName);
-            ((android.widget.TextView) packageView).setText(packageText);
-            packageView.setVisibility(View.VISIBLE);
-        }
+        // Package name display removed - method not available in InstallSuccess class
 
         return mDialog;
     }
