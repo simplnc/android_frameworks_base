@@ -836,6 +836,12 @@
     <dimen name="keyguard_clock_top_margin">18dp</dimen>
     <!-- The amount to shift the clocks during a small/large transition -->
     <dimen name="keyguard_clock_switch_y_shift">14dp</dimen>
+    <!-- Bottom margin for clock switch elements -->
+    <dimen name="keyguard_clock_switch_margin">16dp</dimen>
+    <!-- Bottom margin for security view elements -->
+    <dimen name="keyguard_security_view_margin">24dp</dimen>
+    <!-- Width for keyguard security container -->
+    <dimen name="keyguard_security_width">320dp</dimen>
 
     <!-- The amount to translate lockscreen elements on the GONE->AOD transition -->
     <dimen name="keyguard_enter_from_top_translation_y">-100dp</dimen>

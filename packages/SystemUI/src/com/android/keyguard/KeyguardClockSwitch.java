@@ -11,8 +11,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +104,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
     private KeyguardClockFrame mLargeClockFrame;
     private ClockController mClock;
     private OnePlusLockScreenController mOnePlusController;
+    private ContentObserver mSettingsObserver;
 
     // It's bc_smartspace_view, assigned by KeyguardClockSwitchController
     // to get the top padding for translating smartspace for weather clock
@@ -230,6 +235,19 @@ public class KeyguardClockSwitch extends RelativeLayout {
         } catch (Exception e) {
             // OnePlus lockscreen not available, continue with normal keyguard
         }
+        
+        // Initialize settings observer for OnePlus lock screen style
+        mSettingsObserver = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                updateOnePlusLockScreenVisibility();
+            }
+        };
+        mContext.getContentResolver().registerContentObserver(
+            Settings.System.getUriFor("lockscreen_oneplus_style"), 
+            false, 
+            mSettingsObserver, 
+            UserHandle.USER_CURRENT);
         
         onConfigChanged();
     }
@@ -593,6 +611,10 @@ public class KeyguardClockSwitch extends RelativeLayout {
         if (mOnePlusController != null) {
             mOnePlusController.onDestroy();
             mOnePlusController = null;
+        }
+        if (mSettingsObserver != null) {
+            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+            mSettingsObserver = null;
         }
     }
 }

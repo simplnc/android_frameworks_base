@@ -4055,6 +4055,8 @@
     <!-- OnePlus Lock Screen -->
     <string name="oneplus_lockscreen_title">OnePlus Lock Screen</string>
     <string name="oneplus_lockscreen_summary">Enable OnePlus-style lock screen</string>
+    <string name="lockscreen_oneplus_style_title">OnePlus Style</string>
+    <string name="lockscreen_oneplus_style_summary">Use OnePlus-inspired lock screen layout</string>
     <string name="oneplus_weather_title">Show Weather</string>
     <string name="oneplus_weather_summary">Display weather information on lock screen</string>
     <string name="oneplus_date_today">Today</string>
