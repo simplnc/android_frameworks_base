@@ -16,30 +16,168 @@
 */
 -->
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/presentation"
+<!-- OnePlus-style lockscreen layout using existing LineageOS resources -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    android:id="@+id/oneplus_lockscreen_container"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <com.android.keyguard.KeyguardStatusView
-        android:id="@+id/clock"
-        android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal|top"
+    android:paddingHorizontal="@dimen/keyguard_security_width"
+    android:paddingTop="@dimen/keyguard_clock_top_margin">
+
+    <!-- Main Clock Display -->
+    <TextClock
+        android:id="@+id/oneplus_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:format12Hour="@string/keyguard_widget_12_hours_format"
+        android:format24Hour="@string/keyguard_widget_24_hours_format"
+        android:textSize="64sp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:fontFamily="@*android:string/config_headlineFontFamily"
+        android:textStyle="bold"
+        android:shadowColor="@color/keyguard_shadow_color"
+        android:shadowRadius="3"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/keyguard_clock_switch_margin" />
+
+    <!-- Date and Weather Container -->
+    <LinearLayout
+        android:id="@+id/oneplus_date_weather_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/keyguard_clock_switch_margin">
+
+        <!-- Date Display -->
+        <TextView
+            android:id="@+id/oneplus_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/abbrev_wday_month_day_no_year"
+            android:textSize="16sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:fontFamily="@*android:string/config_bodyFontFamily"
+            android:gravity="center" />
+
+        <!-- Separator Dot -->
+        <TextView
+            android:id="@+id/oneplus_separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" • "
+            android:textSize="16sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:fontFamily="@*android:string/config_bodyFontFamily"
+            android:visibility="gone" />
+
+        <!-- Weather Display -->
+        <TextView
+            android:id="@+id/oneplus_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/weather_info_not_available"
+            android:textSize="16sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:fontFamily="@*android:string/config_bodyFontFamily"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Battery and Notification Info -->
+    <LinearLayout
+        android:id="@+id/oneplus_info_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/keyguard_clock_switch_margin">
+
+        <!-- Battery Level -->
+        <TextView
+            android:id="@+id/oneplus_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/accessibility_battery_level"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorTertiary"
+            android:fontFamily="@*android:string/config_bodyFontFamily"
+            android:drawableStart="@*android:drawable/ic_battery"
+            android:drawablePadding="@dimen/keyguard_affordance_fixed_width"
+            android:gravity="center_vertical" />
+
+        <!-- Info Separator -->
+        <TextView
+            android:id="@+id/oneplus_info_separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" • "
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorTertiary"
+            android:fontFamily="@*android:string/config_bodyFontFamily"
+            android:visibility="gone" />
+
+        <!-- Notification Count -->
+        <TextView
+            android:id="@+id/oneplus_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/accessibility_no_notifications"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorTertiary"
+            android:fontFamily="@*android:string/config_bodyFontFamily"
+            android:drawableStart="@drawable/ic_notifications_alert"
+            android:drawablePadding="@dimen/keyguard_affordance_fixed_width"
+            android:gravity="center_vertical"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Spacer to push quick actions to bottom -->
+    <View
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_weight="1" />
 
+    <!-- Quick Actions Container -->
+    <LinearLayout
+        android:id="@+id/oneplus_quick_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/keyguard_security_view_margin">
 
-        <include
-            android:id="@+id/keyguard_clock_container"
-            layout="@layout/keyguard_clock_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </com.android.keyguard.KeyguardStatusView>
+        <!-- Flashlight Button -->
+        <ImageView
+            android:id="@+id/oneplus_flashlight"
+            android:layout_width="@dimen/keyguard_affordance_fixed_width"
+            android:layout_height="@dimen/keyguard_affordance_fixed_height"
+            android:layout_marginEnd="@dimen/keyguard_affordance_fixed_width"
+            android:src="@android:drawable/ic_menu_preferences"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/quick_settings_flashlight_label"
+            android:scaleType="center"
+            android:alpha="0.7" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Camera Button -->
+        <ImageView
+            android:id="@+id/oneplus_camera"
+            android:layout_width="@dimen/keyguard_affordance_fixed_width"
+            android:layout_height="@dimen/keyguard_affordance_fixed_height"
+            android:layout_marginStart="@dimen/keyguard_affordance_fixed_width"
+            android:src="@*android:drawable/ic_menu_camera"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/accessibility_camera_button"
+            android:scaleType="center"
+            android:alpha="0.7" />
+
+    </LinearLayout>
+
+</LinearLayout>

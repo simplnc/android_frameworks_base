@@ -6705,6 +6705,12 @@ public final class Settings {
         public static final String STATUS_BAR_CUSTOM_HEADER_HEIGHT = "status_bar_custom_header_height";
 
         /**
+         * OnePlus style lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_ONEPLUS_STYLE = "lockscreen_oneplus_style";
+
+        /**
          * Whether to show power menu on Lock screen
          * @hide
          */
@@ -6850,6 +6856,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DOCK_SOUNDS_ENABLED);
             PRIVATE_SETTINGS.add(LOCKSCREEN_SOUNDS_ENABLED);
             PRIVATE_SETTINGS.add(LOCKSCREEN_DISABLED);
+            PRIVATE_SETTINGS.add(LOCKSCREEN_ONEPLUS_STYLE);
             PRIVATE_SETTINGS.add(LOW_BATTERY_SOUND);
             PRIVATE_SETTINGS.add(DESK_DOCK_SOUND);
             PRIVATE_SETTINGS.add(DESK_UNDOCK_SOUND);

@@ -61,6 +61,7 @@ public class LockscreenFragment extends PreferenceFragmentCompat {
     private static final String KEY_RIGHT = "right";
     private static final String KEY_CUSTOMIZE = "customize";
     private static final String KEY_SHORTCUT = "shortcut";
+    private static final String KEY_ONEPLUS_STYLE = "lockscreen_oneplus_style";
 
     public static final String LOCKSCREEN_LEFT_BUTTON = "sysui_keyguard_left";
     public static final String LOCKSCREEN_LEFT_UNLOCK = "sysui_keyguard_left_unlock";
@@ -81,6 +82,15 @@ public class LockscreenFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.lockscreen_settings, rootKey);
         setupGroup(LOCKSCREEN_LEFT_BUTTON, LOCKSCREEN_LEFT_UNLOCK);
         setupGroup(LOCKSCREEN_RIGHT_BUTTON, LOCKSCREEN_RIGHT_UNLOCK);
+        
+        // Setup OnePlus style toggle
+        SwitchPreferenceCompat onePlusStyle = (SwitchPreferenceCompat) findPreference(KEY_ONEPLUS_STYLE);
+        if (onePlusStyle != null) {
+            addTunable((k, v) -> {
+                boolean enabled = "1".equals(v);
+                onePlusStyle.setChecked(enabled);
+            }, KEY_ONEPLUS_STYLE);
+        }
     }
 
     @Override
