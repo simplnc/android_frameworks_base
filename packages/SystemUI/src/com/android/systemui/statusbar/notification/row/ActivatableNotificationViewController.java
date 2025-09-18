@@ -35,7 +35,6 @@ public class ActivatableNotificationViewController
     private final AccessibilityManager mAccessibilityManager;
     private final FalsingManager mFalsingManager;
     private final TouchHandler mTouchHandler = new TouchHandler();
-    private NotificationPhysicsHandler mPhysicsHandler;
 
     @Inject
     public ActivatableNotificationViewController(ActivatableNotificationView view,
@@ -55,9 +54,6 @@ public class ActivatableNotificationViewController
         mExpandableOutlineViewController.init();
         mView.setOnTouchListener(mTouchHandler);
         mView.setTouchHandler(mTouchHandler);
-        
-        // Initialize notification physics handler for squishiness
-        mPhysicsHandler = new NotificationPhysicsHandler(mView);
     }
 
     @Override
@@ -67,24 +63,12 @@ public class ActivatableNotificationViewController
 
     @Override
     protected void onViewDetached() {
-        if (mPhysicsHandler != null) {
-            mPhysicsHandler.onDestroy();
-            mPhysicsHandler = null;
-        }
+
     }
 
     class TouchHandler implements Gefingerpoken, View.OnTouchListener {
         @Override
         public boolean onTouch(View v, MotionEvent ev) {
-            // Handle notification physics squishiness
-            if (mPhysicsHandler != null && mPhysicsHandler.handleTouchEvent(ev)) {
-                // Physics handler processed the touch event
-                if (ev.getAction() == MotionEvent.ACTION_UP) {
-                    mView.setLastActionUpTime(ev.getEventTime());
-                }
-                return true;
-            }
-            
             boolean result = false;
             if (ev.getAction() == MotionEvent.ACTION_UP) {
                 mView.setLastActionUpTime(ev.getEventTime());
