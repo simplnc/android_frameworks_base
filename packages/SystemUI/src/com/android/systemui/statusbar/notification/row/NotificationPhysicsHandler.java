@@ -56,7 +56,7 @@ public class NotificationPhysicsHandler {
     
     public NotificationPhysicsHandler(View view) {
         this.targetView = view;
-        this.vibrator = (Vibrator) view.getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        this.vibrator = view.getContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator;
         
         // Initialize with normal shadow elevation
         targetView.setElevation(normalElevation);
