@@ -19,8 +19,13 @@
 
     <style name="TextAppearance.StatusBar.Clock" parent="@*android:style/TextAppearance.StatusBar.Icon">
         <item name="android:textSize">@dimen/status_bar_clock_size</item>
-        <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
+        <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
         <item name="android:textColor">@color/status_bar_clock_color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowColor">@color/keyguard_shadow_color</item>
+        <item name="android:shadowRadius">2</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
     </style>
 
     <style name="TextAppearance.StatusBar.UserChip" parent="@*android:style/TextAppearance.StatusBar.Icon">

@@ -41,6 +41,14 @@
         android:clipChildren="false"
         android:visibility="gone" />
 
+    <!-- OnePlus Style Lock Screen -->
+    <include
+        layout="@layout/keyguard_clock_presentation"
+        android:id="@+id/oneplus_lockscreen_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
     <!-- Not quite optimal but needed to translate these items as a group. The
          NotificationIconContainer has its own logic for translation. -->
     <com.android.keyguard.KeyguardStatusAreaView
