@@ -353,10 +353,25 @@ public class PackageInstallerActivity extends Activity {
                 return "Modify system settings";
             default:
                 // For unknown permissions, try to make them more readable
-                return permission.replace("android.permission.", "")
+                String readable = permission.replace("android.permission.", "")
                         .replace("_", " ")
-                        .toLowerCase()
-                        .replaceAll("\\b\\w", s -> s.group().toUpperCase());
+                        .toLowerCase();
+                
+                // Capitalize first letter of each word
+                StringBuilder result = new StringBuilder();
+                boolean capitalizeNext = true;
+                for (char c : readable.toCharArray()) {
+                    if (Character.isWhitespace(c)) {
+                        capitalizeNext = true;
+                        result.append(c);
+                    } else if (capitalizeNext) {
+                        result.append(Character.toUpperCase(c));
+                        capitalizeNext = false;
+                    } else {
+                        result.append(c);
+                    }
+                }
+                return result.toString();
         }
     }
 
