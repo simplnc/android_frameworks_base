@@ -72,7 +72,18 @@ public class InstallSuccessFragment extends DialogFragment {
             .setPositiveButton(R.string.launch, (dialog, which) -> {})
             .create();
 
-        dialogView.requireViewById(R.id.install_success).setVisibility(View.VISIBLE);
+        // Show install success container
+        View successContainer = dialogView.requireViewById(R.id.install_success_container);
+        successContainer.setVisibility(View.VISIBLE);
+        
+        // Show package name if available
+        String packageName = mDialogData.getPackageName();
+        if (packageName != null) {
+            View packageView = dialogView.requireViewById(R.id.install_success_package);
+            String packageText = getString(R.string.app_package_label, packageName);
+            ((android.widget.TextView) packageView).setText(packageText);
+            packageView.setVisibility(View.VISIBLE);
+        }
 
         return mDialog;
     }

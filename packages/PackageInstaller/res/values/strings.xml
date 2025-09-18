@@ -379,5 +379,7 @@
     <string name="app_size_label">Size: %1$s</string>
     <!-- [CHAR LIMIT=100] -->
     <string name="app_package_label">Package: %1$s</string>
+    <!-- [CHAR LIMIT=100] -->
+    <string name="install_success_with_package">App installed.\nPackage: %1$s</string>
 
 </resources>
