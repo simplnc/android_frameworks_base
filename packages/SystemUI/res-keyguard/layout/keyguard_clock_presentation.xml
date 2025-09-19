@@ -35,9 +35,10 @@
         android:layout_height="wrap_content"
         android:format12Hour="@string/keyguard_widget_12_hours_format"
         android:format24Hour="@string/keyguard_widget_24_hours_format"
-        android:textSize="48sp"
+        android:textSize="64sp"
         android:textColor="?android:attr/textColorPrimary"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="sans-serif-black"
+        android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="@dimen/keyguard_clock_switch_margin" />
 

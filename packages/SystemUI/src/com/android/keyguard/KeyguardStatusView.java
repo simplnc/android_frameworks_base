@@ -32,6 +32,7 @@ import android.widget.GridLayout;
 import com.android.systemui.res.R;
 import com.android.systemui.shade.TouchLogger;
 import com.android.systemui.statusbar.CrossFadeHelper;
+import com.android.keyguard.OnePlusLockScreenController;
 
 import java.util.Set;
 
