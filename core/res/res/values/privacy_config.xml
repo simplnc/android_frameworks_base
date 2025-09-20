@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright (C) 2023-2024 The RisingOS Android Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<resources>
+    <!-- Privacy-focused default settings inspired by DivestOS/GrapheneOS -->
+    
+    <!-- Network and connectivity privacy -->
+    <bool name="config_wifi_scan_always_available">false</bool>
+    <bool name="config_bluetooth_scan_always_available">false</bool>
+    <bool name="config_wifi_mac_randomization_enabled">true</bool>
+    <bool name="config_network_logging_enabled">false</bool>
+    
+    <!-- Location and time privacy -->
+    <bool name="config_auto_time_zone_detection_enabled">false</bool>
+    <bool name="config_auto_time_detection_enabled">false</bool>
+    <bool name="config_location_mode_enabled">false</bool>
+    
+    <!-- Telemetry and analytics -->
+    <bool name="config_crash_reporting_enabled">false</bool>
+    <bool name="config_analytics_enabled">false</bool>
+    <bool name="config_telemetry_enabled">false</bool>
+    <bool name="config_usage_stats_enabled">false</bool>
+    
+    <!-- Network security -->
+    <bool name="config_network_security_config_strict">true</bool>
+    <bool name="config_dns_over_tls_enabled">true</bool>
+    <bool name="config_dns_over_https_enabled">true</bool>
+    
+    <!-- App permissions and security -->
+    <bool name="config_unknown_sources_enabled">false</bool>
+    <bool name="config_install_non_market_apps">false</bool>
+    <bool name="config_verify_apps_install">true</bool>
+    
+    <!-- Privacy indicators -->
+    <bool name="config_privacy_indicators_enabled">true</bool>
+    <bool name="config_camera_privacy_indicator">true</bool>
+    <bool name="config_microphone_privacy_indicator">true</bool>
+    <bool name="config_location_privacy_indicator">true</bool>
+    
+    <!-- USB and debugging -->
+    <bool name="config_usb_debugging_enabled">false</bool>
+    <bool name="config_usb_mass_storage_enabled">false</bool>
+    <bool name="config_adb_enabled">false</bool>
+    
+    <!-- Screen and display privacy -->
+    <bool name="config_screen_shot_enabled">true</bool>
+    <bool name="config_screen_recording_enabled">true</bool>
+    <bool name="config_smart_screen_off_enabled">true</bool>
+    
+    <!-- Lock screen privacy -->
+    <bool name="config_lock_screen_notifications_enabled">true</bool>
+    <bool name="config_lock_screen_media_controls_enabled">true</bool>
+    <bool name="config_lock_screen_widgets_enabled">true</bool>
+    
+    <!-- Backup and sync privacy -->
+    <bool name="config_backup_enabled">false</bool>
+    <bool name="config_auto_sync_enabled">false</bool>
+    <bool name="config_cloud_backup_enabled">false</bool>
+    
+    <!-- Enhanced security features -->
+    <bool name="config_encryption_enabled">true</bool>
+    <bool name="config_secure_boot_enabled">true</bool>
+    <bool name="config_verified_boot_enabled">true</bool>
+    
+    <!-- Privacy-focused QS tiles order -->
+    <string name="privacy_qs_tiles_order" translatable="false">
+        internet,cell,flashlight,dnd,alarm,airplane,rotation,battery,onthego,
+        screenrecord,mictoggle,cameratoggle,location,bt,cast,controls,wallet
+    </string>
+    
+    <!-- Disabled features for privacy -->
+    <string-array name="privacy_disabled_features">
+        <item>wifi_scanning</item>
+        <item>bluetooth_scanning</item>
+        <item>location_services</item>
+        <item>auto_time_detection</item>
+        <item>auto_timezone_detection</item>
+        <item>crash_reporting</item>
+        <item>analytics</item>
+        <item>telemetry</item>
+        <item>usage_stats</item>
+        <item>network_logging</item>
+    </string-array>
+    
+    <!-- Enhanced features for privacy -->
+    <string-array name="privacy_enhanced_features">
+        <item>mac_randomization</item>
+        <item>dns_over_tls</item>
+        <item>dns_over_https</item>
+        <item>network_security_strict</item>
+        <item>privacy_indicators</item>
+        <item>camera_privacy_indicator</item>
+        <item>microphone_privacy_indicator</item>
+        <item>location_privacy_indicator</item>
+        <item>encryption</item>
+        <item>secure_boot</item>
+        <item>verified_boot</item>
+    </string-array>
+</resources>
