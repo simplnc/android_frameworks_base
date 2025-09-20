@@ -91,10 +91,11 @@ public class ClipboardListener implements
 
     @Override
     public void onPrimaryClipChanged() {
-        if (Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                Settings.Secure.SHOW_CLIPBOARD_OVERLAY, 1, UserHandle.USER_CURRENT) == 0) {
-            return;
-        }
+        // Clipboard overlay is enabled by default
+        // if (Settings.Secure.getIntForUser(mContext.getContentResolver(),
+        //         Settings.Secure.SHOW_CLIPBOARD_OVERLAY, 1, UserHandle.USER_CURRENT) == 0) {
+        //     return;
+        // }
         if (!mClipboardManager.hasPrimaryClip()) {
             return;
         }
