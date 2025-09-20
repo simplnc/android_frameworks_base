@@ -35,11 +35,17 @@ import com.android.systemui.qs.tiles.UsbTetherTile
 import com.android.systemui.qs.tiles.VolumeControlTile
 import com.android.systemui.qs.tiles.VpnTile
 import com.android.systemui.qs.tiles.WifiTile
+import com.android.systemui.recents.TaskLockingController
+import com.android.systemui.statusbar.CommandQueue
 
+import android.content.Context
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import com.android.systemui.dagger.SysUISingleton
+import com.android.systemui.dagger.qualifiers.Main
 
 @Module
 interface LineageModule {
@@ -151,4 +157,17 @@ interface LineageModule {
     @IntoMap
     @StringKey(WifiTile.TILE_SPEC)
     fun bindWifiTile(wifiTile: WifiTile): QSTileImpl<*>
+
+    companion object {
+        /** Provide TaskLockingController */
+        @Provides
+        @SysUISingleton
+        fun provideTaskLockingController(
+            context: Context,
+            @Main executor: java.util.concurrent.Executor,
+            commandQueue: CommandQueue
+        ): TaskLockingController {
+            return TaskLockingController(context, executor, commandQueue)
+        }
+    }
 }
