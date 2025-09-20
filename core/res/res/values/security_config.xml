@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright (C) 2023-2024 The RisingOS Android Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<resources>
+    <!-- Security hardening configurations inspired by GrapheneOS/DivestOS -->
+    
+    <!-- Secure App Spawning (GrapheneOS feature) -->
+    <bool name="config_secure_app_spawning">true</bool>
+    <bool name="config_exec_based_spawning">true</bool>
+    <bool name="config_zygote_fork_mode">false</bool>
+    <bool name="config_enhanced_aslr">true</bool>
+    
+    <!-- Memory Hardening -->
+    <bool name="config_aslr_enabled">true</bool>
+    <bool name="config_stack_protection">true</bool>
+    <bool name="config_heap_protection">true</bool>
+    <bool name="config_memory_disclosure_protection">true</bool>
+    <bool name="config_cfi_enabled">true</bool>
+    <bool name="config_return_address_protection">true</bool>
+    
+    <!-- Network Security Hardening -->
+    <bool name="config_tls_hardening">true</bool>
+    <bool name="config_certificate_pinning">true</bool>
+    <bool name="config_dns_security">true</bool>
+    <bool name="config_network_monitoring">true</bool>
+    <bool name="config_traffic_analysis_protection">true</bool>
+    
+    <!-- System Security -->
+    <bool name="config_verified_boot">true</bool>
+    <bool name="config_secure_boot">true</bool>
+    <bool name="config_encryption_enabled">true</bool>
+    <bool name="config_adb_enabled">false</bool>
+    <bool name="config_usb_debugging">false</bool>
+    <bool name="config_developer_options">false</bool>
+    
+    <!-- Auto-Reboot (GrapheneOS feature) -->
+    <bool name="config_auto_reboot_enabled">false</bool>
+    <integer name="config_auto_reboot_interval_hours">72</integer>
+    <bool name="config_auto_reboot_notification">true</bool>
+    
+    <!-- App Security -->
+    <bool name="config_unknown_sources">false</bool>
+    <bool name="config_install_non_market_apps">false</bool>
+    
+    <!-- Kernel Security -->
+    <bool name="config_kernel_aslr">true</bool>
+    <bool name="config_kernel_pax">true</bool>
+    <bool name="config_kernel_grsecurity">true</bool>
+    <bool name="config_kernel_smep">true</bool>
+    <bool name="config_kernel_smap">true</bool>
+    <bool name="config_kernel_kptr_restrict">true</bool>
+    <bool name="config_kernel_dmesg_restrict">true</bool>
+    
+    <!-- Hardware Security -->
+    <bool name="config_hardware_keystore">true</bool>
+    <bool name="config_secure_element">true</bool>
+    <bool name="config_trusted_execution">true</bool>
+    <bool name="config_secure_display">true</bool>
+    
+    <!-- Privacy Security -->
+    <bool name="config_camera_privacy">true</bool>
+    <bool name="config_microphone_privacy">true</bool>
+    <bool name="config_location_privacy">true</bool>
+    <bool name="config_sensor_privacy">true</bool>
+    
+    <!-- Network Security Config -->
+    <string name="config_network_security_config" translatable="false">network_security_config</string>
+    
+    <!-- Security Logging -->
+    <bool name="config_security_logging">true</bool>
+    <bool name="config_audit_logging">true</bool>
+    <bool name="config_security_monitoring">true</bool>
+    
+    <!-- Allowed exec paths -->
+    <string-array name="config_allowed_exec_paths">
+        <item>/system/bin/</item>
+        <item>/system/xbin/</item>
+        <item>/vendor/bin/</item>
+        <item>/apex/</item>
+        <item>/product/bin/</item>
+    </string-array>
+    
+    <!-- Blocked exec patterns -->
+    <string-array name="config_blocked_exec_patterns">
+        <item>/tmp/</item>
+        <item>/data/local/tmp/</item>
+        <item>/sdcard/</item>
+        <item>/storage/</item>
+        <item>/proc/</item>
+        <item>/dev/</item>
+    </string-array>
+    
+    <!-- Allowed TLS versions -->
+    <string-array name="config_allowed_tls_versions">
+        <item>TLSv1.2</item>
+        <item>TLSv1.3</item>
+    </string-array>
+    
+    <!-- Blocked TLS versions -->
+    <string-array name="config_blocked_tls_versions">
+        <item>SSLv2</item>
+        <item>SSLv3</item>
+        <item>TLSv1.0</item>
+        <item>TLSv1.1</item>
+    </string-array>
+    
+    <!-- Blocked cipher suites -->
+    <string-array name="config_blocked_cipher_suites">
+        <item>NULL</item>
+        <item>RC4</item>
+        <item>DES</item>
+        <item>3DES</item>
+        <item>MD5</item>
+        <item>SHA1</item>
+    </string-array>
+    
+    <!-- Security features enabled (GrapheneOS-compatible) -->
+    <string-array name="config_security_features_enabled">
+        <item>secure_app_spawning</item>
+        <item>exec_based_spawning</item>
+        <item>enhanced_aslr</item>
+        <item>memory_hardening</item>
+        <item>network_security_hardening</item>
+        <item>privacy_protection</item>
+        <item>verified_boot</item>
+        <item>secure_boot</item>
+        <item>encryption</item>
+        <item>certificate_pinning</item>
+        <item>tls_hardening</item>
+        <item>dns_security</item>
+        <item>auto_reboot</item>
+    </string-array>
+    
+    <!-- Security features disabled by default -->
+    <string-array name="config_security_features_disabled">
+        <item>adb_debugging</item>
+        <item>usb_debugging</item>
+        <item>developer_options</item>
+        <item>unknown_sources</item>
+        <item>install_non_market_apps</item>
+        <item>network_logging</item>
+        <item>crash_reporting</item>
+        <item>analytics</item>
+        <item>telemetry</item>
+    </string-array>
+</resources>
