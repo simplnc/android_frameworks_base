@@ -62,12 +62,4 @@
     <string name="quick_settings_preferred_network_lte">4G / LTE</string>
     <string name="quick_settings_preferred_network_nr">5G / NR</string>
     <string name="quick_settings_preferred_network_unsupported">Unsupported</string>
-    <!-- Task Locking in Recents -->
-    <string name="task_locking_enabled">Task locking enabled</string>
-    <string name="task_locking_disabled">Task locking disabled</string>
-    <string name="task_locked">Task locked</string>
-    <string name="task_unlocked">Task unlocked</string>
-    <string name="task_locking_title">Lock task in recents</string>
-    <string name="task_locking_summary">Prevent apps from being killed in background</string>
-
 </resources>
