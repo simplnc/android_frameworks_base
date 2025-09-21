@@ -46,7 +46,7 @@ import dagger.multibindings.StringKey
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.Main
 
-import com.android.systemui.recents.TaskLockingController
+// import com.android.systemui.recents.TaskLockingController  // TODO: Class not found, commented out
 
 @Module
 interface LineageModule {
@@ -160,6 +160,8 @@ interface LineageModule {
     fun bindWifiTile(wifiTile: WifiTile): QSTileImpl<*>
 
     companion object {
+        // TODO: TaskLockingController class not found, provider method commented out
+        /*
         /** Provide TaskLockingController */
         @Provides
         @SysUISingleton
@@ -170,5 +172,6 @@ interface LineageModule {
         ): TaskLockingController {
             return TaskLockingController(context, executor, commandQueue)
         }
+        */
     }
 }

@@ -108,6 +108,7 @@ import android.os.IBinder;
 import android.os.ParcelableException;
 import android.os.PatternMatcher;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -2571,6 +2572,22 @@ public class ComputerEngine implements Computer {
     }
 
   
+
+    private boolean isBootCompleted() {
+        return SystemProperties.getBoolean("sys.boot_completed", false);
+    }
+
+    private boolean isCallerSystem(int callingUid) {
+        return PackageManagerServiceUtils.isSystemOrRootOrShell(UserHandle.getAppId(callingUid));
+    }
+
+    private boolean isCallerHome(int callingUid, int userId) {
+        final ComponentName homeComponent = getDefaultHomeActivity(userId);
+        if (homeComponent != null) {
+            return isCallerSameApp(homeComponent.getPackageName(), callingUid);
+        }
+        return false;
+    }
 
     private final boolean shouldFilterApplicationCustom(
             @Nullable PackageStateInternal ps, int callingUid, int userId) {
