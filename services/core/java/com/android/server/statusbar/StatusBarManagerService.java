@@ -2711,6 +2711,17 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
         }
     }
 
+    @Override
+    public void screenPinningStateChanged(boolean enabled) {
+        enforceStatusBarService();
+        // Log the screen pinning state change
+        if (SPEW) {
+            Slog.d(TAG, "screenPinningStateChanged: enabled=" + enabled);
+        }
+        // Note: IStatusBar interface doesn't have screenPinningStateChanged method
+        // This is a placeholder implementation to satisfy the IStatusBarService interface
+    }
+
     /** @hide */
     public void passThroughShellCommand(String[] args, FileDescriptor fd) {
         enforceStatusBarOrShell();
