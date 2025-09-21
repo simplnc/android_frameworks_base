@@ -2244,6 +2244,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
             loadStringSetting(stmt, Settings.Secure.IMMERSIVE_MODE_CONFIRMATIONS,
                         R.string.def_immersive_mode_confirmations);
 
+            // Load default hidden apps list for app hiding feature
+            loadStringSetting(stmt, Settings.Secure.HIDE_APPLIST,
+                    R.string.def_hide_applist);
+
             loadBooleanSetting(stmt, Settings.Secure.INSTALL_NON_MARKET_APPS,
                     R.bool.def_install_non_market_apps);
 

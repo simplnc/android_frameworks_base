@@ -25,9 +25,12 @@ public class HideAppListUtils {
     }
 
     public static boolean shouldHideAppList(ContentResolver cr, String packageName) {
-        if (cr == null || packageName == null || !isBootCompleted()) {
+        if (cr == null || packageName == null) {
             return false;
         }
+        
+        // Allow app hiding to work immediately, not just after boot completion
+        // This ensures apps are hidden from launcher even during boot process
 
         Set<String> apps = getApps(cr);
         if (apps.isEmpty()) {
