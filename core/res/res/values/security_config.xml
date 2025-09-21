@@ -50,7 +50,7 @@
     <bool name="config_developer_options">false</bool>
     
     <!-- Auto-Reboot (GrapheneOS feature) -->
-    <bool name="config_auto_reboot_enabled">false</bool>
+    <bool name="config_auto_reboot_enabled">true</bool>
     <integer name="config_auto_reboot_interval_hours">72</integer>
     <bool name="config_auto_reboot_notification">true</bool>
     

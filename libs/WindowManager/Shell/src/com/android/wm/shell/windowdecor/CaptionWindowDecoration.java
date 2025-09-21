@@ -25,6 +25,9 @@ import static com.android.wm.shell.windowdecor.DragResizeWindowGeometry.getResiz
 
 import static com.android.launcher3.icons.BaseIconFactory.MODE_DEFAULT;
 
+import com.android.launcher3.icons.BaseIconFactory;
+import com.android.launcher3.icons.IconProvider;
+
 import android.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -286,7 +289,7 @@ public class CaptionWindowDecoration extends WindowDecoration<WindowDecorLinearL
         updateRelayoutParams(mRelayoutParams, mContext, taskInfo, applyStartTransactionOnDraw,
                 shouldSetTaskVisibilityPositionAndCrop, mIsStatusBarVisible,
                 mIsKeyguardVisibleAndOccluded,
-                mDisplayController.getInsetsState(taskInfo.displayId), hasGlobalFocus,
+                mDisplayController, hasGlobalFocus,
                 globalExclusionRegion, cornerRadius);
 
         relayout(mRelayoutParams, startT, finishT, wct, oldRootView, mResult);

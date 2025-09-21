@@ -64,7 +64,7 @@ public class TunerFragment extends PreferenceFragment {
         @KeepTarget(classConstant = LockscreenFragment.class),
         @KeepTarget(classConstant = NavBarTuner.class),
         @KeepTarget(classConstant = PluginFragment.class),
-        @KeepTarget(classConstant = TaskLockingFragment.class),
+        // @KeepTarget(classConstant = TaskLockingFragment.class),  // TODO: Class not found, commented out
     })
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
