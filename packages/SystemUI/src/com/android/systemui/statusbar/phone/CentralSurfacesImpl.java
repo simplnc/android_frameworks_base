@@ -1133,6 +1133,37 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
     }
 
     /**
+     * Cleanup callbacks to prevent memory leaks
+     * Should be called when SystemUI is destroyed or restarted
+     */
+    void unregisterCallbacks() {
+        // Cleanup lifecycle observers to prevent memory leaks
+        if (mScreenLifecycle != null && mScreenObserver != null) {
+            mScreenLifecycle.removeObserver(mScreenObserver);
+        }
+        if (mWakefulnessLifecycle != null && mWakefulnessObserver != null) {
+            mWakefulnessLifecycle.removeObserver(mWakefulnessObserver);
+        }
+        
+        // Cleanup keyguard and configuration callbacks
+        if (mKeyguardUpdateMonitor != null && mUpdateCallback != null) {
+            mKeyguardUpdateMonitor.removeCallback(mUpdateCallback);
+        }
+        if (mConfigurationController != null && mConfigurationListener != null) {
+            mConfigurationController.removeCallback(mConfigurationListener);
+        }
+        
+        // Cleanup device state callback (if we can access it)
+        // Note: mDeviceStateManager callback cleanup may need additional handling
+        
+        // Cleanup Java adapter flows
+        if (mJavaAdapter != null) {
+            // The mJavaAdapter.alwaysCollectFlow() calls will be cleaned up
+            // when the adapter is destroyed
+        }
+    }
+
+    /**
      * @deprecated use {@link
      * WindowRootViewVisibilityInteractor#isLockscreenOrShadeVisible()} instead.
      */    @VisibleForTesting
@@ -1359,7 +1390,8 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
             });
         }
 
-        mVisualizerView = (VisualizerView) getNotifContainerParentView().findViewById(R.id.visualizerview);
+        // Removed VisualizerView initialization - was causing bootloops and not used for core functionality
+        // mVisualizerView = (VisualizerView) getNotifContainerParentView().findViewById(R.id.visualizerview);
 
         mReportRejectedTouch = getNotificationShadeWindowView()
                 .findViewById(R.id.report_rejected_touch);

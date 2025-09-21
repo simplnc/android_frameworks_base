@@ -44,7 +44,7 @@
     
     <!-- App permissions and security -->
     <bool name="config_unknown_sources_enabled">false</bool>
-    <bool name="config_install_non_market_apps">false</bool>
+    <!-- Removed duplicate: defined in security_config.xml -->
     <bool name="config_verify_apps_install">true</bool>
     
     <!-- Privacy indicators -->
@@ -56,7 +56,7 @@
     <!-- USB and debugging -->
     <bool name="config_usb_debugging_enabled">false</bool>
     <bool name="config_usb_mass_storage_enabled">false</bool>
-    <bool name="config_adb_enabled">false</bool>
+    <!-- Removed duplicate: defined in security_config.xml -->
     
     <!-- Screen and display privacy -->
     <bool name="config_screen_shot_enabled">true</bool>
@@ -74,7 +74,7 @@
     <bool name="config_cloud_backup_enabled">false</bool>
     
     <!-- Enhanced security features -->
-    <bool name="config_encryption_enabled">true</bool>
+    <!-- Removed duplicate: defined in security_config.xml -->
     <bool name="config_secure_boot_enabled">true</bool>
     <bool name="config_verified_boot_enabled">true</bool>
     
