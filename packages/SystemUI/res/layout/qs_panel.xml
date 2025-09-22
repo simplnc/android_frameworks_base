@@ -21,6 +21,16 @@
     android:clipToPadding="false"
     android:clipChildren="false">
 
+    <!-- Full QS background image (behind header, tiles, and footer) -->
+    <ImageView
+        android:id="@+id/qs_panel_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.5"
+        android:src="@drawable/qs_header_image_81"
+        android:importantForAccessibility="no" />
+
     <com.android.systemui.qs.NonInterceptingScrollView
         android:id="@+id/expanded_qs_scroll_view"
         android:layout_width="match_parent"

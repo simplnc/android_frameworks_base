@@ -77,6 +77,7 @@ import com.android.systemui.util.ViewController
 import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Named
+import com.android.systemui.android.header.StatusBarHeaderMachine
 
 /**
  * Controller for QS header.
@@ -335,17 +336,54 @@ constructor(
         )
         
         if (currentClockStyle != 0) {
-            // Hide default clock and date when custom clock is enabled
+            // Hide default clock when custom clock is enabled
             clock.visibility = View.GONE
-            date.visibility = View.GONE
+            // Default date view was removed from layout, no need to hide it
         } else {
-            // Show default clock and date when custom clock is disabled
+            // Show default clock when custom clock is disabled
             clock.visibility = View.VISIBLE
-            date.visibility = View.VISIBLE
             val colorStateList = ColorStateList.valueOf(Color.WHITE)
             clock.setTextColor(colorStateList)
-            date.setTextColor(colorStateList)
+            // Default date view was removed from layout, no need to show it
         }
+    }
+
+    // QS Header/Panel background image wiring
+    private var qsHeaderImage: View? = null
+    private var qsPanelBackgroundImage: View? = null
+    private var headerMachine: StatusBarHeaderMachine? = null
+    private var headerObserver: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver? = null
+    private fun isOnKeyguard(): Boolean {
+        // Check if we're on keyguard by looking for keyguard-specific views
+        val root = header.rootView
+        val keyguardStatus = root.findViewById<View?>(com.android.systemui.res.R.id.keyguard_status_view)
+        val keyguardBottom = root.findViewById<View?>(com.android.systemui.res.R.id.keyguard_bottom_area)
+        val qsPanel = root.findViewById<View?>(com.android.systemui.res.R.id.quick_settings_panel)
+        
+        // If keyguard views are visible OR QS panel is not visible, we're on keyguard
+        return (keyguardStatus?.visibility == View.VISIBLE) || 
+               (keyguardBottom?.visibility == View.VISIBLE) ||
+               (qsPanel?.visibility != View.VISIBLE)
+    }
+
+    private fun isHeaderImageEnabled(): Boolean {
+        return Settings.System.getIntForUser(
+            context.contentResolver, "qs_header_image_enabled", 1, UserHandle.USER_CURRENT
+        ) == 1
+    }
+
+    private fun updateHeaderImageVisibility() {
+        // Hide header image on keyguard to avoid showing it on lockscreen
+        val shouldShow = isHeaderImageEnabled() && !isOnKeyguard()
+        qsHeaderImage?.visibility = if (shouldShow) View.VISIBLE else View.GONE
+        // QS panel background is now controlled by QSPanel itself, not here
+    }
+
+    private fun isQsPanelVisible(): Boolean {
+        val root = header.rootView
+        val qsPanel = root.findViewById<View?>(com.android.systemui.res.R.id.quick_settings_panel)
+        val qsContainer = root.findViewById<View?>(com.android.systemui.res.R.id.quick_settings_container)
+        return (qsPanel?.visibility == View.VISIBLE) || (qsContainer?.visibility == View.VISIBLE)
     }
 
     override fun onInit() {
@@ -375,6 +413,20 @@ constructor(
             shadeCarrierGroupControllerBuilder.setShadeCarrierGroup(mShadeCarrierGroup).build()
 
         privacyIconsController.onParentVisible()
+
+        // Initialize header image view and apply default visibility
+        qsHeaderImage = header.findViewById<View>(com.android.systemui.res.R.id.qs_header_image_view)
+        updateHeaderImageVisibility()
+
+        // Initialize full QS panel background image (lives in qs_panel.xml)
+        // Don't control it from here - let QSPanel handle its own background
+        // qsPanelBackgroundImage = header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+
+        // Hook StatusBarHeaderMachine to dynamically supply headers
+        headerMachine = StatusBarHeaderMachine(context)
+        (header as? androidx.constraintlayout.widget.ConstraintLayout)?.let {
+            // if needed in future
+        }
     }
 
     override fun onViewAttached() {
@@ -407,9 +459,27 @@ constructor(
             statusOverlayHoverListenerFactory.createListener(systemIconsHoverContainer)
         )
 
-
         // tunerService.addTunable(this, QS_HEADER_CLOCK_STYLE) // Disabled - TunerService not available
         updateQsHeaderClockDateVisibility() // Update clock/date visibility based on custom clock setting
+
+        // Subscribe header machine
+        headerObserver = object: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
+            override fun updateHeader(headerImage: android.graphics.drawable.Drawable?, force: Boolean) {
+                val iv = qsHeaderImage as? android.widget.ImageView ?: return
+                if (headerImage != null) {
+                    iv.setImageDrawable(headerImage)
+                }
+                // QS panel background is now handled by QSPanel itself
+            }
+            override fun disableHeader() {
+                // no-op
+            }
+            override fun refreshHeader() {
+                // no-op
+            }
+        }
+        (headerMachine as? StatusBarHeaderMachine)?.addObserver(headerObserver)
+        (headerMachine as? StatusBarHeaderMachine)?.updateEnablement()
     }
 
     override fun onViewDetached() {
@@ -422,6 +492,8 @@ constructor(
         nextAlarmController.removeCallback(nextAlarmCallback)
         systemIconsHoverContainer.setOnHoverListener(null)
         // tunerService.removeTunable(this) // Disabled - TunerService not available
+        headerObserver?.let { (headerMachine as? StatusBarHeaderMachine)?.removeObserver(it) }
+        headerObserver = null
     }
 
     // Disabled TunerService functionality
@@ -440,6 +512,8 @@ constructor(
         if (disabled == qsDisabled) return
         qsDisabled = disabled
         updateVisibility()
+        // Re-evaluate background visibility when state changes
+        updateHeaderImageVisibility()
     }
 
     fun startCustomizingAnimation(show: Boolean, duration: Long) {
@@ -539,6 +613,8 @@ constructor(
             privacyIconsController.stopListening()
         }
         updateVisibility()
+        // Re-evaluate header image when shade visibility changes (e.g., entering/exiting keyguard)
+        updateHeaderImageVisibility()
         updatePosition()
     }
 
@@ -563,6 +639,8 @@ constructor(
             header.visibility = visibility
             visible = visibility == View.VISIBLE
         }
+        // Keep header image in sync with overall header visibility/keyguard state
+        updateHeaderImageVisibility()
     }
 
     private fun updateTransition() {
