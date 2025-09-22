@@ -77,6 +77,7 @@ import com.android.systemui.util.ViewController
 import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Named
+import com.android.systemui.android.header.StatusBarHeaderMachine
 
 /**
  * Controller for QS header.
@@ -348,6 +349,25 @@ constructor(
         }
     }
 
+    // QS Header/Panel background image wiring
+    private var qsHeaderImage: View? = null
+    private var qsPanelBackgroundImage: View? = null
+    private var headerMachine: StatusBarHeaderMachine? = null
+    private var headerObserver: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver? = null
+    private fun isOnKeyguard(): Boolean {
+        // Heuristic: keyguard views exist and are visible; avoids new deps.
+        val root = header.rootView
+        val keyguardStatus = root.findViewById<View?>(com.android.systemui.res.R.id.keyguard_status_view)
+        val keyguardBottom = root.findViewById<View?>(com.android.systemui.res.R.id.keyguard_bottom_area)
+        return (keyguardStatus?.visibility == View.VISIBLE) || (keyguardBottom?.visibility == View.VISIBLE)
+    }
+
+    private fun updateHeaderImageVisibility() {
+        qsHeaderImage?.visibility = if (isHeaderImageEnabled()) View.VISIBLE else View.GONE
+        // Hard guard: never show full panel background on keyguard
+        qsPanelBackgroundImage?.visibility = if (!isOnKeyguard() && isHeaderImageEnabled()) View.VISIBLE else View.GONE
+    }
+
     override fun onInit() {
         variableDateViewControllerFactory.create(date as VariableDateView).init()
         batteryMeterViewController.init()
@@ -375,6 +395,19 @@ constructor(
             shadeCarrierGroupControllerBuilder.setShadeCarrierGroup(mShadeCarrierGroup).build()
 
         privacyIconsController.onParentVisible()
+
+        // Initialize header image view and apply default visibility
+        qsHeaderImage = header.findViewById<View>(com.android.systemui.res.R.id.qs_header_image_view)
+        updateHeaderImageVisibility()
+
+        // Initialize full QS panel background image (lives in qs_panel.xml)
+        qsPanelBackgroundImage = header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+
+        // Hook StatusBarHeaderMachine to dynamically supply headers
+        headerMachine = StatusBarHeaderMachine(context)
+        (header as? androidx.constraintlayout.widget.ConstraintLayout)?.let {
+            // if needed in future
+        }
     }
 
     override fun onViewAttached() {
@@ -407,9 +440,32 @@ constructor(
             statusOverlayHoverListenerFactory.createListener(systemIconsHoverContainer)
         )
 
-
         // tunerService.addTunable(this, QS_HEADER_CLOCK_STYLE) // Disabled - TunerService not available
         updateQsHeaderClockDateVisibility() // Update clock/date visibility based on custom clock setting
+
+        // Subscribe header machine
+        headerObserver = object: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
+            override fun updateHeader(headerImage: android.graphics.drawable.Drawable?, force: Boolean) {
+                val iv = qsHeaderImage as? android.widget.ImageView ?: return
+                if (headerImage != null) {
+                    iv.setImageDrawable(headerImage)
+                }
+                // Also update the full QS panel background if present and shade is showing
+                (qsPanelBackgroundImage as? android.widget.ImageView)?.let { bg ->
+                    if (headerImage != null && header.isLaidOut && header.isAttachedToWindow) {
+                        bg.setImageDrawable(headerImage)
+                    }
+                }
+            }
+            override fun disableHeader() {
+                // no-op
+            }
+            override fun refreshHeader() {
+                // no-op
+            }
+        }
+        (headerMachine as? StatusBarHeaderMachine)?.addObserver(headerObserver)
+        (headerMachine as? StatusBarHeaderMachine)?.updateEnablement()
     }
 
     override fun onViewDetached() {
@@ -422,6 +478,8 @@ constructor(
         nextAlarmController.removeCallback(nextAlarmCallback)
         systemIconsHoverContainer.setOnHoverListener(null)
         // tunerService.removeTunable(this) // Disabled - TunerService not available
+        headerObserver?.let { (headerMachine as? StatusBarHeaderMachine)?.removeObserver(it) }
+        headerObserver = null
     }
 
     // Disabled TunerService functionality
@@ -440,6 +498,8 @@ constructor(
         if (disabled == qsDisabled) return
         qsDisabled = disabled
         updateVisibility()
+        // Re-evaluate background visibility when state changes
+        updateHeaderImageVisibility()
     }
 
     fun startCustomizingAnimation(show: Boolean, duration: Long) {

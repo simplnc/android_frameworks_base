@@ -76,6 +76,14 @@ frame when animating QS <-> QQS transition
         app:barrierDirection="start"
         app:constraint_referenced_ids="shade_header_system_icons,privacy_container" />
 
+    <!-- Default QS Header image; draw behind header content -->
+    <!-- Removed top header banner image; QS uses full-panel background instead -->
+    <ImageView
+        android:id="@+id/qs_header_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"/>
+
     <com.android.systemui.statusbar.policy.CustomClockViewStub
         android:id="@+id/custom_clock"
         android:visibility="visible"
@@ -106,6 +114,8 @@ frame when animating QS <-> QQS transition
         android:scaleX="1"
         android:scaleY="1"
     />
+
+    
 
     <com.android.systemui.statusbar.policy.VariableDateView
         android:id="@+id/date"
