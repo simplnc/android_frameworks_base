@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.app.KeyguardManager;
 
 import com.android.systemui.res.R;
 import com.android.systemui.flags.Flags;
@@ -120,8 +121,13 @@ public class TileUtils {
    }
 
    public static boolean isQsWidgetsEnabled(Context context) {
-        return Settings.System.getIntForUser(context.getContentResolver(), 
-            "qs_widgets_enabled",0, UserHandle.USER_CURRENT) != 0;
+        // Default to enabled (1) so widgets are available after first boot without user toggle
+        boolean enabledSetting = Settings.System.getIntForUser(context.getContentResolver(),
+                "qs_widgets_enabled", 1, UserHandle.USER_CURRENT) != 0;
+        // Pre-enable widgets on lockscreen regardless of setting
+        KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        boolean onKeyguard = km != null && km.isKeyguardLocked();
+        return enabledSetting || onKeyguard;
    }
 
    public static boolean canShowQsWidgets(Context context) {
