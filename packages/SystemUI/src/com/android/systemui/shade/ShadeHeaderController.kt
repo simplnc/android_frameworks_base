@@ -373,7 +373,9 @@ constructor(
     }
 
     private fun updateHeaderImageVisibility() {
-        qsHeaderImage?.visibility = if (isHeaderImageEnabled()) View.VISIBLE else View.GONE
+        // Hide header image on keyguard to avoid showing it on lockscreen
+        val shouldShow = isHeaderImageEnabled() && !isOnKeyguard()
+        qsHeaderImage?.visibility = if (shouldShow) View.VISIBLE else View.GONE
         // QS panel background is now controlled by QSPanel itself, not here
     }
 
@@ -611,6 +613,8 @@ constructor(
             privacyIconsController.stopListening()
         }
         updateVisibility()
+        // Re-evaluate header image when shade visibility changes (e.g., entering/exiting keyguard)
+        updateHeaderImageVisibility()
         updatePosition()
     }
 
@@ -635,6 +639,8 @@ constructor(
             header.visibility = visibility
             visible = visibility == View.VISIBLE
         }
+        // Keep header image in sync with overall header visibility/keyguard state
+        updateHeaderImageVisibility()
     }
 
     private fun updateTransition() {
