@@ -336,16 +336,15 @@ constructor(
         )
         
         if (currentClockStyle != 0) {
-            // Hide default clock and date when custom clock is enabled
+            // Hide default clock when custom clock is enabled
             clock.visibility = View.GONE
-            date.visibility = View.GONE
+            // Default date view was removed from layout, no need to hide it
         } else {
-            // Show default clock and date when custom clock is disabled
+            // Show default clock when custom clock is disabled
             clock.visibility = View.VISIBLE
-            date.visibility = View.VISIBLE
             val colorStateList = ColorStateList.valueOf(Color.WHITE)
             clock.setTextColor(colorStateList)
-            date.setTextColor(colorStateList)
+            // Default date view was removed from layout, no need to show it
         }
     }
 
@@ -355,17 +354,34 @@ constructor(
     private var headerMachine: StatusBarHeaderMachine? = null
     private var headerObserver: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver? = null
     private fun isOnKeyguard(): Boolean {
-        // Heuristic: keyguard views exist and are visible; avoids new deps.
+        // Check if we're on keyguard by looking for keyguard-specific views
         val root = header.rootView
         val keyguardStatus = root.findViewById<View?>(com.android.systemui.res.R.id.keyguard_status_view)
         val keyguardBottom = root.findViewById<View?>(com.android.systemui.res.R.id.keyguard_bottom_area)
-        return (keyguardStatus?.visibility == View.VISIBLE) || (keyguardBottom?.visibility == View.VISIBLE)
+        val qsPanel = root.findViewById<View?>(com.android.systemui.res.R.id.quick_settings_panel)
+        
+        // If keyguard views are visible OR QS panel is not visible, we're on keyguard
+        return (keyguardStatus?.visibility == View.VISIBLE) || 
+               (keyguardBottom?.visibility == View.VISIBLE) ||
+               (qsPanel?.visibility != View.VISIBLE)
+    }
+
+    private fun isHeaderImageEnabled(): Boolean {
+        return Settings.System.getIntForUser(
+            context.contentResolver, "qs_header_image_enabled", 1, UserHandle.USER_CURRENT
+        ) == 1
     }
 
     private fun updateHeaderImageVisibility() {
         qsHeaderImage?.visibility = if (isHeaderImageEnabled()) View.VISIBLE else View.GONE
-        // Hard guard: never show full panel background on keyguard
-        qsPanelBackgroundImage?.visibility = if (!isOnKeyguard() && isHeaderImageEnabled()) View.VISIBLE else View.GONE
+        // QS panel background is now controlled by QSPanel itself, not here
+    }
+
+    private fun isQsPanelVisible(): Boolean {
+        val root = header.rootView
+        val qsPanel = root.findViewById<View?>(com.android.systemui.res.R.id.quick_settings_panel)
+        val qsContainer = root.findViewById<View?>(com.android.systemui.res.R.id.quick_settings_container)
+        return (qsPanel?.visibility == View.VISIBLE) || (qsContainer?.visibility == View.VISIBLE)
     }
 
     override fun onInit() {
@@ -401,7 +417,8 @@ constructor(
         updateHeaderImageVisibility()
 
         // Initialize full QS panel background image (lives in qs_panel.xml)
-        qsPanelBackgroundImage = header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+        // Don't control it from here - let QSPanel handle its own background
+        // qsPanelBackgroundImage = header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
 
         // Hook StatusBarHeaderMachine to dynamically supply headers
         headerMachine = StatusBarHeaderMachine(context)
@@ -450,12 +467,7 @@ constructor(
                 if (headerImage != null) {
                     iv.setImageDrawable(headerImage)
                 }
-                // Also update the full QS panel background if present and shade is showing
-                (qsPanelBackgroundImage as? android.widget.ImageView)?.let { bg ->
-                    if (headerImage != null && header.isLaidOut && header.isAttachedToWindow) {
-                        bg.setImageDrawable(headerImage)
-                    }
-                }
+                // QS panel background is now handled by QSPanel itself
             }
             override fun disableHeader() {
                 // no-op
