@@ -129,6 +129,9 @@ public class QSPanel extends LinearLayout {
 
     private boolean mHadConfigurationChangeWhileDetached;
 
+    // Full-panel QS background image (owned by root container qs_panel.xml)
+    private android.widget.ImageView mQsPanelBackgroundImage;
+
     public QSPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         mUsingMediaPlayer = useQsMediaPlayer(context);
@@ -350,6 +353,8 @@ public class QSPanel extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+        // Keep QS background in sync every layout and hide on keyguard
+        updateQsPanelBackgroundVisibility();
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             mChildrenLayoutTop.put(child, child.getTop());
@@ -475,6 +480,8 @@ public class QSPanel extends LinearLayout {
                 listener -> listener.onConfigurationChange(newConfig));
         needsDynamicRowsAndColumns();
         updateControlsLayoutVisibility();
+        // Update background visibility on config/theme changes
+        updateQsPanelBackgroundVisibility();
     }
     
     private void updateControlsLayoutVisibility() {
@@ -502,6 +509,18 @@ public class QSPanel extends LinearLayout {
         super.onFinishInflate();
         mFooter = findViewById(R.id.qs_footer);
         mQsControlsLayoutShade = findViewById(R.id.qs_controls_layout_shade);
+        // QS background image removed - no background functionality needed
+        mQsPanelBackgroundImage = null;
+    }
+
+    private void resolveBackgroundViewIfNeeded() {
+        // QS background image removed - no background functionality needed
+        // This method is kept for compatibility but does nothing
+    }
+
+    /** QS background image removed - no background functionality needed */
+    private void updateQsPanelBackgroundVisibility() {
+        // QS background image removed - this method is kept for compatibility but does nothing
     }
 
     private void updateHorizontalLinearLayoutMargins() {
@@ -607,6 +626,8 @@ public class QSPanel extends LinearLayout {
     public void setExpanded(boolean expanded) {
         if (mExpanded == expanded) return;
         mExpanded = expanded;
+        // Re-evaluate background visibility whenever panel expansion changes
+        updateQsPanelBackgroundVisibility();
         if (!mExpanded && mTileLayout instanceof PagedTileLayout tilesLayout) {
             // Use post, so it will wait until the view is attached. If the view is not attached,
             // it will not populate corresponding views (and will not do it later when attached).

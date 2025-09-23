@@ -72,6 +72,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/carrier_group"
         />
+        <PropertySet
+            android:alpha="0"
+        />
     </Constraint>
 
     <!-- ShadeHeaderController helps with managing clock width to layout this view -->

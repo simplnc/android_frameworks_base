@@ -34,13 +34,15 @@
     android:paddingStart="0dp"
     android:elevation="4dp" >
 
-    <!-- Header Image -->
+    <!-- Header Image - Stretched to fill QS area -->
     <com.bosphere.fadingedgelayout.FadingEdgeLayout
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/qs_header_image_height"
+        android:layout_height="match_parent"
         android:layout_marginLeft="-50dp"
         android:layout_marginRight="-50dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
         android:background="#00000000"
         sysui:fel_edge="bottom"
         sysui:fel_size_bottom="@dimen/qs_header_image_fade_size" >
@@ -51,6 +53,8 @@
           android:layout_height="match_parent"
           android:layout_marginLeft="0dp"
           android:layout_marginRight="0dp"
+          android:layout_marginTop="0dp"
+          android:layout_marginBottom="0dp"
           android:background="#00000000" >
 
           <ImageView
