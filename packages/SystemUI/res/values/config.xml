@@ -68,7 +68,7 @@
     <integer name="quick_settings_num_columns">2</integer>
 
     <!-- The number of rows in the QuickSettings -->
-    <integer name="quick_settings_max_rows">3</integer>
+    <integer name="quick_settings_max_rows">4</integer>
 
     <!-- The number of rows in the paginated grid QuickSettings -->
     <integer name="quick_settings_paginated_grid_num_rows">3</integer>
@@ -119,7 +119,7 @@
 
     <!-- Tiles native to System UI. Privacy optimized order -->
     <string name="quick_settings_tiles_stock" translatable="false">
-        internet,wifi,cell,bt,flashlight,dnd,alarm,airplane,nfc,rotation,battery,onthego,screenrecord,mictoggle,cameratoggle,location,hotspot,inversion,saver,dark,work,night,reverse,reduce_brightness,qr_code_scanner,onehanded,color_correction,dream,font_scaling,record_issue,hearing_devices,notes,ambient_display,aod,caffeine,heads_up,powershare,profiles,reading_mode,sync,usb_tether,vpn,volume_control,controls,wallet,cast,sound,ringer_sound,smartpixels,dataswitch,preferred_network
+        internet,wifi,cell,bt,flashlight,dnd,alarm,airplane,dark,nfc,rotation,battery,onthego,screenrecord,mictoggle,cameratoggle,location,hotspot,inversion,saver,work,night,reverse,reduce_brightness,qr_code_scanner,onehanded,color_correction,dream,font_scaling,record_issue,hearing_devices,notes,ambient_display,aod,caffeine,heads_up,powershare,profiles,reading_mode,sync,usb_tether,vpn,volume_control,controls,wallet,cast,sound,ringer_sound,smartpixels,dataswitch,preferred_network
     </string>
 
     <!-- The tiles to display in QuickSettings -->
@@ -339,7 +339,7 @@
     <bool name="enable_volume_ui">true</bool>
 
     <!-- Enable the default volume level warning dialog -->
-    <bool name="enable_safety_warning">true</bool>
+    <bool name="enable_safety_warning">false</bool>
 
     <!-- Whether to show the full screen user switcher. -->
     <bool name="config_enableFullscreenUserSwitcher">false</bool>
@@ -415,7 +415,7 @@
          applications. If this value is false, then only the first notification will be expanded
          when config_autoExpandFirstNotification is true; the other notifications need to be
          manually expanded by the user. -->
-    <bool name="config_alwaysExpandNonGroupedNotifications">false</bool>
+    <bool name="config_alwaysExpandNonGroupedNotifications">true</bool>
 
     <!-- Whether or not the first expandable notification will be expanded automatically by the
          system. This value only affects notifications that are not a group of notifications from
@@ -443,7 +443,7 @@
 
     <!-- Whether or not a view containing child notifications will have a custom background when
          it has been expanded to reveal its children. -->
-    <bool name="config_showGroupNotificationBgWhenExpanded">false</bool>
+    <bool name="config_showGroupNotificationBgWhenExpanded">true</bool>
 
     <!-- Should we vibrate on an icon animation of the shelf. This should only be active if the
      vibrator is capable of subtle vibrations -->
@@ -460,10 +460,10 @@
         <item>15</item>
         <item>30</item>
         <item>60</item>
-        <item>120</item>
-		<item>300</item>
-		<item>720</item>
-		<item>1440</item>
+        <item>420</item>
+		<item>900</item>
+		<item>1020</item>
+		<item>4440</item>
     </integer-array>
 
     <!-- Smart replies in notifications: Whether smart replies in notifications are enabled. -->
@@ -479,7 +479,7 @@
     <!-- Smart replies in notifications: Whether by default tapping on a choice should let the user
          edit the input before it is sent to the app. Developers can override this via
          RemoteInput.Builder.setEditChoicesBeforeSending. -->
-    <bool name="config_smart_replies_in_notifications_edit_choices_before_sending">false</bool>
+    <bool name="config_smart_replies_in_notifications_edit_choices_before_sending">true</bool>
 
     <!-- Smart replies in notifications: Whether smart suggestions in notifications are enabled in
          heads-up notifications.  -->
@@ -488,7 +488,7 @@
     <!-- Smart replies in notifications: Minimum number of system generated smart replies that
          should be shown in a notification. If we cannot show at least this many replies we instead
          show none. -->
-    <integer name="config_smart_replies_in_notifications_min_num_system_generated_replies">0</integer>
+    <integer name="config_smart_replies_in_notifications_min_num_system_generated_replies">1</integer>
 
     <!-- Smart replies in notifications: Maximum number of smart actions to show in notifications.
          -->

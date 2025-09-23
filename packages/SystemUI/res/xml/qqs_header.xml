@@ -65,6 +65,9 @@
             app:layout_constraintBaseline_toBaselineOf="@id/clock"
             app:layout_constraintHorizontal_bias="0"
         />
+        <PropertySet
+            android:alpha="0"
+        />
     </Constraint>
 
     <Constraint

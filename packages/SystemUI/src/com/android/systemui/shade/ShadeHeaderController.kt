@@ -334,17 +334,18 @@ constructor(
         val currentClockStyle = Settings.System.getIntForUser(
             context.contentResolver, "qs_header_clock_style", 2, UserHandle.USER_CURRENT
         )
-        
-        if (currentClockStyle != 0) {
-            // Hide default clock when custom clock is enabled
-            clock.visibility = View.GONE
-            // Default date view was removed from layout, no need to hide it
-        } else {
-            // Show default clock when custom clock is disabled
-            clock.visibility = View.VISIBLE
+
+        val isCustomClockEnabled = currentClockStyle != 0
+
+        // Hide default clock when custom clock is enabled
+        clock.visibility = if (isCustomClockEnabled) View.GONE else View.VISIBLE
+
+        // Hide the default date when custom clock is enabled, to prevent double-date
+        date.visibility = if (isCustomClockEnabled) View.GONE else View.VISIBLE
+
+        if (!isCustomClockEnabled) {
             val colorStateList = ColorStateList.valueOf(Color.WHITE)
             clock.setTextColor(colorStateList)
-            // Default date view was removed from layout, no need to show it
         }
     }
 
