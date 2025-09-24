@@ -37,8 +37,6 @@ constructor(
     private val context: Context,
 ) : KeyguardSection() {
     override fun addViews(constraintLayout: ConstraintLayout) {
-        if (!MigrateClocksToBlueprint.isEnabled) return
-
         constraintLayout.findViewById<View?>(R.id.keyguard_widgets_area)?.let {
             (it.parent as ViewGroup).removeView(it)
             constraintLayout.addView(it)
@@ -49,8 +47,6 @@ constructor(
     override fun bindData(constraintLayout: ConstraintLayout) {}
 
     override fun applyConstraints(constraintSet: ConstraintSet) {
-        if (!MigrateClocksToBlueprint.isEnabled) return
-
         constraintSet.apply {
             connect(
                 R.id.keyguard_widgets_area,

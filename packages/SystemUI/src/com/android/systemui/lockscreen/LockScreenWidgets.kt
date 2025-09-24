@@ -23,6 +23,7 @@ import android.widget.LinearLayout
 class LockScreenWidgets(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     fun init() {
+        android.util.Log.d("LockScreenWidgets", "Initializing LockScreenWidgets")
         LockScreenWidgetsController.addView(this)
     }
 

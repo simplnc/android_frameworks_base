@@ -94,6 +94,8 @@ object LockScreenWidgetsController {
             runCatching {
                 cameraId = cameraManager.cameraIdList.firstOrNull()
             }
+            // Force pre-enable widgets on first initialization (similar to AxionAOSP/crDroid approach)
+            forcePreEnableWidgets()
             scope.launch {
                 widgetsFlow.collectLatest { (settings, isEnabled) ->
                     updateWidgetViews()
@@ -105,6 +107,26 @@ object LockScreenWidgetsController {
         fun deInit() {
             clearCallbacks()
             scope.cancel()
+        }
+        
+        private fun forcePreEnableWidgets() {
+            // AxionAOSP/crDroid style: Force enable widgets if never configured
+            val currentEnabled = Settings.System.getIntForUser(
+                context.contentResolver, "lockscreen_widgets_enabled", -1, UserHandle.USER_CURRENT
+            )
+            val currentExtras = Settings.System.getStringForUser(
+                context.contentResolver, "lockscreen_widgets_extras", UserHandle.USER_CURRENT
+            )
+            
+            if (currentEnabled == -1 || currentExtras.isNullOrEmpty()) {
+                android.util.Log.d("LockScreenWidgets", "Force pre-enabling widgets (first boot)")
+                Settings.System.putIntForUser(
+                    context.contentResolver, "lockscreen_widgets_enabled", 1, UserHandle.USER_CURRENT
+                )
+                Settings.System.putStringForUser(
+                    context.contentResolver, "lockscreen_widgets_extras", "BT,TORCH,MEDIA,RINGER", UserHandle.USER_CURRENT
+                )
+            }
         }
         
         fun clearCallbacks() {
@@ -132,13 +154,35 @@ object LockScreenWidgetsController {
         }
 
         private fun getCurrentWidgetSettings(): WidgetSettings {
-            val settings = Settings.System.getStringForUser(
+            // Pre-enable by default; if unset, write defaults once and treat as enabled
+            var settings = Settings.System.getStringForUser(
                 context.contentResolver, "lockscreen_widgets_extras", UserHandle.USER_CURRENT
-            ) ?: ""
+            )
+            val hasValue = settings != null
+            if (settings == null) {
+                // Default set: Bluetooth, Torch, Media, Ringer
+                settings = "BT,TORCH,MEDIA,RINGER"
+                Settings.System.putStringForUser(
+                    context.contentResolver,
+                    "lockscreen_widgets_extras",
+                    settings,
+                    UserHandle.USER_CURRENT
+                )
+            }
+            val enabledInt = Settings.System.getIntForUser(
+                context.contentResolver, "lockscreen_widgets_enabled", 1, UserHandle.USER_CURRENT
+            )
+            if (enabledInt == 0 && !hasValue) {
+                // If user never configured, force-enable once
+                Settings.System.putIntForUser(
+                    context.contentResolver, "lockscreen_widgets_enabled", 1, UserHandle.USER_CURRENT
+                )
+            }
             val isEnabled = Settings.System.getIntForUser(
-                context.contentResolver, "lockscreen_widgets_enabled", 0, UserHandle.USER_CURRENT
+                context.contentResolver, "lockscreen_widgets_enabled", 1, UserHandle.USER_CURRENT
             ) == 1
-            return WidgetSettings(settings, isEnabled)
+            android.util.Log.d("LockScreenWidgets", "Settings: $settings, Enabled: $isEnabled")
+            return WidgetSettings(settings ?: "", isEnabled)
         }
 
         fun updateWidgetViews() {
@@ -185,10 +229,12 @@ object LockScreenWidgetsController {
 
         fun updateContainerVisibility() {
             val enabled = Settings.System.getIntForUser(
-                context.contentResolver, "lockscreen_widgets_enabled", 0, UserHandle.USER_CURRENT
+                context.contentResolver, "lockscreen_widgets_enabled", 1, UserHandle.USER_CURRENT
             ) == 1
             val hasWidgets = mainWidgets.isNotEmpty()
             val lockscreenWidgetsEnabled = hasWidgets && enabled
+            
+            android.util.Log.d("LockScreenWidgets", "Container visibility - Enabled: $enabled, HasWidgets: $hasWidgets, Final: $lockscreenWidgetsEnabled")
             
             view.findViewById<View>(R.id.main_widgets_container)?.visibility = 
                 if (lockscreenWidgetsEnabled) View.VISIBLE else View.GONE
@@ -263,15 +309,17 @@ object LockScreenWidgetsController {
         }
 
         fun toggleWiFi() {
+            // WIFI widget removed - method kept for compatibility
             val enabled = !callbacks.getWifiCallbackInfo().enabled
             Dependency.get(NetworkController::class.java).setWifiEnabled(enabled)
-            updateTileButtonState(WidgetAction.WIFI, enabled)
+            // updateTileButtonState(WidgetAction.WIFI, enabled) // Removed
         }
 
         fun toggleMobileData() {
+            // DATA widget removed - method kept for compatibility
             val enabled = !dataController.isMobileDataEnabled
             dataController.setMobileDataEnabled(enabled)
-            updateTileButtonState(WidgetAction.DATA, enabled)
+            // updateTileButtonState(WidgetAction.DATA, enabled) // Removed
         }
 
         fun toggleRingerMode() {
@@ -291,9 +339,10 @@ object LockScreenWidgetsController {
         fun isBluetoothEnabled() = BluetoothAdapter.getDefaultAdapter()?.isEnabled == true
 
         fun toggleHotspot() {
+            // HOTSPOT widget removed - method kept for compatibility
             val controller = Dependency.get(HotspotController::class.java)
             controller.setHotspotEnabled(!controller.isHotspotEnabled)
-            updateTileButtonState(WidgetAction.HOTSPOT, controller.isHotspotEnabled)
+            // updateTileButtonState(WidgetAction.HOTSPOT, controller.isHotspotEnabled) // Removed
         }
 
         fun updateTorchButtonState() {
@@ -301,7 +350,8 @@ object LockScreenWidgetsController {
         }
 
         fun updateWiFiButtonState(enabled: Boolean) {
-            updateTileButtonState(WidgetAction.WIFI, enabled)
+            // WIFI widget removed - method kept for compatibility
+            // updateTileButtonState(WidgetAction.WIFI, enabled) // Removed
         }
 
         fun updateRingerButtonState() {
@@ -309,7 +359,8 @@ object LockScreenWidgetsController {
         }
 
         fun updateMobileDataState(enabled: Boolean) {
-            updateTileButtonState(WidgetAction.DATA, enabled)
+            // DATA widget removed - method kept for compatibility
+            // updateTileButtonState(WidgetAction.DATA, enabled) // Removed
         }
         
         fun updateBtState() {
@@ -317,7 +368,8 @@ object LockScreenWidgetsController {
         }
 
         fun updateHotspotState() {
-            updateTileButtonState(WidgetAction.HOTSPOT, Dependency.get(HotspotController::class.java).isHotspotEnabled)
+            // HOTSPOT widget removed - method kept for compatibility
+            // updateTileButtonState(WidgetAction.HOTSPOT, Dependency.get(HotspotController::class.java).isHotspotEnabled) // Removed
         }
 
         fun showInternetDialog(view: View) {
