@@ -163,11 +163,6 @@ public class StatusBarHeaderMachine {
     }
 
     public Drawable getCurrent() {
-        // Do not supply a header image while keyguard is showing
-        android.app.KeyguardManager km = (android.app.KeyguardManager) mContext.getSystemService(android.content.Context.KEYGUARD_SERVICE);
-        if (km != null && km.isKeyguardLocked()) {
-            return null;
-        }
         final Calendar now = Calendar.getInstance();
         IStatusBarHeaderProvider provider = getCurrentProvider();
         if (provider != null) {
@@ -210,19 +205,12 @@ public class StatusBarHeaderMachine {
 
     private void doUpdateStatusHeaderObservers(final boolean force) {
         if (DEBUG) Log.i(TAG, "updateHeader");
-        // If on keyguard, keep observers disabled to avoid showing image behind lockscreen
-        android.app.KeyguardManager km = (android.app.KeyguardManager) mContext.getSystemService(android.content.Context.KEYGUARD_SERVICE);
-        boolean onKeyguard = km != null && km.isKeyguardLocked();
         Iterator<IStatusBarHeaderMachineObserver> nextObserver = mObservers
                 .iterator();
         while (nextObserver.hasNext()) {
             IStatusBarHeaderMachineObserver observer = nextObserver.next();
             try {
-                if (onKeyguard) {
-                    observer.disableHeader();
-                } else {
-                    observer.updateHeader(getCurrent(), force);
-                }
+                observer.updateHeader(getCurrent(), force);
             } catch (Exception e) {
                 // just in case
             }
