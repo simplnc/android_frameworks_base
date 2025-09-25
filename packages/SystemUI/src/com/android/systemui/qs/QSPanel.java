@@ -129,6 +129,9 @@ public class QSPanel extends LinearLayout {
 
     private boolean mHadConfigurationChangeWhileDetached;
 
+    // Full-panel QS background image (owned by root container qs_panel.xml)
+    private android.widget.ImageView mQsPanelBackgroundImage;
+
     public QSPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         mUsingMediaPlayer = useQsMediaPlayer(context);
@@ -350,6 +353,8 @@ public class QSPanel extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+        // Keep QS background in sync every layout and hide on keyguard
+        updateQsPanelBackgroundVisibility();
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             mChildrenLayoutTop.put(child, child.getTop());
@@ -475,6 +480,8 @@ public class QSPanel extends LinearLayout {
                 listener -> listener.onConfigurationChange(newConfig));
         needsDynamicRowsAndColumns();
         updateControlsLayoutVisibility();
+        // Update background visibility on config/theme changes
+        updateQsPanelBackgroundVisibility();
     }
     
     private void updateControlsLayoutVisibility() {
@@ -502,6 +509,65 @@ public class QSPanel extends LinearLayout {
         super.onFinishInflate();
         mFooter = findViewById(R.id.qs_footer);
         mQsControlsLayoutShade = findViewById(R.id.qs_controls_layout_shade);
+        // Bind QS full-panel background image from root container if present
+        View bg = getRootView().findViewById(com.android.systemui.res.R.id.qs_panel_background_image);
+        if (bg instanceof android.widget.ImageView) {
+            mQsPanelBackgroundImage = (android.widget.ImageView) bg;
+        }
+        updateQsPanelBackgroundVisibility();
+    }
+
+    private void resolveBackgroundViewIfNeeded() {
+        if (mQsPanelBackgroundImage != null) return;
+        View root = getRootView();
+        if (root != null) {
+            View bg = root.findViewById(com.android.systemui.res.R.id.qs_panel_background_image);
+            if (bg instanceof android.widget.ImageView) {
+                mQsPanelBackgroundImage = (android.widget.ImageView) bg;
+            }
+        }
+        if (mQsPanelBackgroundImage == null) {
+            View parent = (View) getParent();
+            if (parent != null) {
+                View bg = parent.findViewById(com.android.systemui.res.R.id.qs_panel_background_image);
+                if (bg instanceof android.widget.ImageView) {
+                    mQsPanelBackgroundImage = (android.widget.ImageView) bg;
+                }
+            }
+        }
+    }
+
+    /** Ensure the QS background behaves as a full-panel image and hides on keyguard. */
+    private void updateQsPanelBackgroundVisibility() {
+        resolveBackgroundViewIfNeeded();
+        if (mQsPanelBackgroundImage == null) return;
+
+        android.app.KeyguardManager km = (android.app.KeyguardManager)
+                getContext().getSystemService(Context.KEYGUARD_SERVICE);
+        boolean onKeyguard = km != null && km.isKeyguardLocked();
+
+        if (onKeyguard) {
+            mQsPanelBackgroundImage.setVisibility(View.GONE);
+            mQsPanelBackgroundImage.setAlpha(0f);
+            return;
+        }
+
+        mQsPanelBackgroundImage.setVisibility(View.VISIBLE);
+        int night = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        boolean dark = night == Configuration.UI_MODE_NIGHT_YES;
+        // Increase opacity for better visibility while keeping tiles readable
+        mQsPanelBackgroundImage.setAlpha(dark ? 0.50f : 0.40f);
+
+        ViewGroup.LayoutParams lp = mQsPanelBackgroundImage.getLayoutParams();
+        if (lp != null) {
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            mQsPanelBackgroundImage.setLayoutParams(lp);
+        }
+        mQsPanelBackgroundImage.setColorFilter(null);
+
+        // Re-evaluate next frame to avoid transient keyguard race during unlock/lock transitions
+        postOnAnimation(this::updateQsPanelBackgroundVisibility);
     }
 
     private void updateHorizontalLinearLayoutMargins() {
@@ -607,6 +673,8 @@ public class QSPanel extends LinearLayout {
     public void setExpanded(boolean expanded) {
         if (mExpanded == expanded) return;
         mExpanded = expanded;
+        // Re-evaluate background visibility whenever panel expansion changes
+        updateQsPanelBackgroundVisibility();
         if (!mExpanded && mTileLayout instanceof PagedTileLayout tilesLayout) {
             // Use post, so it will wait until the view is attached. If the view is not attached,
             // it will not populate corresponding views (and will not do it later when attached).

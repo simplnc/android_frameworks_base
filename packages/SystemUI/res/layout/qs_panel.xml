@@ -27,8 +27,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:alpha="0.5"
-        android:src="@drawable/qs_header_image_81"
+        android:alpha="0.0"
+        android:visibility="gone"
+        android:src="@drawable/qs_header_image_31"
         android:importantForAccessibility="no" />
 
     <com.android.systemui.qs.NonInterceptingScrollView
