@@ -354,4 +354,8 @@
     <integer name="def_ringer_mode">2</integer>
 
     <integer name="def_ota_disable_automatic_update">1</integer>
+
+    <!-- Lineage custom: Lockscreen widgets default enablement -->
+    <integer name="def_lockscreen_widgets_enabled">1</integer>
+    <string name="def_lockscreen_widgets_extras" translatable="false">RINGER,TORCH,MEDIA,TIMER,QRSCANNER</string>
 </resources>

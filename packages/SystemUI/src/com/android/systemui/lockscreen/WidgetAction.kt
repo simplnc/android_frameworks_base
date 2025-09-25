@@ -33,6 +33,43 @@ enum class WidgetAction(
     val registerCallback: (LockScreenWidgetsController.ViewController) -> Unit = {},
     val unregisterCallback: (LockScreenWidgetsController.ViewController) -> Unit = {}
 ) {
+    WIFI(
+        LsWidgetsRes.WIFI_ACTIVE, LsWidgetsRes.WIFI_INACTIVE,
+        onClick = { it.toggleWiFi() },
+        onLongClick = { c, v -> c.showInternetDialog(v); true },
+        registerCallback = { controller ->
+            Dependency.get(NetworkController::class.java).addCallback(controller.callbacks.wifiSignalCallback)
+        },
+        unregisterCallback = { controller ->
+            Dependency.get(NetworkController::class.java).removeCallback(controller.callbacks.wifiSignalCallback)
+        }
+    ),
+    DATA(
+        LsWidgetsRes.DATA_ACTIVE, LsWidgetsRes.DATA_INACTIVE,
+        onClick = { it.toggleMobileData() },
+        onLongClick = { c, v -> c.showInternetDialog(v); true },
+        registerCallback = { controller ->
+            Dependency.get(NetworkController::class.java).addCallback(controller.callbacks.cellSignalCallback)
+        },
+        unregisterCallback = { controller ->
+            Dependency.get(NetworkController::class.java).removeCallback(controller.callbacks.cellSignalCallback)
+        }
+    ),
+    RINGER(
+        LsWidgetsRes.RINGER_ACTIVE, LsWidgetsRes.RINGER_INACTIVE,
+        onClick = { it.toggleRingerMode() },
+        registerCallback = { controller ->
+            val filter = IntentFilter(AudioManager.INTERNAL_RINGER_MODE_CHANGED_ACTION)
+            controller.context.registerReceiver(controller.callbacks.ringerModeReceiver, filter)
+            controller.isRingerReceiverRegistered = true
+        },
+        unregisterCallback = { controller ->
+            if (controller.isRingerReceiverRegistered) {
+                controller.context.unregisterReceiver(controller.callbacks.ringerModeReceiver)
+                controller.isRingerReceiverRegistered = false
+            }
+        }
+    ),
     BT(
         LsWidgetsRes.BT_ACTIVE, LsWidgetsRes.BT_INACTIVE,
         onClick = { it.toggleBluetooth() },
@@ -64,19 +101,31 @@ enum class WidgetAction(
             controller.mediaSessionManagerHelper.removeMediaMetadataListener(controller)
         }
     ),
-    RINGER(
-        LsWidgetsRes.RINGER_ACTIVE, LsWidgetsRes.RINGER_INACTIVE,
-        onClick = { it.toggleRingerMode() },
+    HOTSPOT(
+        LsWidgetsRes.HOTSPOT_ACTIVE, LsWidgetsRes.HOTSPOT_INACTIVE,
+        onClick = { it.toggleHotspot() },
+        onLongClick = { c, v -> c.showInternetDialog(v); true },
         registerCallback = { controller ->
-            val filter = IntentFilter(AudioManager.INTERNAL_RINGER_MODE_CHANGED_ACTION)
-            controller.context.registerReceiver(controller.callbacks.ringerModeReceiver, filter)
-            controller.isRingerReceiverRegistered = true
+            Dependency.get(HotspotController::class.java).addCallback(controller.callbacks.hotspotCallback)
         },
         unregisterCallback = { controller ->
-            if (controller.isRingerReceiverRegistered) {
-                controller.context.unregisterReceiver(controller.callbacks.ringerModeReceiver)
-                controller.isRingerReceiverRegistered = false
-            }
+            Dependency.get(HotspotController::class.java).removeCallback(controller.callbacks.hotspotCallback)
         }
+    ),
+    TIMER(
+        R.drawable.ic_alarm, R.drawable.ic_alarm,
+        onClick = { it.activityLauncherUtils.launchTimer() }
+    ),
+    CALCULATOR(
+        R.drawable.ic_calculator, R.drawable.ic_calculator,
+        onClick = { it.activityLauncherUtils.launchCalculator() }
+    ),
+    WALLET(
+        R.drawable.ic_wallet_lockscreen, R.drawable.ic_wallet_lockscreen,
+        onClick = { it.activityLauncherUtils.launchWalletApp() }
+    ),
+    QRSCANNER(
+        R.drawable.ic_qr_code_scanner, R.drawable.ic_qr_code_scanner,
+        onClick = { it.activityLauncherUtils.launchQrScanner() }
     );
 }

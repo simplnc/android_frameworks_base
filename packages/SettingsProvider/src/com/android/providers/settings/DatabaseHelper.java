@@ -2143,6 +2143,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
             loadIntegerSetting(stmt, Settings.System.POINTER_SPEED,
                     R.integer.def_pointer_speed);
 
+            // Lineage custom defaults: pre-enable lockscreen widgets
+            try {
+                loadIntegerSetting(stmt, "lockscreen_widgets_enabled",
+                        R.integer.def_lockscreen_widgets_enabled);
+                loadStringSetting(stmt, "lockscreen_widgets_extras",
+                        R.string.def_lockscreen_widgets_extras);
+            } catch (Exception ignored) { }
+
             /*
              * IMPORTANT: Do not add any more upgrade steps here as the global,
              * secure, and system settings are no longer stored in a database
