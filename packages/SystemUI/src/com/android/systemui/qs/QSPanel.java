@@ -96,7 +96,6 @@ public class QSPanel extends LinearLayout {
     @Nullable
     protected View mFooter;
     private View mQsControlsLayoutShade;
-    private android.widget.ImageView mQsPanelBackgroundImage;
 
     @Nullable
     private PageIndicator mFooterPageIndicator;
@@ -351,19 +350,6 @@ public class QSPanel extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        // Hide/clear panel background when keyguard is showing to avoid faint bleed-through
-        if (mQsPanelBackgroundImage != null) {
-            android.app.KeyguardManager km = (android.app.KeyguardManager) getContext().getSystemService(Context.KEYGUARD_SERVICE);
-            boolean onKeyguard = km != null && km.isKeyguardLocked();
-            if (onKeyguard) {
-                mQsPanelBackgroundImage.setImageDrawable(null);
-                mQsPanelBackgroundImage.setVisibility(View.GONE);
-                mQsPanelBackgroundImage.setAlpha(0.0f);
-            } else {
-                mQsPanelBackgroundImage.setVisibility(View.VISIBLE);
-                mQsPanelBackgroundImage.setAlpha(0.3f); // Reduced from 0.5 to 0.3 for less visibility
-            }
-        }
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             mChildrenLayoutTop.put(child, child.getTop());
@@ -516,11 +502,6 @@ public class QSPanel extends LinearLayout {
         super.onFinishInflate();
         mFooter = findViewById(R.id.qs_footer);
         mQsControlsLayoutShade = findViewById(R.id.qs_controls_layout_shade);
-        // Locate the full QS panel background image view in the container
-        View bg = getRootView().findViewById(com.android.systemui.res.R.id.qs_panel_background_image);
-        if (bg instanceof android.widget.ImageView) {
-            mQsPanelBackgroundImage = (android.widget.ImageView) bg;
-        }
     }
 
     private void updateHorizontalLinearLayoutMargins() {
