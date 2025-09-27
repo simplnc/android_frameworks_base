@@ -71,6 +71,6 @@
             android:paddingEnd="@dimen/status_bar_clock_end_padding"
             android:gravity="center_vertical"
             android:scaleType="center"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </com.android.keyguard.AlphaOptimizedLinearLayout>
 </LinearLayout>
