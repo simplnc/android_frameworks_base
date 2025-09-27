@@ -341,7 +341,8 @@ constructor(
         clock.visibility = if (isCustomClockEnabled) View.GONE else View.VISIBLE
 
         // Hide the default date when custom clock is enabled, to prevent double-date
-        date.visibility = if (isCustomClockEnabled) View.GONE else View.VISIBLE
+        // Always hide date to prevent landscape issues
+        date.visibility = View.GONE
 
         if (!isCustomClockEnabled) {
             val colorStateList = ColorStateList.valueOf(Color.WHITE)
