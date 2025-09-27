@@ -124,12 +124,10 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
         mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         mTunerService = Dependency.get(TunerService.class);
         
-        // Force OOS clock as default - always set on first boot
-        mClockStyle = DEFAULT_STYLE;
-        try {
+        // Set default clock style if not already set
+        String currentValue = mTunerService.getValue(CLOCK_STYLE_KEY);
+        if (currentValue == null) {
             mTunerService.setValue(CLOCK_STYLE_KEY, String.valueOf(DEFAULT_STYLE));
-        } catch (Exception e) {
-            // Continue with default style
         }
         
         mTunerService.addTunable(this, CLOCK_STYLE_KEY);
@@ -147,50 +145,16 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        // Force OOS clock on first boot - bypass TunerService if needed
-        mClockStyle = DEFAULT_STYLE; // Always start with OOS clock
+        // Initialize clock style from TunerService
+        mClockStyle = mTunerService.getValue(CLOCK_STYLE_KEY, DEFAULT_STYLE);
         
-        // Try to get from TunerService, but don't rely on it for first boot
-        try {
-            String tunerValue = mTunerService.getValue(CLOCK_STYLE_KEY);
-            if (tunerValue != null && !tunerValue.equals("0") && !tunerValue.isEmpty()) {
-                mClockStyle = parseIntegerOrDefault(tunerValue, DEFAULT_STYLE);
-            }
-        } catch (Exception e) {
-            // Continue with default style
-        }
-        
-        // Ensure TunerService has the correct value
-        try {
-            mTunerService.setValue(CLOCK_STYLE_KEY, String.valueOf(mClockStyle));
-        } catch (Exception e) {
-            // Continue even if TunerService fails
+        // Force set to OOS clock if not set or invalid
+        if (mClockStyle == 0 || mClockStyle >= CLOCK_LAYOUTS.length) {
+            mClockStyle = DEFAULT_STYLE;
+            mTunerService.setValue(CLOCK_STYLE_KEY, String.valueOf(DEFAULT_STYLE));
         }
         
         updateClockView();
-        
-        // Ensure clock is visible after initialization (fix for first boot)
-        new Handler().postDelayed(() -> {
-            if (mClockStyle > 0) {
-                setVisibility(View.VISIBLE);
-                if (currentClockView != null) {
-                    currentClockView.setVisibility(View.VISIBLE);
-                }
-                // Force layout update
-                requestLayout();
-            }
-        }, 200);
-        
-        // Additional delayed check for first boot
-        new Handler().postDelayed(() -> {
-            if (mClockStyle > 0 && getVisibility() != View.VISIBLE) {
-                setVisibility(View.VISIBLE);
-                if (currentClockView != null) {
-                    currentClockView.setVisibility(View.VISIBLE);
-                }
-                requestLayout();
-            }
-        }, 500);
     }
     
     @Override
@@ -262,23 +226,7 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
             setVisibility(View.VISIBLE);
             if (currentClockView != null) {
                 currentClockView.setVisibility(View.VISIBLE);
-                // Force layout update to ensure visibility
-                currentClockView.requestLayout();
             }
-            // Force this container to be visible and request layout
-            requestLayout();
-            
-            // Additional delayed visibility check for first boot
-            new Handler().postDelayed(() -> {
-                if (mClockStyle > 0 && getVisibility() != View.VISIBLE) {
-                    setVisibility(View.VISIBLE);
-                    if (currentClockView != null) {
-                        currentClockView.setVisibility(View.VISIBLE);
-                        currentClockView.requestLayout();
-                    }
-                    requestLayout();
-                }
-            }, 100);
         } else {
             setVisibility(View.GONE);
         }
