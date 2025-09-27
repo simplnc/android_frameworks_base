@@ -412,7 +412,6 @@ constructor(
                     keyguardRootViewModel,
                     keyguardBlueprintViewModel,
                     configuration,
-		    context,
                     occludingAppDeviceEntryMessageViewModel,
                     chipbarCoordinator,
                     screenOffAnimationController,
