@@ -42,7 +42,7 @@
             android:maxLength="2"
             android:singleLine="true"
             android:includeFontPadding="false"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/system_accent1_300"
             android:textSize="22sp"
             android:textStyle="bold"
             android:shadowColor="@color/keyguard_shadow_color"
