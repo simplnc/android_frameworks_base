@@ -120,12 +120,12 @@ class VolumeSlider(context: Context, attrs: AttributeSet? = null) : VerticalSlid
     override fun updateSliderPaint() {
         super.updateSliderPaint() // Call parent first
         
-        // Override progress color based on volume level
+        // Override progress color based on volume level (pastel colors)
         val volumeColor = when {
-            currentVolumePercent == 0 -> Color.GRAY           // 🔇 0% (Muted)
-            currentVolumePercent <= 29 -> Color.GREEN         // 🔉 1-29% (Low) 
-            currentVolumePercent <= 69 -> Color.BLUE          // 🔊 30-69% (Medium)
-            else -> Color.rgb(255, 165, 0)                   // 🔊 70-100% (High) - Orange
+            currentVolumePercent == 0 -> Color.rgb(200, 200, 200)           // 🔇 0% (Muted) - Pastel Gray
+            currentVolumePercent <= 29 -> Color.rgb(144, 238, 144)         // 🔉 1-29% (Low) - Pastel Green
+            currentVolumePercent <= 69 -> Color.rgb(173, 216, 230)          // 🔊 30-69% (Medium) - Pastel Blue
+            else -> Color.rgb(255, 218, 185)                   // 🔊 70-100% (High) - Pastel Orange
         }
         
         // Use reflection to access private progressPaint or create our own

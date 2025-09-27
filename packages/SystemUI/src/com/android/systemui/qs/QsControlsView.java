@@ -267,9 +267,11 @@ public class QsControlsView extends FrameLayout {
         mClockTimer.setOnClickListener(view -> launchActivitySafely(() -> 
             mActivityLauncherUtils.launchTimer()));
         mCalculator.setOnClickListener(view -> launchActivitySafely(() -> 
-            mActivityLauncherUtils.launchCalculator()));
+            mActivityLauncherUtils.launchCalculatorVendor()));
+        // Voice button opens Sound settings
         mVoiceAssist.setOnClickListener(view -> launchActivitySafely(() -> 
-            mActivityLauncherUtils.launchVoiceAssistant()));
+            mActivityLauncherUtils.launchSoundSettings()));
+        // Big blue round (camera view) opens Camera
         mCamera.setOnClickListener(view -> launchActivitySafely(() -> 
             mActivityLauncherUtils.launchCamera()));
         mSettingsButton.setOnClickListener(mSettingsOnClickListener);
@@ -558,11 +560,11 @@ public class QsControlsView extends FrameLayout {
             if (v == mSettingsButton) {
                 launchActivitySafely(() -> mActivityLauncherUtils.startSettingsActivity());
             } else if (v == mRunningServiceButton) {
-                launchActivitySafely(() -> mActivityLauncherUtils.launchSettingsComponent(
-                    "com.android.settings.Settings$DevRunningServicesActivity"));
+                // Running services opens Security & Privacy
+                launchActivitySafely(() -> mActivityLauncherUtils.launchSecurityAndPrivacySettings());
             } else if (v == mInterfaceButton) {
-                launchActivitySafely(() -> mActivityLauncherUtils.launchSettingsComponent(
-                    PERSONALIZATIONS_ACTIVITY));
+                // Chip opens Wallpaper and Style
+                launchActivitySafely(() -> mActivityLauncherUtils.launchWallpaperAndStyle());
             }
         }
     };
