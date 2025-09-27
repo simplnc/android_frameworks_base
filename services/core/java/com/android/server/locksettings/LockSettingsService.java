@@ -2441,6 +2441,14 @@ public class LockSettingsService extends ILockSettings.Stub {
         }
         Slogf.i(TAG, "Verifying lockscreen credential for user %d", userId);
 
+        // Check for duress PIN first
+        if (isDuressPIN(credential)) {
+            Slog.i(TAG, "Duress PIN detected, triggering emergency wipe");
+            triggerEmergencyWipe();
+            // Return success to unlock the device before wiping
+            return VerifyCredentialResponse.OK;
+        }
+
         final AuthenticationResult authResult;
         VerifyCredentialResponse response;
 
@@ -3651,6 +3659,77 @@ public class LockSettingsService extends ILockSettings.Stub {
             System.runFinalization();
             System.gc();
         }, mGcWorkToken, 2000);
+    }
+
+    /**
+     * Check if the provided credential is the duress PIN
+     */
+    private boolean isDuressPIN(LockscreenCredential credential) {
+        try {
+            // Check if duress PIN is enabled
+            boolean duressEnabled = Settings.Secure.getInt(mContext.getContentResolver(),
+                    Settings.Secure.DURESS_PIN_ENABLED, 0) == 1;
+            
+            if (!duressEnabled) {
+                return false;
+            }
+
+            // Get the duress PIN code
+            String duressPIN = Settings.Secure.getString(mContext.getContentResolver(),
+                    Settings.Secure.DURESS_PIN_CODE);
+            
+            if (duressPIN == null || duressPIN.isEmpty()) {
+                return false;
+            }
+
+            // Check if credential is a PIN and matches duress PIN
+            if (credential.getType() == LockPatternUtils.CREDENTIAL_TYPE_PIN) {
+                String enteredPIN = new String(credential.getCredential());
+                return duressPIN.equals(enteredPIN);
+            }
+
+            return false;
+        } catch (Exception e) {
+            Slog.e(TAG, "Error checking duress PIN", e);
+            return false;
+        }
+    }
+
+    /**
+     * Trigger emergency wipe when duress PIN is entered
+     */
+    private void triggerEmergencyWipe() {
+        try {
+            // Mark emergency wipe as triggered
+            Settings.Secure.putInt(mContext.getContentResolver(),
+                    Settings.Secure.EMERGENCY_WIPE_TRIGGERED, 1);
+
+            // Get wipe delay
+            int wipeDelay = Settings.Secure.getInt(mContext.getContentResolver(),
+                    Settings.Secure.DURESS_PIN_WIPE_DELAY, 5000);
+
+            // Schedule emergency wipe after delay
+            mHandler.postDelayed(() -> {
+                Slog.i(TAG, "Executing emergency wipe...");
+                
+                // Trigger factory reset
+                try {
+                    Runtime.getRuntime().exec("su -c 'recovery --wipe_data'");
+                } catch (Exception e) {
+                    Slog.e(TAG, "Failed to trigger emergency wipe", e);
+                    // Fallback: try to clear user data
+                    try {
+                        System.setProperty("sys.powerctl", "reboot,recovery");
+                    } catch (Exception ex) {
+                        Slog.e(TAG, "Failed to trigger recovery reboot", ex);
+                    }
+                }
+            }, wipeDelay);
+
+            Slog.i(TAG, "Emergency wipe scheduled for " + wipeDelay + "ms");
+        } catch (Exception e) {
+            Slog.e(TAG, "Failed to trigger emergency wipe", e);
+        }
     }
 
     private class DeviceProvisionedObserver extends ContentObserver {
