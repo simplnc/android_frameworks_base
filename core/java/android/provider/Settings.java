@@ -7440,52 +7440,21 @@ public final class Settings {
             Secure.WIFI_WATCHDOG_PING_TIMEOUT_MS;
 
         /**
-         * Enhanced security check for settings write access.
-         * Implements stricter validation to prevent privilege escalation.
+         * Checks if the specified app can modify system settings. As of API
+         * level 23, an app cannot modify system settings unless it declares the
+         * {@link android.Manifest.permission#WRITE_SETTINGS}
+         * permission in its manifest, <em>and</em> the user specifically grants
+         * the app this capability. To prompt the user to grant this approval,
+         * the app must send an intent with the action {@link
+         * android.provider.Settings#ACTION_MANAGE_WRITE_SETTINGS}, which causes
+         * the system to display a permission management screen.
          *
          * @param context App context.
          * @return true if the calling app can write to system settings, false otherwise
          */
         public static boolean canWrite(Context context) {
-            // Additional security checks for system settings access
-            if (!isSystemApp(context)) {
-                return false;
-            }
-            
-            // Check if caller has proper permissions
-            if (!hasSettingsWritePermission(context)) {
-                return false;
-            }
-            
             return isCallingPackageAllowedToWriteSettings(context, Process.myUid(),
                     context.getOpPackageName(), false);
-        }
-        
-        /**
-         * Check if the calling application is a system app.
-         * 
-         * @param context App context
-         * @return true if system app, false otherwise
-         */
-        private static boolean isSystemApp(Context context) {
-            try {
-                PackageManager pm = context.getPackageManager();
-                ApplicationInfo appInfo = pm.getApplicationInfo(context.getPackageName(), 0);
-                return (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        
-        /**
-         * Check if the calling application has proper settings write permissions.
-         * 
-         * @param context App context
-         * @return true if has permission, false otherwise
-         */
-        private static boolean hasSettingsWritePermission(Context context) {
-            return context.checkSelfPermission(Manifest.permission.WRITE_SETTINGS)
-                    == PackageManager.PERMISSION_GRANTED;
         }
     }
 
@@ -11948,34 +11917,6 @@ public final class Settings {
          */
         public static final String ACTIVE_UNLOCK_WAKEUPS_CONSIDERED_UNLOCK_INTENTS =
                 "active_unlock_wakeups_considered_unlock_intents";
-
-        /**
-         * Device fingerprinting protection enabled
-         * @hide
-         */
-        @Readable
-        public static final String DEVICE_FINGERPRINT_PROTECTION = "device_fingerprint_protection";
-
-        /**
-         * Network privacy mode enabled
-         * @hide
-         */
-        @Readable
-        public static final String NETWORK_PRIVACY_MODE = "network_privacy_mode";
-
-        /**
-         * Anti-forensic mode enabled
-         * @hide
-         */
-        @Readable
-        public static final String ANTI_FORENSIC_MODE = "anti_forensic_mode";
-
-        /**
-         * Secure deletion enabled
-         * @hide
-         */
-        @Readable
-        public static final String SECURE_DELETE_ENABLED = "secure_delete_enabled";
 
         /**
          * If active unlock triggers and succeeds on these wakeups, force dismiss keyguard on

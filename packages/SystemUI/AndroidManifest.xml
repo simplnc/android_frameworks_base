@@ -426,11 +426,9 @@
              -->
         <service android:name="SystemUIService"
             android:exported="true"
-            android:permission="android.permission.STATUS_BAR_SERVICE"
         />
         <service android:name=".wallet.controller.WalletContextualLocationsService"
             android:exported="true"
-            android:permission="android.permission.ACCESS_FINE_LOCATION"
             />
 
         <!-- Service for dumping extremely verbose content during a bug report -->

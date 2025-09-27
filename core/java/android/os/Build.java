@@ -199,52 +199,17 @@ public class Build {
     }
 
     /**
-     * Enhanced device fingerprinting protection.
-     * Returns randomized identifiers for non-privileged apps to prevent tracking.
+     * Get device model with privacy protection.
+     * Returns randomized model for non-privileged apps.
      * 
-     * @return privacy-protected device fingerprint
+     * @return device model or privacy-protected identifier
      * @hide
      */
-    public static String getPrivacyFingerprint() {
-        if (isFingerprintProtectionEnabled() && !hasDeviceIdentifierAccess()) {
-            return generatePrivacyFingerprint();
+    public static String getPrivacyProtectedModel() {
+        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
+            return generatePrivacyIdentifier("MODEL");
         }
-        return getFingerprint();
-    }
-
-    /**
-     * Check if device fingerprinting protection is enabled.
-     * 
-     * @return true if fingerprint protection is enabled
-     * @hide
-     */
-    private static boolean isFingerprintProtectionEnabled() {
-        try {
-            Context context = ActivityThread.currentApplication();
-            if (context != null) {
-                return android.provider.Settings.Secure.getInt(
-                    context.getContentResolver(),
-                    android.provider.Settings.Secure.DEVICE_FINGERPRINT_PROTECTION,
-                    1) != 0;
-            }
-        } catch (Exception e) {
-            // Default to enabled for privacy
-        }
-        return true;
-    }
-
-    /**
-     * Generate a privacy-protected device fingerprint.
-     * 
-     * @return randomized fingerprint
-     * @hide
-     */
-    private static String generatePrivacyFingerprint() {
-        // Generate a consistent but randomized fingerprint
-        String baseFingerprint = SystemProperties.get("ro.build.fingerprint", "unknown");
-        int hash = baseFingerprint.hashCode() ^ System.identityHashCode(Thread.currentThread());
-        return "PRIVACY_" + Integer.toHexString(Math.abs(hash)) + "/" + 
-               Integer.toHexString(System.currentTimeMillis() & 0xFFFF);
+        return SystemProperties.get("ro.product.model", "unknown");
     }
 
     /**
