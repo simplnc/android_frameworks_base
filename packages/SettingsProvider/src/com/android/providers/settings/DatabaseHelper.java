@@ -2130,6 +2130,13 @@ class DatabaseHelper extends SQLiteOpenHelper {
             loadIntegerSetting(stmt, Settings.System.STATUS_BAR_LOGO_POSITION, R.integer.def_status_bar_logo_position);
             loadIntegerSetting(stmt, Settings.System.STATUS_BAR_LOGO_STYLE, R.integer.def_status_bar_logo_style);
 
+            // Custom header defaults
+            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_CUSTOM_HEADER, R.integer.def_status_bar_custom_header);
+            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_CUSTOM_HEADER_HEIGHT, R.integer.def_status_bar_custom_header_height);
+            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_CUSTOM_HEADER_SHADOW, R.integer.def_status_bar_custom_header_shadow);
+            loadStringSetting(stmt, Settings.System.STATUS_BAR_CUSTOM_HEADER_IMAGE, R.string.def_status_bar_custom_header_image);
+            loadStringSetting(stmt, Settings.System.STATUS_BAR_CUSTOM_HEADER_PROVIDER, R.string.def_status_bar_custom_header_provider);
+
             // Hide IME space default
             loadIntegerSetting(stmt, Settings.System.HIDE_IME_SPACE_ENABLE, R.integer.def_hide_ime_space_enable);
 
@@ -2284,6 +2291,20 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
             loadIntegerSetting(stmt, Settings.Secure.SLEEP_TIMEOUT,
                     R.integer.def_sleep_timeout);
+
+            // Duress PIN and emergency wipe settings
+            loadIntegerSetting(stmt, Settings.Secure.EMERGENCY_WIPE_TRIGGERED,
+                    R.integer.def_emergency_wipe_triggered);
+            loadIntegerSetting(stmt, Settings.Secure.DURESS_PIN_WIPE_DELAY,
+                    R.integer.def_duress_pin_wipe_delay);
+            loadIntegerSetting(stmt, Settings.Secure.DURESS_PIN_ENABLED,
+                    R.integer.def_duress_pin_enabled);
+            loadStringSetting(stmt, Settings.Secure.DURESS_PIN_CODE,
+                    R.string.def_duress_pin_code);
+            
+            // Hidden apps list setting
+            loadStringSetting(stmt, Settings.Secure.HIDDEN_APPS_LIST,
+                    R.string.def_hidden_apps_list);
 
             /*
              * IMPORTANT: Do not add any more upgrade steps here as the global,
@@ -2470,6 +2491,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
             loadIntegerSetting(stmt, Settings.Global.WIFI_SCAN_ALWAYS_AVAILABLE,
                     R.integer.def_wifi_scan_always_available);
+
+            loadIntegerSetting(stmt, Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT,
+                    R.integer.def_enable_freeform_support);
 
             loadIntegerSetting(stmt, Global.HEADS_UP_NOTIFICATIONS_ENABLED,
                     R.integer.def_heads_up_enabled);

@@ -199,17 +199,87 @@ public class Build {
     }
 
     /**
-     * Get device model with privacy protection.
-     * Returns randomized model for non-privileged apps.
+     * Enhanced device fingerprinting protection.
+     * Returns randomized identifiers for non-privileged apps to prevent tracking.
      * 
-     * @return device model or privacy-protected identifier
+     * @return privacy-protected device fingerprint
      * @hide
      */
-    public static String getPrivacyProtectedModel() {
-        if (isDevicePrivacyEnabled() && !hasDeviceIdentifierAccess()) {
-            return generatePrivacyIdentifier("MODEL");
+    public static String getPrivacyFingerprint() {
+        // Safety check: don't use privacy fingerprinting during early boot
+        if (isEarlyBootPhase()) {
+            return FINGERPRINT;
         }
-        return SystemProperties.get("ro.product.model", "unknown");
+        
+        if (isFingerprintProtectionEnabled() && !hasDeviceIdentifierAccess()) {
+            return generatePrivacyFingerprint();
+        }
+        return FINGERPRINT;
+    }
+    
+    /**
+     * Check if we're in early boot phase where some services may not be ready.
+     * 
+     * @return true if in early boot phase
+     * @hide
+     */
+    private static boolean isEarlyBootPhase() {
+        try {
+            // Check if we're in early boot by testing if basic services are ready
+            return ActivityThread.currentApplication() == null ||
+                   android.os.SystemProperties.getBoolean("sys.boot_completed", false) == false;
+        } catch (Exception e) {
+            // If we can't determine, assume early boot for safety
+            return true;
+        }
+    }
+
+    /**
+     * Check if device fingerprinting protection is enabled.
+     * 
+     * @return true if fingerprint protection is enabled
+     * @hide
+     */
+    private static boolean isFingerprintProtectionEnabled() {
+        try {
+            // Check system property first to avoid ContentResolver during early boot
+            boolean propertyEnabled = android.os.SystemProperties.getBoolean(
+                "persist.security.fingerprint_protection", true);
+            
+            // Only check Settings.Secure if we have a valid context (after boot)
+            Context context = ActivityThread.currentApplication();
+            if (context != null) {
+                try {
+                    return android.provider.Settings.Secure.getInt(
+                        context.getContentResolver(),
+                        android.provider.Settings.Secure.DEVICE_FINGERPRINT_PROTECTION,
+                        propertyEnabled ? 1 : 0) != 0;
+                } catch (Exception e) {
+                    // Fall back to system property if Settings access fails
+                    return propertyEnabled;
+                }
+            }
+            
+            // During early boot, use system property
+            return propertyEnabled;
+        } catch (Exception e) {
+            // Default to enabled for privacy
+            return true;
+        }
+    }
+
+    /**
+     * Generate a privacy-protected device fingerprint.
+     * 
+     * @return randomized fingerprint
+     * @hide
+     */
+    private static String generatePrivacyFingerprint() {
+        // Generate a consistent but randomized fingerprint
+        String baseFingerprint = SystemProperties.get("ro.build.fingerprint", "unknown");
+        int hash = baseFingerprint.hashCode() ^ System.identityHashCode(Thread.currentThread());
+        return "PRIVACY_" + Integer.toHexString(Math.abs(hash)) + "/" + 
+               Integer.toHexString((int)(System.currentTimeMillis() & 0xFFFF));
     }
 
     /**
@@ -240,14 +310,21 @@ public class Build {
                 return true;
             }
             
-            // Check if caller has READ_PHONE_STATE permission
+            // During early boot or if no application context, default to denying access
             Application application = ActivityThread.currentApplication();
-            if (application != null) {
-                return application.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) 
-                    == android.content.pm.PackageManager.PERMISSION_GRANTED;
+            if (application == null) {
+                return false;
             }
             
-            return false;
+            // Check if caller has READ_PHONE_STATE permission
+            try {
+                return application.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) 
+                    == android.content.pm.PackageManager.PERMISSION_GRANTED;
+            } catch (Exception e) {
+                // If permission check fails, deny access for privacy
+                return false;
+            }
+            
         } catch (Exception e) {
             // Default to denying access for privacy
             return false;
