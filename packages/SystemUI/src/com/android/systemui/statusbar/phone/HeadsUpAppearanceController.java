@@ -272,7 +272,7 @@ public class HeadsUpAppearanceController extends ViewController<HeadsUpStatusBar
                 if (mLeftLogo.getVisibility() != View.GONE) {
                     mLeftLogo.setVisibility(View.VISIBLE);
                 }
-                if (!StatusBarRootModernization.isEnabled() && isClock) {
+                if (!StatusBarRootModernization.isEnabled() && notLeftClock) {
                     show(clockView);
                 }
                 mOperatorNameViewOptional.ifPresent(this::show);
