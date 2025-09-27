@@ -2125,6 +2125,20 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
             loadIntegerSetting(stmt, Settings.System.USER_ROTATION, R.integer.def_user_rotation);
 
+            // Status bar logo defaults
+            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_LOGO, R.integer.def_status_bar_logo);
+            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_LOGO_POSITION, R.integer.def_status_bar_logo_position);
+            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_LOGO_STYLE, R.integer.def_status_bar_logo_style);
+
+            // Hide IME space default
+            loadIntegerSetting(stmt, Settings.System.HIDE_IME_SPACE_ENABLE, R.integer.def_hide_ime_space_enable);
+
+            // Three finger gesture default
+            loadIntegerSetting(stmt, Settings.System.THREE_FINGER_GESTURE, R.integer.def_three_finger_gesture);
+
+            // Clock style default (OOS clock) - handled by TunerService
+            // loadIntegerSetting(stmt, Settings.Secure.CLOCK_STYLE, R.integer.def_clock_style);
+
             loadDefaultHapticSettings(stmt);
 
             // Load hide navbar setting
