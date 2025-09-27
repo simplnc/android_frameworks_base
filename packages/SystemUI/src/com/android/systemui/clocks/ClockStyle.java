@@ -44,14 +44,12 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
             R.layout.keyguard_clock_oos,
             R.layout.keyguard_clock_center,
             R.layout.keyguard_clock_simple,
-            R.layout.keyguard_clock_miui,
-            R.layout.keyguard_clock_ide,
-            R.layout.keyguard_clock_moto
+            R.layout.keyguard_clock_ide
     };
 
-    private final static int[] mCenterClocks = {2, 3, 5, 6};
+    private final static int[] mCenterClocks = {2, 3, 4};
 
-    private static final int DEFAULT_STYLE = 0; // Disabled
+    private static final int DEFAULT_STYLE = 1; // OOS clock by default
     public static final String CLOCK_STYLE_KEY = "clock_style";
 
     private final Context mContext;
@@ -125,6 +123,13 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
         mContext = context;
         mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         mTunerService = Dependency.get(TunerService.class);
+        
+        // Set default clock style if not already set
+        String currentValue = mTunerService.getValue(CLOCK_STYLE_KEY);
+        if (currentValue == null) {
+            mTunerService.setValue(CLOCK_STYLE_KEY, String.valueOf(DEFAULT_STYLE));
+        }
+        
         mTunerService.addTunable(this, CLOCK_STYLE_KEY);
         mStatusBarStateController = Dependency.get(StatusBarStateController.class);
         mStatusBarStateController.addCallback(mStatusBarStateListener);
@@ -140,6 +145,15 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        // Initialize clock style from TunerService
+        mClockStyle = mTunerService.getValue(CLOCK_STYLE_KEY, DEFAULT_STYLE);
+        
+        // Force set to OOS clock if not set or invalid
+        if (mClockStyle == 0 || mClockStyle >= CLOCK_LAYOUTS.length) {
+            mClockStyle = DEFAULT_STYLE;
+            mTunerService.setValue(CLOCK_STYLE_KEY, String.valueOf(DEFAULT_STYLE));
+        }
+        
         updateClockView();
     }
     
@@ -206,14 +220,23 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
             }
         }
         onTimeChanged();
-        setVisibility(mClockStyle != 0 ? View.VISIBLE : View.GONE);
+        
+        // Always show when custom clock is enabled
+        if (mClockStyle > 0) {
+            setVisibility(View.VISIBLE);
+            if (currentClockView != null) {
+                currentClockView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
             case CLOCK_STYLE_KEY:
-                mClockStyle = TunerService.parseInteger(newValue, DEFAULT_STYLE);
+                mClockStyle = parseIntegerOrDefault(newValue, DEFAULT_STYLE);
                 if (mClockStyle != 0) {
                     Settings.Secure.putIntForUser(mContext.getContentResolver(), 
                         Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE, 0, UserHandle.USER_CURRENT);
@@ -230,5 +253,16 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
             }
         }
         return false;
+    }
+
+    private int parseIntegerOrDefault(String value, int defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 }

@@ -33,7 +33,7 @@
         android:layout_alignParentTop="true"
         android:clipChildren="false"
         android:paddingStart="@dimen/clock_padding_start"
-        android:visibility="invisible" />
+        android:visibility="gone" />
     <com.android.keyguard.KeyguardClockFrame
         android:id="@id/lockscreen_clock_view_large"
         android:layout_width="match_parent"
