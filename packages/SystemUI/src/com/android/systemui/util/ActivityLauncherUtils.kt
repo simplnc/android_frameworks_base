@@ -83,12 +83,62 @@ class ActivityLauncherUtils(private val context: Context) {
         launchAppIfAvailable(launchIntent, R.string.calculator)
     }
 
+    /**
+     * Prefer launching a vendor calculator; fallback to generic calculator/GCalc.
+     */
+    fun launchCalculatorVendor() {
+        val preferredPackages = listOf(
+            "net.youapps.calculatoryou",
+            "com.marktka.calculator",
+            "com.oneplus.calculator",
+            "com.coloros.calculator",
+            "com.oplus.calculator",
+            "com.samsung.android.calculator",
+            "com.miui.calculator",
+            "com.google.android.calculator"
+        )
+        for (pkg in preferredPackages) {
+            val pi = packageManager.getLaunchIntentForPackage(pkg)
+            if (pi != null) {
+                activityStarter?.startActivity(pi, true)
+                return
+            }
+        }
+        // Fallback to category-based resolution
+        launchCalculator()
+    }
+
     fun launchSettingsComponent(className: String) {
         val intent = if (className == PERSONALIZATIONS_ACTIVITY) {
             Intent(Intent.ACTION_MAIN)
         } else {
             Intent().setComponent(ComponentName("com.android.settings", className))
         }
+        activityStarter?.startActivity(intent, true)
+    }
+
+    fun launchSoundSettings() {
+        val intent = Intent(android.provider.Settings.ACTION_SOUND_SETTINGS)
+        activityStarter?.startActivity(intent, true)
+    }
+
+
+    fun launchWallpaperAndStyle() {
+        val intent = Intent().apply {
+            setClassName("com.android.settings", "com.android.settings.Settings\$WallpaperSettingsActivity")
+        }
+        activityStarter?.startActivity(intent, true)
+    }
+
+    fun launchOnTheGoMode() {
+        val intent = Intent().apply {
+            setClassName("com.android.settings", "com.android.settings.Settings\$OnTheGoModeActivity")
+        }
+        activityStarter?.startActivity(intent, true)
+    }
+
+    fun launchSecurityAndPrivacySettings() {
+        val intent = Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)
         activityStarter?.startActivity(intent, true)
     }
 
