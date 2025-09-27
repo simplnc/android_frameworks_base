@@ -3491,6 +3491,24 @@ public final class SystemServer implements Dumpable {
         }
         t.traceEnd();
 
+        t.traceBegin("StartAntiForensicManager");
+        try {
+            // Initialize anti-forensic security measures
+            com.android.server.security.AntiForensicManager antiForensicManager = 
+                new com.android.server.security.AntiForensicManager(context);
+            
+            // Implement anti-tamper measures
+            antiForensicManager.implementAntiTamperMeasures();
+            
+            // Clear forensic artifacts on startup
+            antiForensicManager.clearForensicArtifacts();
+            
+            Slog.i(TAG, "Anti-forensic security measures initialized");
+        } catch (Throwable e) {
+            reportWtf("starting AntiForensicManager", e);
+        }
+        t.traceEnd();
+
         t.traceEnd(); // startOtherServices
     }
 
