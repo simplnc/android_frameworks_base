@@ -3509,6 +3509,68 @@ public final class SystemServer implements Dumpable {
         }
         t.traceEnd();
 
+        t.traceBegin("StartRuntimeProtectionManager");
+        try {
+            // Initialize runtime protection measures
+            com.android.server.security.RuntimeProtectionManager runtimeProtectionManager = 
+                com.android.server.security.RuntimeProtectionManager.getInstance(context);
+            
+            // Log security status
+            Slog.i(TAG, "Runtime protection status:\n" + runtimeProtectionManager.getSecurityStatus());
+            
+            Slog.i(TAG, "Runtime protection security measures initialized");
+        } catch (Throwable e) {
+            reportWtf("starting RuntimeProtectionManager", e);
+        }
+        t.traceEnd();
+
+        t.traceBegin("StartMemoryProtectionManager");
+        try {
+            // Initialize memory protection measures
+            com.android.server.security.MemoryProtectionManager memoryProtectionManager = 
+                com.android.server.security.MemoryProtectionManager.getInstance(context);
+            
+            // Verify memory protection is working
+            if (memoryProtectionManager.verifyMemoryProtection()) {
+                Slog.i(TAG, "Memory protection verification: PASSED");
+            } else {
+                Slog.w(TAG, "Memory protection verification: FAILED");
+            }
+            
+            // Log memory protection status
+            Slog.i(TAG, "Memory protection status:\n" + memoryProtectionManager.getMemoryProtectionStatus());
+            
+            Slog.i(TAG, "Memory protection security measures initialized");
+        } catch (Throwable e) {
+            reportWtf("starting MemoryProtectionManager", e);
+        }
+        t.traceEnd();
+
+        t.traceBegin("StartHardwareSecurityManager");
+        try {
+            // Initialize hardware security measures
+            com.android.server.security.HardwareSecurityManager hardwareSecurityManager = 
+                com.android.server.security.HardwareSecurityManager.getInstance(context);
+            
+            // Log device information
+            Slog.i(TAG, "Device information:\n" + hardwareSecurityManager.getDeviceInfo());
+            
+            // Verify hardware security is working
+            if (hardwareSecurityManager.verifyHardwareSecurity()) {
+                Slog.i(TAG, "Hardware security verification: PASSED");
+            } else {
+                Slog.w(TAG, "Hardware security verification: FAILED");
+            }
+            
+            // Log hardware security status
+            Slog.i(TAG, "Hardware security status:\n" + hardwareSecurityManager.getHardwareSecurityStatus());
+            
+            Slog.i(TAG, "Hardware security measures initialized");
+        } catch (Throwable e) {
+            reportWtf("starting HardwareSecurityManager", e);
+        }
+        t.traceEnd();
+
         t.traceEnd(); // startOtherServices
     }
 

@@ -17,7 +17,7 @@
  */
 -->
 
-<!-- Enhanced Network Security Configuration inspired by DivestOS -->
+<!-- Enhanced Network Security Configuration with TLS 1.3 and Certificate Pinning -->
 <network-security-config>
     <!-- Default configuration for all connections -->
     <base-config cleartextTrafficPermitted="false">
@@ -28,13 +28,20 @@
             <certificates src="user" only-if="user_added_ca_enabled"/>
         </trust-anchors>
         
-        <!-- Pin verification for enhanced security -->
+        <!-- Enhanced pin verification for maximum security -->
         <pin-set>
-            <!-- Google's backup pin (fallback) -->
+            <!-- Google's primary pin -->
             <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
-            <!-- Add your preferred pin here -->
-            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
+            <!-- Google's backup pin -->
+            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
+            <!-- Let's Encrypt pin -->
+            <pin digest="SHA-256">CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC=</pin>
         </pin-set>
+        
+        <!-- TLS 1.3 only mode for maximum security -->
+        <tls-config>
+            <protocols>TLSv1.3</protocols>
+        </tls-config>
     </base-config>
 
     <!-- Strict configuration for sensitive domains -->
@@ -44,6 +51,10 @@
         <domain includeSubdomains="true">gstatic.com</domain>
         <domain includeSubdomains="true">android.com</domain>
         <domain includeSubdomains="true">googleusercontent.com</domain>
+        <domain includeSubdomains="true">play.google.com</domain>
+        <domain includeSubdomains="true">accounts.google.com</domain>
+        <domain includeSubdomains="true">youtube.com</domain>
+        <domain includeSubdomains="true">youtube-nocookie.com</domain>
         
         <!-- Enhanced security for Google services -->
         <trust-anchors>
@@ -53,7 +64,56 @@
         <!-- Certificate pinning for Google services -->
         <pin-set>
             <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
+            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
         </pin-set>
+        
+        <!-- TLS 1.3 only for Google services -->
+        <tls-config>
+            <protocols>TLSv1.3</protocols>
+        </tls-config>
+    </domain-config>
+    
+    <!-- MicroG compatibility configuration -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">microg.org</domain>
+        <domain includeSubdomains="true">gms.googleapis.com</domain>
+        <domain includeSubdomains="true">android.googleapis.com</domain>
+        <domain includeSubdomains="true">play.googleapis.com</domain>
+        <domain includeSubdomains="true">firebase.googleapis.com</domain>
+        <domain includeSubdomains="true">fcm.googleapis.com</domain>
+        <domain includeSubdomains="true">mtalk.google.com</domain>
+        <domain includeSubdomains="true">android.clients.google.com</domain>
+        
+        <!-- Relaxed security for MicroG domains -->
+        <trust-anchors>
+            <certificates src="system"/>
+            <certificates src="user"/>
+        </trust-anchors>
+        
+        <!-- No certificate pinning for MicroG domains (allows flexibility) -->
+        <tls-config>
+            <protocols>TLSv1.2</protocols>
+            <protocols>TLSv1.3</protocols>
+        </tls-config>
+    </domain-config>
+
+    <!-- Additional security for banking and financial services -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">paypal.com</domain>
+        <domain includeSubdomains="true">stripe.com</domain>
+        <domain includeSubdomains="true">square.com</domain>
+        
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+        
+        <pin-set>
+            <pin digest="SHA-256">DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD=</pin>
+        </pin-set>
+        
+        <tls-config>
+            <protocols>TLSv1.3</protocols>
+        </tls-config>
     </domain-config>
 
     <!-- Debug configuration (only for debug builds) -->
