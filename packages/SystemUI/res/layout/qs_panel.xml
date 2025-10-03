@@ -21,16 +21,7 @@
     android:clipToPadding="false"
     android:clipChildren="false">
 
-    <!-- Full QS background image (behind header, tiles, and footer) -->
-    <ImageView
-        android:id="@+id/qs_panel_background_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:alpha="0.0"
-        android:visibility="gone"
-        android:src="@drawable/qs_header_image_31"
-        android:importantForAccessibility="no" />
+    <!-- Full QS background image removed - no background for QS -->
 
     <com.android.systemui.qs.NonInterceptingScrollView
         android:id="@+id/expanded_qs_scroll_view"
@@ -62,7 +53,10 @@
         </com.android.systemui.qs.QSPanel>
     </com.android.systemui.qs.NonInterceptingScrollView>
 
-    <include layout="@layout/quick_status_bar_expanded_header" />
+    <!-- Header positioned to stretch to footer -->
+    <include layout="@layout/quick_status_bar_expanded_header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/qs_footer_actions"

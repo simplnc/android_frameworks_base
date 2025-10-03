@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
         
         <TextClock
-            android:textSize="72.0dip"
+            android:textSize="60.0dip"
             android:textColor="@android:color/white"
             android:fontFamily="@*android:string/config_clockFontFamily"
             android:layout_width="match_parent"
@@ -34,21 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             
-            <TextView
-                android:textSize="42sp"
-                android:textColor="@android:color/white"
-                android:id="@+id/summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@*android:string/config_clockFontFamily"
-                android:text="Basha Mobile"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:shadowColor="@android:color/black"
-                android:shadowRadius="2.0"
-                android:shadowDx="1.0"
-                android:shadowDy="1.0"
-                android:textStyle="bold"/>
         </LinearLayout>
         
         <LinearLayout
@@ -58,7 +43,7 @@
             android:gravity="center">
             
             <TextClock
-                android:textSize="96.0dip"
+                android:textSize="106.0dip"
                 android:textColor="@android:color/system_accent1_600"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,7 +58,7 @@
                 android:textStyle="bold"/>
             
             <TextClock
-                android:textSize="96.0dip"
+                android:textSize="106.0dip"
                 android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,7 +75,7 @@
 
         <TextClock
             android:id="@+id/oos_date"
-            android:textSize="40dp"
+            android:textSize="34dp"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
