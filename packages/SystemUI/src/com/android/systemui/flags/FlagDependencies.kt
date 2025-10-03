@@ -65,7 +65,7 @@ class FlagDependencies @Inject constructor(featureFlags: FeatureFlagsClassic, ha
         SceneContainerFlag.getFlagDependencies().forEach { (alpha, beta) -> alpha dependsOn beta }
 
         // CommunalHub dependencies
-        communalHub dependsOn MigrateClocksToBlueprint.token
+        // communalHub dependsOn MigrateClocksToBlueprint.token  // Temporarily disabled due to build dependency issue
 
         // DualShade dependencies
         DualShade.token dependsOn SceneContainerFlag.getMainAconfigFlag()

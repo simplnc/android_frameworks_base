@@ -11978,6 +11978,146 @@ public final class Settings {
         public static final String SECURE_DELETE_ENABLED = "secure_delete_enabled";
 
         /**
+         * Memory optimization enabled
+         * @hide
+         */
+        @Readable
+        public static final String MEMORY_OPTIMIZATION_ENABLED = "memory_optimization_enabled";
+
+        /**
+         * CPU performance profile (power_save, balanced, performance)
+         * @hide
+         */
+        @Readable
+        public static final String CPU_PERFORMANCE_PROFILE = "cpu_performance_profile";
+
+        /**
+         * Intelligent garbage collection enabled
+         * @hide
+         */
+        @Readable
+        public static final String INTELLIGENT_GC_ENABLED = "intelligent_gc_enabled";
+
+        /**
+         * Duress PIN enabled for emergency wipe
+         * @hide
+         */
+        @Readable
+        public static final String DURESS_PIN_ENABLED = "duress_pin_enabled";
+
+        /**
+         * Duress PIN code for emergency wipe
+         * @hide
+         */
+        @Readable
+        public static final String DURESS_PIN_CODE = "duress_pin_code";
+
+        /**
+         * Emergency wipe triggered flag
+         * @hide
+         */
+        @Readable
+        public static final String EMERGENCY_WIPE_TRIGGERED = "emergency_wipe_triggered";
+
+        /**
+         * Hidden apps list for launcher filtering
+         * @hide
+         */
+        @Readable
+        public static final String HIDDEN_APPS_LIST = "hidden_apps_list";
+
+        /**
+         * Duress PIN wipe delay in milliseconds
+         * @hide
+         */
+        @Readable
+        public static final String DURESS_PIN_WIPE_DELAY = "duress_pin_wipe_delay";
+
+        /**
+         * Auto-reboot enabled for enhanced security
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_REBOOT_ENABLED = "auto_reboot_enabled";
+
+        /**
+         * Auto-reboot delay in milliseconds
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_REBOOT_DELAY = "auto_reboot_delay";
+
+        /**
+         * System-wide ad blocking enabled
+         * @hide
+         */
+        @Readable
+        public static final String AD_BLOCKING_ENABLED = "ad_blocking_enabled";
+
+        /**
+         * Ad blocking mode (dns, hosts, hybrid)
+         * @hide
+         */
+        @Readable
+        public static final String AD_BLOCKING_MODE = "ad_blocking_mode";
+
+        /**
+         * Ad blocking DNS server
+         * @hide
+         */
+        @Readable
+        public static final String AD_BLOCKING_DNS_SERVER = "ad_blocking_dns_server";
+
+        /**
+         * Wi-Fi privacy mode
+         * @hide
+         */
+        @Readable
+        public static final String WIFI_PRIVACY_MODE = "wifi_privacy_mode";
+
+        /**
+         * Sensor privacy enabled
+         * @hide
+         */
+        @Readable
+        public static final String SENSOR_PRIVACY_ENABLED = "sensor_privacy_enabled";
+
+        /**
+         * Sensor access control mode
+         * @hide
+         */
+        @Readable
+        public static final String SENSOR_ACCESS_CONTROL = "sensor_access_control";
+
+        /**
+         * Other sensors permission requirement
+         * @hide
+         */
+        @Readable
+        public static final String OTHER_SENSORS_PERMISSION = "other_sensors_permission";
+
+        /**
+         * Network privacy enabled
+         * @hide
+         */
+        @Readable
+        public static final String NETWORK_PRIVACY_ENABLED = "network_privacy_enabled";
+
+        /**
+         * Network permission control mode
+         * @hide
+         */
+        @Readable
+        public static final String NETWORK_PERMISSION_CONTROL = "network_permission_control";
+
+        /**
+         * DNS privacy mode
+         * @hide
+         */
+        @Readable
+        public static final String DNS_PRIVACY_MODE = "dns_privacy_mode";
+
+        /**
          * If active unlock triggers and succeeds on these wakeups, force dismiss keyguard on
          * these wake reasons. See {@link PowerManager#WakeReason} for value mappings.
          * WakeReasons should be separated by a pipe. For example: "0|3" or "0". If this
