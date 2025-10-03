@@ -509,65 +509,18 @@ public class QSPanel extends LinearLayout {
         super.onFinishInflate();
         mFooter = findViewById(R.id.qs_footer);
         mQsControlsLayoutShade = findViewById(R.id.qs_controls_layout_shade);
-        // Bind QS full-panel background image from root container if present
-        View bg = getRootView().findViewById(com.android.systemui.res.R.id.qs_panel_background_image);
-        if (bg instanceof android.widget.ImageView) {
-            mQsPanelBackgroundImage = (android.widget.ImageView) bg;
-        }
-        updateQsPanelBackgroundVisibility();
+        // QS background image removed - no background functionality needed
+        mQsPanelBackgroundImage = null;
     }
 
     private void resolveBackgroundViewIfNeeded() {
-        if (mQsPanelBackgroundImage != null) return;
-        View root = getRootView();
-        if (root != null) {
-            View bg = root.findViewById(com.android.systemui.res.R.id.qs_panel_background_image);
-            if (bg instanceof android.widget.ImageView) {
-                mQsPanelBackgroundImage = (android.widget.ImageView) bg;
-            }
-        }
-        if (mQsPanelBackgroundImage == null) {
-            View parent = (View) getParent();
-            if (parent != null) {
-                View bg = parent.findViewById(com.android.systemui.res.R.id.qs_panel_background_image);
-                if (bg instanceof android.widget.ImageView) {
-                    mQsPanelBackgroundImage = (android.widget.ImageView) bg;
-                }
-            }
-        }
+        // QS background image removed - no background functionality needed
+        // This method is kept for compatibility but does nothing
     }
 
-    /** Ensure the QS background behaves as a full-panel image and hides on keyguard. */
+    /** QS background image removed - no background functionality needed */
     private void updateQsPanelBackgroundVisibility() {
-        resolveBackgroundViewIfNeeded();
-        if (mQsPanelBackgroundImage == null) return;
-
-        android.app.KeyguardManager km = (android.app.KeyguardManager)
-                getContext().getSystemService(Context.KEYGUARD_SERVICE);
-        boolean onKeyguard = km != null && km.isKeyguardLocked();
-
-        if (onKeyguard) {
-            mQsPanelBackgroundImage.setVisibility(View.GONE);
-            mQsPanelBackgroundImage.setAlpha(0f);
-            return;
-        }
-
-        mQsPanelBackgroundImage.setVisibility(View.VISIBLE);
-        int night = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        boolean dark = night == Configuration.UI_MODE_NIGHT_YES;
-        // Increase opacity for better visibility while keeping tiles readable
-        mQsPanelBackgroundImage.setAlpha(dark ? 0.50f : 0.40f);
-
-        ViewGroup.LayoutParams lp = mQsPanelBackgroundImage.getLayoutParams();
-        if (lp != null) {
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            mQsPanelBackgroundImage.setLayoutParams(lp);
-        }
-        mQsPanelBackgroundImage.setColorFilter(null);
-
-        // Re-evaluate next frame to avoid transient keyguard race during unlock/lock transitions
-        postOnAnimation(this::updateQsPanelBackgroundVisibility);
+        // QS background image removed - this method is kept for compatibility but does nothing
     }
 
     private void updateHorizontalLinearLayoutMargins() {
