@@ -151,6 +151,12 @@ public class NfcTile extends QSTileImpl<BooleanState> {
         state.label = mContext.getString(R.string.quick_settings_nfc_label);
         state.expandedAccessibilityClassName = Switch.class.getName();
         state.contentDescription = state.label;
+        
+        // Set pastel red background when enabled (like location tile)
+        if (state.state == Tile.STATE_ACTIVE) {
+            state.contentDescription = mContext.getString(R.string.quick_settings_nfc_label) + ", " +
+                    "On";
+        }
     }
 
     @Override
