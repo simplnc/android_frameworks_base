@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Typography System
+     Based on dotOS 5.1 design guidelines and Material Design 3 principles
+-->
+<resources>
+    
+    <!-- Font Families -->
+    <string name="basha_font_family_sans">sans-serif</string>
+    <string name="basha_font_family_mono">monospace</string>
+    <string name="basha_font_family_inter">sans-serif-medium</string>
+    <string name="basha_font_family_roboto_enhanced">sans-serif-medium</string>
+    
+    <!-- Display Styles (Large headings) -->
+    <style name="BashaTextDisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">57sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineHeight">64sp</item>
+        <item name="android:letterSpacing">-0.25</item>
+    </style>
+    
+    <style name="BashaTextDisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">45sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineHeight">52sp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    
+    <style name="BashaTextDisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineHeight">44sp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    
+    <!-- Headline Styles -->
+    <style name="BashaTextHeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:fontWeight">600</item>
+        <item name="android:lineHeight">40sp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    
+    <style name="BashaTextHeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:fontWeight">600</item>
+        <item name="android:lineHeight">36sp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    
+    <style name="BashaTextHeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontWeight">600</item>
+        <item name="android:lineHeight">32sp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    
+    <!-- Title Styles -->
+    <style name="BashaTextTitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:lineHeight">28sp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    
+    <style name="BashaTextTitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:lineHeight">24sp</item>
+        <item name="android:letterSpacing">0.15</item>
+    </style>
+    
+    <style name="BashaTextTitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+    
+    <!-- Body Styles -->
+    <style name="BashaTextBodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineHeight">24sp</item>
+        <item name="android:letterSpacing">0.5</item>
+    </style>
+    
+    <style name="BashaTextBodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.25</item>
+    </style>
+    
+    <style name="BashaTextBodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:letterSpacing">0.4</item>
+    </style>
+    
+    <!-- Label Styles -->
+    <style name="BashaTextLabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+    
+    <style name="BashaTextLabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:letterSpacing">0.5</item>
+    </style>
+    
+    <style name="BashaTextLabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">@string/basha_font_family_sans</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:letterSpacing">0.5</item>
+    </style>
+    
+    <!-- SystemUI Specific Styles -->
+    <style name="BashaSystemUITitle" parent="BashaTextTitleMedium">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontWeight">600</item>
+    </style>
+    
+    <style name="BashaSystemUISubtitle" parent="BashaTextBodyMedium">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+    
+    <style name="BashaSystemUICaption" parent="BashaTextLabelSmall">
+        <item name="android:textColor">?android:attr/textColorTertiary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+    
+    <!-- Quick Settings Specific -->
+    <style name="BashaQSTileLabel" parent="BashaTextLabelMedium">
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <style name="BashaQSTileSecondaryLabel" parent="BashaTextBodySmall">
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Status Bar Styles -->
+    <style name="BashaStatusBarClock" parent="BashaTextLabelMedium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:letterSpacing">0.2</item>
+    </style>
+    
+    <style name="BashaStatusBarDate" parent="BashaTextLabelSmall">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:letterSpacing">0.3</item>
+    </style>
+    
+    <!-- Inter Font Styles (Modern Alternative) -->
+    <style name="BashaTextInterTitleLarge" parent="BashaTextTitleLarge">
+        <item name="android:fontFamily">@string/basha_font_family_inter</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+    
+    <style name="BashaTextInterBodyMedium" parent="BashaTextBodyMedium">
+        <item name="android:fontFamily">@string/basha_font_family_inter</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+    
+    <style name="BashaTextInterLabelMedium" parent="BashaTextLabelMedium">
+        <item name="android:fontFamily">@string/basha_font_family_inter</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+    
+    <!-- Enhanced Roboto Styles -->
+    <style name="BashaTextRobotoEnhancedTitleLarge" parent="BashaTextTitleLarge">
+        <item name="android:fontFamily">@string/basha_font_family_roboto_enhanced</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    
+    <style name="BashaTextRobotoEnhancedBodyMedium" parent="BashaTextBodyMedium">
+        <item name="android:fontFamily">@string/basha_font_family_roboto_enhanced</item>
+        <item name="android:letterSpacing">0.03</item>
+    </style>
+    
+    <!-- SystemUI Specific Inter Styles -->
+    <style name="BashaSystemUIInterTitle" parent="BashaSystemUITitle">
+        <item name="android:fontFamily">@string/basha_font_family_inter</item>
+        <item name="android:fontWeight">600</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    
+    <style name="BashaSystemUIInterSubtitle" parent="BashaSystemUISubtitle">
+        <item name="android:fontFamily">@string/basha_font_family_inter</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+    
+    <!-- Quick Settings Inter Styles -->
+    <style name="BashaQSTileInterLabel" parent="BashaQSTileLabel">
+        <item name="android:fontFamily">@string/basha_font_family_inter</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+    
+    <!-- Status Bar Inter Styles -->
+    <style name="BashaStatusBarInterClock" parent="BashaStatusBarClock">
+        <item name="android:fontFamily">@string/basha_font_family_inter</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+    
+</resources>

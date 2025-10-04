@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Enhanced PackageInstaller Integers
+     Based on dotOS 5.1 design guidelines and Material Design 3
+-->
+<resources>
+    
+    <!-- Animation Durations (in milliseconds) -->
+    <integer name="basha_animation_duration_short">150</integer>
+    <integer name="basha_animation_duration_medium">300</integer>
+    <integer name="basha_animation_duration_long">500</integer>
+    
+    <!-- Animation Delays -->
+    <integer name="basha_animation_delay_short">50</integer>
+    <integer name="basha_animation_delay_medium">100</integer>
+    <integer name="basha_animation_delay_long">200</integer>
+    
+    <!-- Repeat Counts -->
+    <integer name="basha_animation_repeat_infinite">-1</integer>
+    <integer name="basha_animation_repeat_once">1</integer>
+    
+    <!-- Animation Interpolator Types -->
+    <integer name="basha_interpolator_decelerate">0</integer>
+    <integer name="basha_interpolator_accelerate">1</integer>
+    <integer name="basha_interpolator_linear">2</integer>
+    
+</resources>

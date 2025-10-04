@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Enhanced PackageInstaller Themes
+     Based on dotOS 5.1 design guidelines and Material Design 3
+-->
+<resources>
+    
+    <!-- Light Theme -->
+    <style name="BashaPackageInstallerTheme" parent="@android:style/Theme.DeviceDefault.Light">
+        <item name="android:windowBackground">@color/basha_background</item>
+        <item name="android:colorBackground">@color/basha_background</item>
+        <item name="android:textColorPrimary">@color/basha_on_background</item>
+        <item name="android:textColorSecondary">@color/basha_on_surface_variant</item>
+        <item name="android:textColorTertiary">@color/basha_outline</item>
+        <item name="android:colorAccent">@color/basha_primary</item>
+        <item name="android:colorPrimary">@color/basha_primary</item>
+        <item name="android:colorPrimaryDark">@color/basha_primary</item>
+        <item name="android:colorControlHighlight">@color/basha_list_item_ripple</item>
+        <item name="android:colorControlActivated">@color/basha_primary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+    
+    <!-- Dark Theme -->
+    <style name="BashaPackageInstallerTheme.Dark" parent="@android:style/Theme.DeviceDefault">
+        <item name="android:windowBackground">@color/basha_background_dark</item>
+        <item name="android:colorBackground">@color/basha_background_dark</item>
+        <item name="android:textColorPrimary">@color/basha_on_background_dark</item>
+        <item name="android:textColorSecondary">@color/basha_on_surface_variant_dark</item>
+        <item name="android:textColorTertiary">@color/basha_outline_dark</item>
+        <item name="android:colorAccent">@color/basha_primary_dark</item>
+        <item name="android:colorPrimary">@color/basha_primary_dark</item>
+        <item name="android:colorPrimaryDark">@color/basha_primary_dark</item>
+        <item name="android:colorControlHighlight">@color/basha_list_item_ripple_dark</item>
+        <item name="android:colorControlActivated">@color/basha_primary_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+    
+    <!-- Alert Dialog Theme -->
+    <style name="BashaAlertDialogTheme" parent="BashaPackageInstallerTheme">
+        <item name="android:windowBackground">@drawable/basha_dialog_background</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/BashaDialogAnimation</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+    
+    <!-- Bottom Sheet Theme -->
+    <style name="BashaBottomSheetTheme" parent="BashaPackageInstallerTheme">
+        <item name="android:windowBackground">@drawable/basha_bottom_sheet_background</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/BashaBottomSheetAnimation</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+    
+    <!-- Activity Theme -->
+    <style name="BashaPackageInstallerActivity" parent="BashaPackageInstallerTheme">
+        <item name="android:windowBackground">@color/basha_background</item>
+        <item name="android:actionBarStyle">@style/BashaActionBar</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
+    
+    <!-- Action Bar Style -->
+    <style name="BashaActionBar" parent="@android:style/Widget.Material.ActionBar.Solid">
+        <item name="android:background">@color/basha_surface</item>
+        <item name="android:titleTextStyle">@style/BashaActionBarTitle</item>
+        <item name="android:subtitleTextStyle">@style/BashaActionBarSubtitle</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+    
+    <!-- Action Bar Text Styles -->
+    <style name="BashaActionBarTitle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/basha_on_surface</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="BashaActionBarSubtitle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/basha_on_surface_variant</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <!-- Animation Styles -->
+    <style name="BashaDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/basha_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/basha_fade_out</item>
+    </style>
+    
+    <style name="BashaBottomSheetAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+    
+    <!-- Night Theme Override -->
+    <style name="BashaPackageInstallerTheme.Night" parent="BashaPackageInstallerTheme.Dark">
+        <!-- Night-specific overrides -->
+    </style>
+    
+</resources>

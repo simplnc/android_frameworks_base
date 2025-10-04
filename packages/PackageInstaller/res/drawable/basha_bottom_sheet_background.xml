@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Basha Mobile - Enhanced Bottom Sheet Background
+     Based on dotOS 5.1 design guidelines and Material Design 3
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    
+    <!-- Background color -->
+    <solid android:color="@color/basha_surface" />
+    
+    <!-- Top rounded corners only for bottom sheet -->
+    <corners 
+        android:topLeftRadius="24dp"
+        android:topRightRadius="24dp"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp" />
+    
+    <!-- Subtle border -->
+    <stroke 
+        android:width="1dp" 
+        android:color="@color/basha_outline_variant" />
+        
+</shape>

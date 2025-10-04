@@ -40,4 +40,43 @@
     <style name="TextAppearance">
         <item name="textSize">16sp</item>
     </style>
+    
+    <!-- Basha Mobile Enhanced Styles Integration -->
+    <style name="AlertDialog.Basha" parent="AlertDialog">
+        <item name="android:windowBackground">@drawable/basha_dialog_background</item>
+        <item name="android:textAppearanceMedium">@android:style/TextAppearance.Medium</item>
+        <item name="android:textAppearanceSmall">@android:style/TextAppearance.Small</item>
+        <item name="android:textAppearanceLarge">@android:style/TextAppearance.Large</item>
+        <item name="android:buttonBarButtonStyle">@style/BashaButton</item>
+        <item name="android:buttonBarStyle">@style/BashaButtonBar</item>
+    </style>
+    
+    <style name="Theme.PackageInstaller.Basha" parent="@android:style/Theme.DeviceDefault.Light">
+        <item name="android:windowBackground">@color/basha_background</item>
+        <item name="android:colorBackground">@color/basha_background</item>
+        <item name="android:textColorPrimary">@color/basha_on_background</item>
+        <item name="android:textColorSecondary">@color/basha_on_surface_variant</item>
+        <item name="android:colorAccent">@color/basha_primary</item>
+        <item name="android:colorPrimary">@color/basha_primary</item>
+        <item name="android:colorControlHighlight">@color/basha_list_item_ripple</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+    
+    <style name="Theme.PackageInstaller.Basha.Dark" parent="@android:style/Theme.DeviceDefault">
+        <item name="android:windowBackground">@color/basha_background_dark</item>
+        <item name="android:colorBackground">@color/basha_background_dark</item>
+        <item name="android:textColorPrimary">@color/basha_on_background_dark</item>
+        <item name="android:textColorSecondary">@color/basha_on_surface_variant_dark</item>
+        <item name="android:colorAccent">@color/basha_primary_dark</item>
+        <item name="android:colorPrimary">@color/basha_primary_dark</item>
+        <item name="android:colorControlHighlight">@color/basha_list_item_ripple_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+    
 </resources>
