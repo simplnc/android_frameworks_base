@@ -193,6 +193,9 @@ public class CellularTile extends QSTileImpl<BooleanState> {
                     // Only show carrier name if there are more than 1 subscription
                     cb.multipleSubs ? cb.dataSubscriptionName : "",
                     getMobileDataContentName(cb));
+            // Set pastel green background when enabled
+            state.contentDescription = r.getString(R.string.mobile_data) + ", " +
+                    "On";
         } else {
             state.state = Tile.STATE_INACTIVE;
             state.secondaryLabel = r.getString(R.string.cell_data_off);
