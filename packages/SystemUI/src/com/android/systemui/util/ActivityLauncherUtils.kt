@@ -138,7 +138,11 @@ class ActivityLauncherUtils(private val context: Context) {
     }
 
     fun launchSecurityAndPrivacySettings() {
-        val intent = Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)
+        // Open Running Services in Developer Options
+        val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS).apply {
+            putExtra(":settings:show_fragment", "com.android.settings.applications.RunningServices")
+            putExtra(":settings:show_fragment_title", "Running services")
+        }
         activityStarter?.startActivity(intent, true)
     }
 
