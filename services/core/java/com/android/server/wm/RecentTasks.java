@@ -1514,6 +1514,30 @@ class RecentTasks {
             return false;
         }
 
+        // Check if the app should be hidden from recent tasks
+        ComponentName component = task.intent != null ? task.intent.getComponent() : null;
+        if (component != null) {
+            String packageName = component.getPackageName();
+            
+            // Don't hide system apps from recent tasks
+            try {
+                ApplicationInfo appInfo = mService.mContext.getPackageManager()
+                        .getApplicationInfo(packageName, 0);
+                if (appInfo != null && (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                    // System app - don't hide
+                } else if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
+                        mService.mContext, packageName)) {
+                    return false;
+                }
+            } catch (Exception e) {
+                // If we can't get app info, check hide list anyway
+                if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
+                        mService.mContext, packageName)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 

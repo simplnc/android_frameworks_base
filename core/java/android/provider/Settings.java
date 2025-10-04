@@ -6755,6 +6755,12 @@ public final class Settings {
         public static final String HIDE_NAVBAR_ENABLE = "hide_navbar_enable";
 
         /**
+         * Whether to enable navigation bar IME space (disabled by default for gesture nav)
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_IME_SPACE_ENABLED = "navigation_bar_ime_space_enabled";
+
+        /**
          * Whether to enable squishy animations for notifications
          * @hide
          */
@@ -13338,6 +13344,20 @@ public final class Settings {
          */
         @Readable
         public static final String HIDE_APPLIST = "hide_applist";
+
+        /**
+         * Whether pocket mode is enabled.
+         * @hide
+         */
+        @Readable
+        public static final String POCKET_MODE_ENABLED = "pocket_mode_enabled";
+
+        /**
+         * Whether always-on pocket mode is enabled.
+         * @hide
+         */
+        @Readable
+        public static final String ALWAYS_ON_POCKET_MODE_ENABLED = "always_on_pocket_mode_enabled";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to

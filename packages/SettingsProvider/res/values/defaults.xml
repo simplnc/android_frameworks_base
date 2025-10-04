@@ -193,7 +193,19 @@
     <!-- Default value for Settings.Secure.HIDE_APPLIST setting,
          which is a comma separated list of packages to hide from app lists.
          Hide AOSP Web Shell and Messenger by default. -->
-    <string name="def_hide_applist" translatable="false">org.chromium.webview_shell,com.android.messaging,com.demizo.daily_you,com.devrinth.launchpad,com.kaleedtc.privacium,com.shezik.drawanywhere,com.stario.launcher,image.toolbox,native.alpha,nethical.digipaws,nethical.locklock,com.android.athena,com.truemlgpro.wifiinfo,com.fibelatti.photowidget,com.kieronquinn.app.taptap,com.quicktiles.app,firewall,com.drnoob.datamonitor</string>
+    <string name="def_hide_applist" translatable="false">org.chromium.webview_shell,com.android.athena,com.demizo.daily_you,com.devrinth.launchpad,com.kaleedtc.privacium,com.shezik.drawanywhere,com.stario.launcher,image.toolbox,native.alpha,nethical.digipaws,nethical.locklock,com.truemlgpro.wifiinfo,com.fibelatti.photowidget,com.kieronquinn.app.taptap,com.quicktiles.app,firewall,com.drnoob.datamonitor,com.session.music,com.sessionmusic,com.session,com.ambient.music,com.ambientmusic,com.ambient</string>
+
+    <!-- Default value for Settings.Secure.POCKET_MODE_ENABLED setting.
+         Enable pocket mode by default. -->
+    <integer name="def_pocket_mode_enabled">1</integer>
+
+    <!-- Default value for Settings.Secure.ALWAYS_ON_POCKET_MODE_ENABLED setting.
+         Disable always-on pocket mode by default. -->
+    <integer name="def_always_on_pocket_mode_enabled">0</integer>
+
+    <!-- Default value for Settings.Secure.DOZE_ENABLED setting.
+         Enable ambient display (doze) by default. -->
+    <integer name="def_doze_enabled">1</integer>
 
     <!-- Default for Settings.Global.WIFI_SCAN_ALWAYS_AVAILABLE -->
     <integer name="def_wifi_scan_always_available">0</integer>

@@ -2152,6 +2152,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
             loadBooleanSetting(stmt, Settings.System.HIDE_NAVBAR_ENABLE,
                     R.bool.def_hide_navbar_enable);
 
+            // Load navigation mode setting (gesture navigation by default)
+            loadIntegerSetting(stmt, Settings.Secure.NAVIGATION_MODE,
+                    R.integer.def_navigation_mode);
+
+            // Load IME space settings (disabled by default)
+            loadBooleanSetting(stmt, Settings.System.NAVIGATION_BAR_IME_SPACE_ENABLED,
+                    R.bool.def_navigation_bar_ime_space_enabled);
+
             // Load notification squishy animations setting
             loadBooleanSetting(stmt, Settings.System.NOTIFICATION_SQUISHY_ANIMATIONS,
                     R.bool.def_notification_squishy_animations);
@@ -2276,6 +2284,16 @@ class DatabaseHelper extends SQLiteOpenHelper {
             // Load default hidden apps list for app hiding feature
             loadStringSetting(stmt, Settings.Secure.HIDE_APPLIST,
                     R.string.def_hide_applist);
+
+            // Load default pocket mode settings
+            loadIntegerSetting(stmt, Settings.Secure.POCKET_MODE_ENABLED,
+                    R.integer.def_pocket_mode_enabled);
+            loadIntegerSetting(stmt, Settings.Secure.ALWAYS_ON_POCKET_MODE_ENABLED,
+                    R.integer.def_always_on_pocket_mode_enabled);
+
+            // Load default ambient mode settings
+            loadIntegerSetting(stmt, Settings.Secure.DOZE_ENABLED,
+                    R.integer.def_doze_enabled);
 
             loadBooleanSetting(stmt, Settings.Secure.INSTALL_NON_MARKET_APPS,
                     R.bool.def_install_non_market_apps);
