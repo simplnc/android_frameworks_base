@@ -6755,6 +6755,12 @@ public final class Settings {
         public static final String HIDE_NAVBAR_ENABLE = "hide_navbar_enable";
 
         /**
+         * Whether to enable navigation bar IME space (disabled by default for gesture nav)
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_IME_SPACE_ENABLED = "navigation_bar_ime_space_enabled";
+
+        /**
          * Whether to enable squishy animations for notifications
          * @hide
          */

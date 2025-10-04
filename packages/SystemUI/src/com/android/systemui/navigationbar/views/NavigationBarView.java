@@ -1001,30 +1001,34 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
                     1, // Default to enabled
                     UserHandle.USER_CURRENT) != 0;
             
+            // Check if IME space is disabled
+            boolean imeSpaceDisabled = Settings.System.getIntForUser(
+                    getContext().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_IME_SPACE_ENABLED,
+                    0, // Default to disabled
+                    UserHandle.USER_CURRENT) == 0;
+            
             // When hide navbar is enabled, set minimal height
             if (hideNavbarEnabled) {
                 height = 1; // Minimal height to effectively hide navbar
+            } else if (imeSpaceDisabled || isGesturalMode(mNavBarMode)) {
+                // Completely remove IME space when disabled or in gesture navigation
+                height = 0;
             } else if (isHideIMESpaceEnabled()) {
-                // When IME space hiding is enabled, use zero height for gesture navigation
-                if (isGesturalMode(mNavBarMode)) {
-                    height = 0; // Completely remove IME space in gesture navigation
-                } else {
-                    height = getResources().getDimensionPixelSize(
-                            com.android.internal.R.dimen.navigation_bar_height_hide_ime);
-                }
+                height = getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_height_hide_ime);
             }
             
             int frameHeight;
             if (hideNavbarEnabled) {
                 // Hide navbar - minimal frame height
                 frameHeight = 1;
+            } else if (imeSpaceDisabled || isGesturalMode(mNavBarMode)) {
+                // Completely remove IME frame space when disabled or in gesture navigation
+                frameHeight = 0;
             } else if (isHideIMESpaceEnabled()) {
-                if (isGesturalMode(mNavBarMode)) {
-                    frameHeight = 0; // Completely remove IME frame space in gesture navigation
-                } else {
-                    frameHeight = getResources().getDimensionPixelSize(
-                            com.android.internal.R.dimen.navigation_bar_frame_height_hide_ime);
-                }
+                frameHeight = getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.navigation_bar_frame_height_hide_ime);
             } else {
                 frameHeight = getResources().getDimensionPixelSize(
                         com.android.internal.R.dimen.navigation_bar_frame_height);
@@ -1051,9 +1055,19 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
                 1, // Default to enabled
                 UserHandle.USER_CURRENT) != 0;
         
+        // Check if IME space is disabled
+        boolean imeSpaceDisabled = Settings.System.getIntForUser(
+                getContext().getContentResolver(),
+                Settings.System.NAVIGATION_BAR_IME_SPACE_ENABLED,
+                0, // Default to disabled
+                UserHandle.USER_CURRENT) == 0;
+        
         // When hide navbar is enabled, return minimal height
         if (hideNavbarEnabled) {
             return 1; // Minimal height to effectively hide navbar
+        } else if (imeSpaceDisabled || isGesturalMode(mNavBarMode)) {
+            // Completely remove IME space when disabled or in gesture navigation
+            return 0;
         } else if (isHideIMESpaceEnabled()) {
             // When IME space hiding is enabled, use specific height for minimal space
             return getResources().getDimensionPixelSize(
