@@ -2152,6 +2152,14 @@ class DatabaseHelper extends SQLiteOpenHelper {
             loadBooleanSetting(stmt, Settings.System.HIDE_NAVBAR_ENABLE,
                     R.bool.def_hide_navbar_enable);
 
+            // Load navigation mode setting (gesture navigation by default)
+            loadIntegerSetting(stmt, Settings.Secure.NAVIGATION_MODE,
+                    R.integer.def_navigation_mode);
+
+            // Load IME space settings (disabled by default)
+            loadBooleanSetting(stmt, Settings.System.NAVIGATION_BAR_IME_SPACE_ENABLED,
+                    R.bool.def_navigation_bar_ime_space_enabled);
+
             // Load notification squishy animations setting
             loadBooleanSetting(stmt, Settings.System.NOTIFICATION_SQUISHY_ANIMATIONS,
                     R.bool.def_notification_squishy_animations);
