@@ -50,7 +50,7 @@ public class FooterPreference extends Preference implements GroupSectionDividerM
     private static final String INTENT_URL_PREFIX = "intent:";
     static final int ORDER_FOOTER = Integer.MAX_VALUE - 1;
     @VisibleForTesting View.OnClickListener mLearnMoreListener;
-    @VisibleForTesting int mIconVisibility = View.VISIBLE;
+    @VisibleForTesting int mIconVisibility = View.GONE;
     private CharSequence mContentDescription;
     private CharSequence mLearnMoreText;
     private FooterLearnMoreSpan mLearnMoreSpan;
@@ -138,8 +138,11 @@ public class FooterPreference extends Preference implements GroupSectionDividerM
             }
         }
 
-        View icon = holder.itemView.findViewById(R.id.icon_frame);
-        if (icon != null) {
+        View iconFrame = holder.itemView.findViewById(R.id.icon_frame);
+        View icon = holder.itemView.findViewById(android.R.id.icon);
+        if (iconFrame != null && icon != null) {
+            // Keep the icon frame visible to maintain spacing, but hide the actual icon
+            iconFrame.setVisibility(View.VISIBLE);
             icon.setVisibility(mIconVisibility);
         }
     }
