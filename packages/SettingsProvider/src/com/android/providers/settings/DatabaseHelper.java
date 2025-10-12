@@ -2285,6 +2285,16 @@ class DatabaseHelper extends SQLiteOpenHelper {
             loadStringSetting(stmt, Settings.Secure.HIDE_APPLIST,
                     R.string.def_hide_applist);
 
+            // Load default pocket mode settings
+            loadIntegerSetting(stmt, Settings.Secure.POCKET_MODE_ENABLED,
+                    R.integer.def_pocket_mode_enabled);
+            loadIntegerSetting(stmt, Settings.Secure.ALWAYS_ON_POCKET_MODE_ENABLED,
+                    R.integer.def_always_on_pocket_mode_enabled);
+
+            // Load default ambient mode settings
+            loadIntegerSetting(stmt, Settings.Secure.DOZE_ENABLED,
+                    R.integer.def_doze_enabled);
+
             loadBooleanSetting(stmt, Settings.Secure.INSTALL_NON_MARKET_APPS,
                     R.bool.def_install_non_market_apps);
 

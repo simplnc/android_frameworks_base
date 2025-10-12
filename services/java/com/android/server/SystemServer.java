@@ -1813,6 +1813,17 @@ public final class SystemServer implements Dumpable {
                 t.traceEnd();
             }
 
+            // Initialize PocketModeService
+            if (!isWatch && !isTv && !isAutomotive) {
+                t.traceBegin("StartPocketModeService");
+                try {
+                    org.custom.server.PocketModeService.getInstance(context);
+                } catch (Throwable e) {
+                    Slog.e("System", "Failure starting PocketModeService", e);
+                }
+                t.traceEnd();
+            }
+
         } catch (Throwable e) {
             Slog.e("System", "******************************************");
             Slog.e("System", "************ Failure starting core service");
@@ -3465,6 +3476,15 @@ public final class SystemServer implements Dumpable {
                 setIncrementalServiceSystemReady(mIncrementalServiceHandle);
                 t.traceEnd();
             }
+
+            // Make PocketModeService ready
+            t.traceBegin("MakePocketModeServiceReady");
+            try {
+                org.custom.server.PocketModeService.getInstance(context).setSystemReady();
+            } catch (Throwable e) {
+                reportWtf("making PocketModeService ready", e);
+            }
+            t.traceEnd();
 
             t.traceBegin("OdsignStatsLogger");
             try {

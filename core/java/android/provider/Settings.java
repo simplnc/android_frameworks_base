@@ -13346,6 +13346,20 @@ public final class Settings {
         public static final String HIDE_APPLIST = "hide_applist";
 
         /**
+         * Whether pocket mode is enabled.
+         * @hide
+         */
+        @Readable
+        public static final String POCKET_MODE_ENABLED = "pocket_mode_enabled";
+
+        /**
+         * Whether always-on pocket mode is enabled.
+         * @hide
+         */
+        @Readable
+        public static final String ALWAYS_ON_POCKET_MODE_ENABLED = "always_on_pocket_mode_enabled";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *

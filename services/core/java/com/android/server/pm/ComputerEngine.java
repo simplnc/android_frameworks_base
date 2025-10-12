@@ -2591,7 +2591,6 @@ public class ComputerEngine implements Computer {
 
     private final boolean shouldFilterApplicationCustom(
             @Nullable PackageStateInternal ps, int callingUid, int userId) {
-        if (!isBootCompleted()) return false;
         if (ps == null) return false;
 
         final String packageName = ps.getPackageName();
@@ -2600,9 +2599,12 @@ public class ComputerEngine implements Computer {
         // if the target and caller are the same application, skip
         if (isCallerSameApp(packageName, callingUid)
                 // if the caller is system, root, shell, or updated system app, skip
-                || isCallerSystem(callingUid)
-                // if the caller is the current default home, skip
-                || isCallerHome(callingUid, userId)) {
+                || isCallerSystem(callingUid)) {
+            return false;
+        }
+        
+        // Don't hide system apps - they should always be accessible
+        if (ps.isSystem()) {
             return false;
         }
         // if the target is included in Settings.Secure.HIDE_APPLIST, do filter
@@ -2694,6 +2696,12 @@ public class ComputerEngine implements Computer {
             return !mInstantAppRegistry.isInstantAccessGranted(
                     userId, UserHandle.getAppId(callingUid), ps.getAppId());
         }
+        
+        // Check if app should be hidden from app list
+        if (shouldFilterApplicationCustom(ps, callingUid, userId)) {
+            return true;
+        }
+        
         int appId = UserHandle.getAppId(callingUid);
         final SettingBase callingPs = mSettings.getSettingBase(appId);
         return mAppsFilter.shouldFilterApplication(this, callingUid, callingPs, ps, userId);
