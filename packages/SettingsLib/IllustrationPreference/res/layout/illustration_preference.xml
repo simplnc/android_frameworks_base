@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
-            android:src="@drawable/protection_background"/>
+            android:background="@android:color/transparent"/>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_view"
