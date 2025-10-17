@@ -772,27 +772,31 @@ public class Toast {
             if (mHandler.hasMessages(CANCEL) || mHandler.hasMessages(HIDE)) {
                 return;
             }
-            if (Flags.toastNoWeakref()) {
-                if (mNextView != null && mView != mNextView) {
-                    // remove the old view if necessary
-                    handleHide();
-                    mView = mNextView;
-                    if (mView != null) {
-                        mPresenter.show(mView, mToken, windowToken, mDuration, mGravity, mX, mY,
-                                mHorizontalMargin, mVerticalMargin,
-                                new CallbackBinder(getCallbacks(), mHandler));
-                    }
+            if (mView != mNextView) {
+                // remove the old view if necessary
+                handleHide();
+                mView = mNextView;
+                Context context = mView.getContext().getApplicationContext();
+                mPresenter.show(mView, mToken, windowToken, mDuration, mGravity, mX, mY,
+                        mHorizontalMargin, mVerticalMargin,
+                        new CallbackBinder(getCallbacks(), mHandler));
+                String packageName = mView.getContext().getOpPackageName();
+                if (context == null) {
+                    context = mView.getContext();
                 }
-            } else {
-                if (mNextViewWeakRef != null && mView != mNextViewWeakRef.get()) {
-                    // remove the old view if necessary
-                    handleHide();
-                    mView = mNextViewWeakRef.get();
-                    if (mView != null) {
-                        mPresenter.show(mView, mToken, windowToken, mDuration, mGravity, mX, mY,
-                                mHorizontalMargin, mVerticalMargin,
-                                new CallbackBinder(getCallbacks(), mHandler));
+                ImageView appIcon = (ImageView) mView.findViewById(android.R.id.icon);
+                if (appIcon != null) {
+                    PackageManager pm = context.getPackageManager();
+                    Drawable icon = null;
+                    try {
+                        icon = pm.getApplicationIcon(packageName);
+                    } catch (PackageManager.NameNotFoundException e) {
+                        appIcon.setVisibility(View.GONE);
                     }
+                    if (icon == null)
+                        appIcon.setVisibility(View.GONE);
+                    else
+                        appIcon.setImageDrawable(icon);
                 }
             }
         }

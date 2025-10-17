@@ -13,30 +13,30 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  -->
-
+-->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:background="?android:attr/selectableItemBackground"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:id="@+id/icon_frame"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minWidth="56dp"
-        android:gravity="start|top"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="?android:attr/listPreferredItemPaddingStart"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="?android:attr/listPreferredItemPaddingStart"
+        android:gravity="center_vertical"
+        android:background="@drawable/dot_footer_bg"
+        android:minHeight="?android:attr/listPreferredItemHeight"
         android:orientation="horizontal"
-        android:paddingEnd="12dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="4dp">
-        <ImageView
-            android:id="@android:id/icon"
+        android:padding="?android:attr/listPreferredItemPaddingStart">
+
+        <LinearLayout
+            android:id="@+id/icon_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

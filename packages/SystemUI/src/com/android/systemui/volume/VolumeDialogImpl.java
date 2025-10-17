@@ -1140,12 +1140,9 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
                 mRingerDrawerIconAnimatingSelected.clearColorFilter();
             }
         });
-        mRingerDrawerIconColorAnimator.setDuration(DRAWER_ANIMATION_DURATION_SHORT);
-
-        mAnimateUpBackgroundToMatchDrawer.addUpdateListener(valueAnimator -> {
-            mRingerDrawerClosedAmount = (float) valueAnimator.getAnimatedValue();
-            updateBackgroundForDrawerClosedAmount();
-        });
+        animator.setInterpolator(new SystemUIInterpolators.LogDecelerateInterpolator());
+        animator.setDuration(expand ? DIALOG_SHOW_ANIMATION_DURATION : DIALOG_HIDE_ANIMATION_DURATION);
+        animator.start();
     }
 
     private ImageView getDrawerIconViewForMode(int mode) {

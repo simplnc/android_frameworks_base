@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 The Android Open Source Project
+<!-- Copyright (C) 2021 The DotOS Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,14 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:gravity="center_vertical|fill_horizontal">
-        <shape android:shape="rectangle"
-               android:tint="@color/switch_track_material">
-            <corners android:radius="24dp" />
-            <solid android:color="@color/white_disabled_material" />
-            <size android:height="20dp" android:width="24dp" />
-        </shape>
-    </item>
-</layer-list>
+<resources>
+    <color name="contextual_card_background">@*android:color/material_grey_900</color>
+</resources>
