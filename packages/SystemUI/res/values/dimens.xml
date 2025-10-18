@@ -752,6 +752,11 @@
     <dimen name="new_qs_header_non_clickable_element_height">24sp</dimen>
 
     <dimen name="qs_footer_padding">20dp</dimen>
+    <dimen name="qs_footer_padding_start">20dp</dimen>
+    <dimen name="qs_footer_padding_end">20dp</dimen>
+    <dimen name="qs_footer_icon_size">24dp</dimen>
+    <dimen name="qs_panel_elevation">4dp</dimen>
+    <dimen name="dotNotificationsRadius">12dp</dimen>
     <dimen name="qs_footers_margin_bottom">8dp</dimen>
 
     <dimen name="segmented_button_spacing">0dp</dimen>
