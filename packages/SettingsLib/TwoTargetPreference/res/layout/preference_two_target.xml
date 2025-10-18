@@ -37,28 +37,27 @@
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd">
 
         <LinearLayout
-            android:id="@android:id/icon_frame"
+            android:id="@+id/icon_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="start|center_vertical"
+            android:minWidth="56dp"
             android:orientation="horizontal"
+            android:clipToPadding="false"
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
-
-            <com.android.internal.widget.PreferenceImageView
+            <androidx.preference.internal.PreferenceImageView
                 android:id="@android:id/icon"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
-                android:adjustViewBounds="true"
-                android:padding="6dp"
-                android:scaleType="fitCenter" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                settings:maxWidth="48dp"
+                settings:maxHeight="48dp" />
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
