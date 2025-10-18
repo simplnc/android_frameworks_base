@@ -191,12 +191,12 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
      * The default scrim under the shade and dialogs.
      * This should not be lower than 0.54, otherwise we won't pass GAR.
      */
-    public static final float BUSY_SCRIM_ALPHA = 9f;
+    public static final float BUSY_SCRIM_ALPHA = 1f;
 
     /**
      * Scrim opacity that can have text on top.
      */
-    public static final float BLUR_SCRIM_ALPHA = 0.85f;
+    public static final float GAR_SCRIM_ALPHA = 0.6f;
 
     static final int TAG_KEY_ANIM = R.id.scrim;
     private static final int TAG_START_ALPHA = R.id.scrim_alpha_start;
@@ -1570,26 +1570,6 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         updateThemeColors();
         scheduleUpdate();
     }
-
-    private void updateThemeColors() {
-        ScrimView scrimView = mScrimBehind;
-        if (scrimView == null) return;
-        int mainColor;
-        int secondaryColor;
-        Context context = scrimView.getContext();
-        if (MonetWannabe.isMonetEnabled(context)) {
-            mainColor = context.getResources().getColor(android.R.color.accent_overlay_device_default, context.getTheme());
-        } else {
-            mainColor = Utils.getColorAttr(context, android.R.attr.textColorPrimaryInverse).getDefaultColor();
-        }
-        secondaryColor = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
-        mColors.setMainColor(mainColor);
-        mColors.setSecondaryColor(secondaryColor);
-        ColorExtractor.GradientColors gradientColors = mColors;
-        gradientColors.setSupportsDarkText(ColorUtils.calculateContrast(gradientColors.getMainColor(), -1) > 4.5d);
-        mNeedsDrawableColorUpdate = true;
-    }
-
 
     @Override
     public void dump(PrintWriter pw, String[] args) {

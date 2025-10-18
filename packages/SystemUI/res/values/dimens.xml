@@ -756,6 +756,11 @@
     <dimen name="qs_footer_padding_end">20dp</dimen>
     <dimen name="qs_footer_icon_size">24dp</dimen>
     <dimen name="qs_panel_elevation">4dp</dimen>
+    <dimen name="qs_panel_padding_bottom">0dp</dimen>
+    <dimen name="qs_page_indicator_width">16dp</dimen>
+    <dimen name="qs_page_indicator_height">8dp</dimen>
+    <dimen name="qs_page_indicator_dot_width">6.4dp</dimen>
+    <dimen name="qs_dual_tile_padding_horizontal">6dp</dimen>
     <dimen name="dotNotificationsRadius">12dp</dimen>
     <dimen name="qs_footers_margin_bottom">8dp</dimen>
 
