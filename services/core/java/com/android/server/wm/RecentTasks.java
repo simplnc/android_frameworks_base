@@ -1521,18 +1521,15 @@ class RecentTasks {
             
             // Don't hide system apps from recent tasks
             try {
-                ApplicationInfo appInfo = mService.mContext.getPackageManager()
-                        .getApplicationInfo(packageName, 0);
-                if (appInfo != null && (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                    // System app - don't hide
-                } else if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
-                        mService.mContext, packageName)) {
+                // Hide regardless of system/non-system if present in the hide list
+                if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
+                        mService.mContext.getContentResolver(), packageName, mService.getCurrentUserId())) {
                     return false;
                 }
             } catch (Exception e) {
-                // If we can't get app info, check hide list anyway
+                // If any issue occurs, still respect the hide list
                 if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
-                        mService.mContext, packageName)) {
+                        mService.mContext.getContentResolver(), packageName, mService.getCurrentUserId())) {
                     return false;
                 }
             }

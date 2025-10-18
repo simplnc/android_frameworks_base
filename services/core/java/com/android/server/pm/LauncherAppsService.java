@@ -764,6 +764,11 @@ public class LauncherAppsService extends SystemService {
             if (isManagedProfileAdmin(user, appInfo.packageName)) {
                 return false;
             }
+            // Don't show synthetic activity for apps in the hide list (system or non-system)
+            if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
+                    mContext.getContentResolver(), appInfo.packageName, user.getIdentifier())) {
+                return false;
+            }
             final AndroidPackage pkg = mPackageManagerInternal.getPackage(appInfo.packageName);
             if (pkg == null) {
                 // Should not happen, but we shouldn't be failing if it does
