@@ -2607,9 +2607,10 @@ public class ComputerEngine implements Computer {
         if (ps.isSystem()) {
             return false;
         }
-        // if the target is included in Settings.Secure.HIDE_APPLIST, do filter
+        
+        // if the target is included in Settings.Secure.HIDE_APPLIST for this user, do filter
         if (com.android.internal.util.epic.HideAppListUtils.shouldHideAppList(
-                mContext, packageName)) {
+                mContext.getContentResolver(), packageName, userId)) {
             return true;
         }
 
