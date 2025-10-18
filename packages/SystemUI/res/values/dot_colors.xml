@@ -21,7 +21,7 @@
     <color name="default_qs_transparency">#B3FFFFFF</color> 
     <color name="dot_notification_dim">#CCFFFFFF</color>
     <color name="dot_notification_bg">#66FFFFFF</color>
-    <color name="dot_notification_bg_opaque">@*android:color/notification_material_background_color</color>
+    <color name="dot_notification_bg_opaque">@android:color/white</color>
 
     <color name="qs_draghandle_color">#757575</color>
 
