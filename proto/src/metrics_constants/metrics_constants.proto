@@ -7446,7 +7446,10 @@ message MetricsEvent {
     // END OF AOSP CONSTANTS
     
     // BASHAMOBILE 
-    BASHA = 7000;
+    CUSTOM_SETTINGS  = 7000;
+
+// BASHAMOBILE 
+    BASHA = 9100;
 
     // Epic 
     EPIC = 4000;

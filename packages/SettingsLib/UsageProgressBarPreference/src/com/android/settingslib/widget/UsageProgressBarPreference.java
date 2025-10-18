@@ -55,6 +55,7 @@ public class UsageProgressBarPreference extends Preference implements GroupSecti
     private CharSequence mBottomSummaryContentDescription;
     private ImageView mCustomImageView;
     private int mPercent = -1;
+    private boolean mIsBatteryUsage = false;
 
     /**
      * Perform inflation from XML and apply a class-specific base style.
@@ -93,6 +94,14 @@ public class UsageProgressBarPreference extends Preference implements GroupSecti
         }
         mTotalSummary = totalSummary;
         notifyChanged();
+    }
+
+    /** Set whether this preference is used for battery usage. */
+    public void setBatteryUsage(boolean isBatteryUsage) {
+        if (mIsBatteryUsage != isBatteryUsage) {
+            mIsBatteryUsage = isBatteryUsage;
+            notifyChanged();
+        }
     }
 
     /** Set bottom summary. */
@@ -193,16 +202,20 @@ public class UsageProgressBarPreference extends Preference implements GroupSecti
             animator.start();
         }
 
-        if (mPercent >= 51) {
-            progressBar.setProgressTintList(context.getColorStateList(R.color.battery_high));
-            progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_high));
-        } else if (mPercent >= 20) {
-            progressBar.setProgressTintList(context.getColorStateList(R.color.battery_medium));
-            progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_medium));
-        } else if (mPercent <= 19) {
-            progressBar.setProgressTintList(context.getColorStateList(R.color.battery_low));
-            progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_low));
+        // Only apply battery colors if this is actually battery usage
+        if (mIsBatteryUsage) {
+            if (mPercent >= 51) {
+                progressBar.setProgressTintList(context.getColorStateList(R.color.battery_high));
+                progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_high));
+            } else if (mPercent >= 20) {
+                progressBar.setProgressTintList(context.getColorStateList(R.color.battery_medium));
+                progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_medium));
+            } else if (mPercent <= 19) {
+                progressBar.setProgressTintList(context.getColorStateList(R.color.battery_low));
+                progressBar.setProgressBackgroundTintList(context.getColorStateList(R.color.battery_low));
+            }
         }
+        // For storage usage, the drawable colors will be used (no tint override)
     }
 
     private CharSequence enlargeFontOfNumber(CharSequence summary) {

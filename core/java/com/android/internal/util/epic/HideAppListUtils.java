@@ -40,6 +40,23 @@ public class HideAppListUtils {
         return apps.contains(packageName);
     }
 
+    /**
+     * Per-user variant that checks if the given package is in the hide list for the target user.
+     */
+    public static boolean shouldHideAppList(ContentResolver cr, String packageName, int userId) {
+        if (cr == null || packageName == null) {
+            return false;
+        }
+        // Primary: check target user's hide list
+        Set<String> apps = getApps(cr, userId);
+        if (apps.contains(packageName)) {
+            return true;
+        }
+        // Fallback: also respect the system user's list (apply-to-all semantics)
+        Set<String> systemUserApps = getApps(cr, 0 /* UserHandle.USER_SYSTEM */);
+        return systemUserApps.contains(packageName);
+    }
+
     public static Set<String> getApps(Context context) {
         if (context == null) {
             return new HashSet<>();
@@ -63,6 +80,25 @@ public class HideAppListUtils {
             return new HashSet<>(Arrays.asList(apps.split(",")));
         }
 
+        return new HashSet<>();
+    }
+
+    /**
+     * Per-user variant that retrieves the hidden apps list for the target user.
+     */
+    public static Set<String> getApps(ContentResolver cr, int userId) {
+        if (cr == null) {
+            return new HashSet<>();
+        }
+        String apps = "";
+        try {
+            apps = Settings.Secure.getStringForUser(cr, Settings.Secure.HIDE_APPLIST, userId);
+        } catch (IllegalStateException e) {
+            return new HashSet<>();
+        }
+        if (apps != null && !apps.isEmpty() && !apps.equals(",")) {
+            return new HashSet<>(Arrays.asList(apps.split(",")));
+        }
         return new HashSet<>();
     }
 
