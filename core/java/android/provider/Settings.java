@@ -6568,6 +6568,14 @@ public final class Settings {
         public static final String ON_THE_GO_CAMERA = "on_the_go_camera";
 
         /**
+         * Whether On The Go mode is enabled.
+         * 0 = disabled
+         * 1 = enabled
+         * @hide
+         */
+        public static final String ON_THE_GO_ENABLED = "onthego_enabled";
+
+        /**
         
          * Adaptive playback
          * Automatically pause media when the volume is muted and
