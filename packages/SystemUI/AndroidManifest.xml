@@ -535,10 +535,19 @@
         <service android:name=".recordissue.IssueRecordingService"
                  android:foregroundServiceType="systemExempted"/>
 
-        <!-- started from PhoneWindowManager -->
+        <!-- started from PhoneWindowManager or Settings -->
         <service android:name=".epic.onthego.OnTheGoService"
             android:process=":onthego"
             android:exported="true" />
+
+        <!-- OnTheGo broadcast receiver -->
+        <receiver android:name=".epic.onthego.OnTheGoReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.systemui.epic.onthego.START" />
+                <action android:name="com.android.systemui.epic.onthego.STOP" />
+            </intent-filter>
+        </receiver>
 
         <receiver android:name=".SysuiRestartReceiver"
             android:exported="false">

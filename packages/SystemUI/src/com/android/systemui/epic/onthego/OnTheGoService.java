@@ -49,7 +49,7 @@ import java.io.IOException;
 public class OnTheGoService extends Service {
 
     private static final String  TAG   = "OnTheGoService";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final int ONTHEGO_NOTIFICATION_ID = 81333378;
     private static final String ONTHEGO_CHANNEL_ID = "onthego_notif";
@@ -59,6 +59,8 @@ public class OnTheGoService extends Service {
     public static final String ACTION_TOGGLE_ALPHA   = "toggle_alpha";
     public static final String ACTION_TOGGLE_CAMERA  = "toggle_camera";
     public static final String ACTION_TOGGLE_OPTIONS = "toggle_options";
+    public static final String ACTION_BROADCAST_START = "com.android.systemui.epic.onthego.START";
+    public static final String ACTION_BROADCAST_STOP  = "com.android.systemui.epic.onthego.STOP";
     public static final String EXTRA_ALPHA           = "extra_alpha";
 
     private static final int CAMERA_BACK  = 0;
@@ -82,6 +84,12 @@ public class OnTheGoService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        logDebug("OnTheGoService onCreate");
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterReceivers();
@@ -90,9 +98,15 @@ public class OnTheGoService extends Service {
 
     private void registerReceivers() {
         final IntentFilter alphaFilter = new IntentFilter(ACTION_TOGGLE_ALPHA);
-        registerReceiver(mAlphaReceiver, alphaFilter, Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(mAlphaReceiver, alphaFilter, Context.RECEIVER_EXPORTED);
         final IntentFilter cameraFilter = new IntentFilter(ACTION_TOGGLE_CAMERA);
-        registerReceiver(mCameraReceiver, cameraFilter, Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(mCameraReceiver, cameraFilter, Context.RECEIVER_EXPORTED);
+        
+        // Register broadcast receivers for Settings app
+        final IntentFilter startFilter = new IntentFilter(ACTION_BROADCAST_START);
+        registerReceiver(mStartReceiver, startFilter, Context.RECEIVER_NOT_EXPORTED);
+        final IntentFilter stopFilter = new IntentFilter(ACTION_BROADCAST_STOP);
+        registerReceiver(mStopReceiver, stopFilter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     private void unregisterReceivers() {
@@ -101,6 +115,12 @@ public class OnTheGoService extends Service {
         } catch (Exception ignored) { }
         try {
             unregisterReceiver(mCameraReceiver);
+        } catch (Exception ignored) { }
+        try {
+            unregisterReceiver(mStartReceiver);
+        } catch (Exception ignored) { }
+        try {
+            unregisterReceiver(mStopReceiver);
         } catch (Exception ignored) { }
     }
 
@@ -125,6 +145,22 @@ public class OnTheGoService extends Service {
                     stopOnTheGo(true);
                 }
             }
+        }
+    };
+
+    private final BroadcastReceiver mStartReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            logDebug("Received START broadcast from Settings");
+            startOnTheGo();
+        }
+    };
+
+    private final BroadcastReceiver mStopReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            logDebug("Received STOP broadcast from Settings");
+            stopOnTheGo(false);
         }
     };
 
@@ -354,7 +390,7 @@ public class OnTheGoService extends Service {
 
         if (type == 1 || type == 2) {
             final ComponentName cn = new ComponentName("com.android.systemui",
-                    "com.android.systemui.spark.onthego.OnTheGoService");
+                    "com.android.systemui.epic.onthego.OnTheGoService");
             final Intent startIntent = new Intent();
             startIntent.setComponent(cn);
             startIntent.setAction(ACTION_START);
