@@ -37,7 +37,13 @@ public class HideAppListUtils {
             return false;
         }
 
-        return apps.contains(packageName);
+        // Use case-sensitive exact match for package names
+        // Package names are case-sensitive in Android
+        boolean shouldHide = apps.contains(packageName);
+        if (shouldHide) {
+            android.util.Log.d("HideAppListUtils", "Hiding app: " + packageName + " (found in hide list)");
+        }
+        return shouldHide;
     }
 
     public static Set<String> getApps(Context context) {
@@ -57,12 +63,32 @@ public class HideAppListUtils {
         try {
             apps = Settings.Secure.getString(cr, Settings.Secure.HIDE_APPLIST);
         } catch (IllegalStateException e) {
+            android.util.Log.e("HideAppListUtils", "Failed to get HIDE_APPLIST setting", e);
             return new HashSet<>();
         }
         if (apps != null && !apps.isEmpty() && !apps.equals(",")) {
-            return new HashSet<>(Arrays.asList(apps.split(",")));
+            Set<String> appSet = new HashSet<>();
+            for (String pkg : apps.split(",")) {
+                String trimmed = pkg != null ? pkg.trim() : "";
+                if (!trimmed.isEmpty()) {
+                    appSet.add(trimmed);
+                }
+            }
+            android.util.Log.d("HideAppListUtils", "Loaded " + appSet.size() + " hidden apps from HIDE_APPLIST");
+            // Debug: Log specific apps we're looking for
+            String[] targetApps = {"com.sourajitk.ambient_music", "network.loki.messenger", 
+                "com.aurora.store", "com.aurora.services", "org.microg.gms"};
+            for (String target : targetApps) {
+                if (appSet.contains(target)) {
+                    android.util.Log.d("HideAppListUtils", "Found target app in hide list: " + target);
+                } else {
+                    android.util.Log.w("HideAppListUtils", "Target app NOT found in hide list: " + target);
+                }
+            }
+            return appSet;
         }
 
+        android.util.Log.w("HideAppListUtils", "HIDE_APPLIST setting is empty or invalid: " + apps);
         return new HashSet<>();
     }
 
