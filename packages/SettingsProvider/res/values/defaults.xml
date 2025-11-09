@@ -192,8 +192,8 @@
 
     <!-- Default value for Settings.Secure.HIDE_APPLIST setting,
          which is a comma separated list of packages to hide from app lists.
-         Hide AOSP Web Shell and Messenger by default. -->
-    <string name="def_hide_applist" translatable="false">org.chromium.webview_shell,com.android.athena,com.demizo.daily_you,com.devrinth.launchpad,com.kaleedtc.privacium,com.shezik.drawanywhere,com.stario.launcher,image.toolbox,native.alpha,nethical.digipaws,nethical.locklock,com.truemlgpro.wifiinfo,com.fibelatti.photowidget,com.kieronquinn.app.taptap,com.quicktiles.app,firewall,com.drnoob.datamonitor,com.session.music,com.sessionmusic,com.session,com.ambient.music,com.ambientmusic,com.ambient</string>
+         Hide system apps, vendor apps, and background services from launchers by default. -->
+    <string name="def_hide_applist" translatable="false">org.chromium.webview_shell,dev.sebaubuntu.athena,com.demizo.daily_you,com.devrinth.launchpad,com.kaleedtc.privacium,com.shezik.drawanywhere,com.stario.launcher,ru.tech.imageresizershrinker,com.cylonid.nativealpha,nethical.digipaws,nethical.locklock,com.truemlgpro.wifiinfo,com.fibelatti.photowidget,com.kieronquinn.app.taptap,com.asdoi.quicktiles,com.kin.athena,com.drnoob.datamonitor,com.sourajitk.ambient_music,network.loki.messenger,org.thoughtcrime.securesms,com.aurora.store,com.aurora.services,com.vishal2376.snaptick,org.microg.gms,org.microg.gms.droidguard,com.google.android.gms</string>
 
     <!-- Default value for Settings.Secure.POCKET_MODE_ENABLED setting.
          Enable pocket mode by default. -->
