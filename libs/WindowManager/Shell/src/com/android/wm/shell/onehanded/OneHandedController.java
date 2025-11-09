@@ -494,8 +494,13 @@ public class OneHandedController implements RemoteCallable<OneHandedController>,
 
     @VisibleForTesting
     void onActivatedActionChanged() {
-        if (!isShortcutEnabled()) {
-            Slog.w(TAG, "Shortcut not enabled, skip onActivatedActionChanged()");
+        // Allow gesture navigation to trigger one-handed mode even without shortcuts
+        final int navMode = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.NAVIGATION_MODE, 2 /* fully gestural */, mUserId);
+        final boolean isGestureEnabled = isOneHandedEnabled() && navMode != 0 /* not 3-button */;
+        
+        if (!isShortcutEnabled() && !isGestureEnabled) {
+            Slog.w(TAG, "Shortcut not enabled and gesture not available, skip onActivatedActionChanged()");
             return;
         }
 
@@ -520,6 +525,18 @@ public class OneHandedController implements RemoteCallable<OneHandedController>,
                 startOneHanded();
             } else {
                 stopOneHanded();
+            }
+        } else if (isGestureEnabled && !isActivated && !isSwipeToNotificationEnabled()) {
+            // If gesture navigation is enabled and one-handed mode is not active,
+            // allow direct activation via gesture (swipe down from navigation bar)
+            // This ensures gesture navigation can trigger one-handed mode directly
+            // When gesture navigation is enabled, directly trigger one-handed mode
+            // when requestActivated is true (set by gesture detection)
+            // For gesture navigation, if activated is requested, trigger one-handed mode
+            // The gesture detection should set ONE_HANDED_MODE_ACTIVATED to 1,
+            // which will trigger this callback
+            if (requestActivated) {
+                startOneHanded();
             }
         }
     }
