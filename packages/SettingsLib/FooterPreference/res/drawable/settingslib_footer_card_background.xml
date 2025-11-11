@@ -19,21 +19,15 @@
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
             <solid android:color="#FFFFFFFF" />
-            <corners
-                android:topLeftRadius="16dp"
-                android:topRightRadius="16dp"
-                android:bottomLeftRadius="18dp"
-                android:bottomRightRadius="18dp" />
+            <corners android:bottomRightRadius="12dp" android:bottomLeftRadius="12dp" 
+                android:topLeftRadius="12dp" android:topRightRadius="12dp" />
         </shape>
     </item>
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
             <solid android:color="@android:color/system_neutral1_100" />
-            <corners
-                android:topLeftRadius="16dp"
-                android:topRightRadius="16dp"
-                android:bottomLeftRadius="18dp"
-                android:bottomRightRadius="18dp" />
+            <corners android:bottomRightRadius="12dp" android:bottomLeftRadius="12dp" 
+                android:topLeftRadius="12dp" android:topRightRadius="12dp" />
         </shape>
     </item>
 </ripple>

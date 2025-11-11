@@ -20,7 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
-    android:layout_marginHorizontal="16dp">
+    android:layout_marginHorizontal="15dp">
 
     <FrameLayout
         android:id="@+id/container"
@@ -28,16 +28,16 @@
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="12dp">
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?android:attr/listPreferredItemHeight"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_marginEnd="13dp"
             android:gravity="start"
             android:orientation="horizontal"
             android:clipToPadding="false">
