@@ -6854,6 +6854,13 @@ public final class Settings {
         public static final String SENSOR_BLOCK = "sensor_block";
 
         /**
+         * Sensor block level: 0 = minimum (3 sensors), 1 = extreme (17 sensors)
+         * @hide
+         */
+        @Readable
+        public static final String SENSOR_BLOCK_LEVEL = "sensor_block_level";
+
+        /**
          * Sensor blocked packages
          * @hide
          */

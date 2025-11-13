@@ -360,13 +360,44 @@ public class SystemSensorManager extends SensorManager {
         if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SENSOR_BLOCK, 0) == 1) {
             int sensortype = sensor.getType();
-            if (sensortype == Sensor.TYPE_SIGNIFICANT_MOTION ||
-                    sensortype == Sensor.TYPE_ACCELEROMETER ||
-                    sensortype == Sensor.TYPE_LINEAR_ACCELERATION) {
+            int blockLevel = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SENSOR_BLOCK_LEVEL, 0); // 0 = minimum, 1 = extreme
+            
+            boolean shouldBlock = false;
+            
+            // Minimum level: block only battery-draining sensors (original 3)
+            if (blockLevel == 0) {
+                shouldBlock = (sensortype == Sensor.TYPE_SIGNIFICANT_MOTION ||
+                        sensortype == Sensor.TYPE_ACCELEROMETER ||
+                        sensortype == Sensor.TYPE_LINEAR_ACCELERATION);
+            } 
+            // Extreme level: block all 17 sensors
+            else if (blockLevel == 1) {
+                shouldBlock = (sensortype == Sensor.TYPE_SIGNIFICANT_MOTION ||
+                        sensortype == Sensor.TYPE_ACCELEROMETER ||
+                        sensortype == Sensor.TYPE_LINEAR_ACCELERATION ||
+                        sensortype == Sensor.TYPE_GYROSCOPE ||
+                        sensortype == Sensor.TYPE_MAGNETIC_FIELD ||
+                        sensortype == Sensor.TYPE_PROXIMITY ||
+                        sensortype == Sensor.TYPE_LIGHT ||
+                        sensortype == Sensor.TYPE_PRESSURE ||
+                        sensortype == Sensor.TYPE_AMBIENT_TEMPERATURE ||
+                        sensortype == Sensor.TYPE_RELATIVE_HUMIDITY ||
+                        sensortype == Sensor.TYPE_STEP_COUNTER ||
+                        sensortype == Sensor.TYPE_STEP_DETECTOR ||
+                        sensortype == Sensor.TYPE_HEART_RATE ||
+                        sensortype == Sensor.TYPE_ROTATION_VECTOR ||
+                        sensortype == Sensor.TYPE_GRAVITY ||
+                        sensortype == Sensor.TYPE_GAME_ROTATION_VECTOR ||
+                        sensortype == Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
+            }
+            
+            if (shouldBlock) {
                 String pkgName = mContext.getPackageName();
                 if (isBlockedApp(pkgName)) {
-                    Log.w(TAG, "Preventing " + pkgName + " from draining battery using " +
-                            sensor.getStringType());
+                    Log.w(TAG, "Preventing " + pkgName + " from accessing " +
+                            sensor.getStringType() + " (level: " + 
+                            (blockLevel == 0 ? "minimum" : "extreme") + ")");
                     return false;
                 }
             }
