@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.systemui.clocks.AODStyle
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/below_clock_padding_start"
+    android:layout_marginTop="@dimen/custom_clock_frame_margin_top"
+    android:importantForAccessibility="no">
+    <RelativeLayout
+        android:id="@+id/aod_style_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/below_clock_padding_start"
+        android:layout_marginTop="@dimen/custom_clock_frame_margin_top"
+        android:importantForAccessibility="no">
+        <ImageView
+            android:id="@+id/custom_aod_image_view"
+            android:layout_width="@dimen/custom_aod_image_size"
+            android:layout_height="@dimen/custom_aod_image_size"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"/>
+    </RelativeLayout>
+</com.android.systemui.clocks.AODStyle>

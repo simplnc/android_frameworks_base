@@ -77,13 +77,23 @@ public class AmbientCustomImage extends FrameLayout {
    }
 
    public void update() {
-        String imageUri = Settings.System.getStringForUser(mContext.getContentResolver(),
-              Settings.System.AMBIENT_CUSTOM_IMAGE,
+        String imageFile = Settings.System.getStringForUser(mContext.getContentResolver(),
+              Settings.System.AMBIENT_IMAGE_FILE,
               UserHandle.USER_CURRENT);
-        if (imageUri != null) {
-              saveAmbientImage(Uri.parse(imageUri));
+        if (imageFile != null && !imageFile.isEmpty()) {
+            loadAmbientImage(imageFile);
+        } else {
+            // Fallback to URI if file path not available
+            String imageUri = Settings.System.getStringForUser(mContext.getContentResolver(),
+                  Settings.System.AMBIENT_CUSTOM_IMAGE,
+                  UserHandle.USER_CURRENT);
+            if (imageUri != null) {
+                  saveAmbientImage(Uri.parse(imageUri));
+                  loadAmbientImage();
+            } else {
+                loadAmbientImage();
+            }
         }
-        loadAmbientImage();
         setCustomImage(mImage);
    }
 
@@ -110,10 +120,19 @@ public class AmbientCustomImage extends FrameLayout {
    }
 
    private void loadAmbientImage() {
+       loadAmbientImage(null);
+   }
+
+   private void loadAmbientImage(String customPath) {
        mImage = null;
-       File file = new File(mContext.getFilesDir(), AMBIENT_IMAGE_FILE_NAME);
+       File file;
+       if (customPath != null && !customPath.isEmpty()) {
+           file = new File(customPath);
+       } else {
+           file = new File(mContext.getFilesDir(), AMBIENT_IMAGE_FILE_NAME);
+       }
        if (file.exists()) {
-           if (DEBUG) Log.i(TAG, "Load ambient image");
+           if (DEBUG) Log.i(TAG, "Load ambient image from: " + file.getAbsolutePath());
            final Bitmap image = ImageHelper.getCompressedBitmap(file.getAbsolutePath());
            mImage = new BitmapDrawable(mContext.getResources(), image);
        }

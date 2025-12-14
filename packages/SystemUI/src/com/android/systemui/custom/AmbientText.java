@@ -50,6 +50,18 @@ import androidx.palette.graphics.Palette;
 import com.android.settingslib.Utils;
 import com.android.systemui.res.R;
 
+// AOD Enhancement imports
+import android.graphics.Color;
+import android.os.Build;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
+// AOD Enhancement imports
+import android.graphics.Color;
+import android.os.Build;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
 public class AmbientText extends FrameLayout {
    private static final boolean DEBUG = false;
    private static final String TAG = "AmbientText";
@@ -58,6 +70,9 @@ public class AmbientText extends FrameLayout {
    private ValueAnimator mTextEndAnimator;
    private boolean mEnable;
    private WallpaperManager mWallManager;
+
+   // AOD Enhancement components
+   private AODClockView mAODClockView;
 
    public AmbientText(Context context) {
        this(context, null);
@@ -74,6 +89,7 @@ public class AmbientText extends FrameLayout {
    public AmbientText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
        super(context, attrs, defStyleAttr, defStyleRes);
        if (DEBUG) Log.d(TAG, "new");
+       initializeAODComponents();
    }
 
    private Runnable mTextUpdate = new Runnable() {
@@ -91,7 +107,26 @@ public class AmbientText extends FrameLayout {
    }
 
    public void update() {
+      updateAODComponents();
+   }
 
+   private void initializeAODComponents() {
+      // AOD Clock View
+      mAODClockView = new AODClockView(getContext());
+      FrameLayout.LayoutParams clockParams = new FrameLayout.LayoutParams(
+         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      clockParams.gravity = android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.TOP;
+      clockParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60,
+         getResources().getDisplayMetrics());
+      mAODClockView.setLayoutParams(clockParams);
+      mAODClockView.setVisibility(View.GONE); // Initially hidden
+      addView(mAODClockView);
+
+      // Note: Notification preview and music visualizer features removed for simplicity
+      // These would require additional custom views that are not currently available
+   }
+
+   private void updateAODComponents() {
       ContentResolver resolver = getContext().getContentResolver();
       TextView textView = (TextView) findViewById(R.id.ambient_text);
 
@@ -135,11 +170,82 @@ public class AmbientText extends FrameLayout {
             lp.gravity = Gravity.END | Gravity.BOTTOM;
             break;
       }
+      // Adjust text position based on clock visibility
+      if (mAODClockView != null && mAODClockView.getVisibility() == View.VISIBLE) {
+         // Clock is visible, position text below clock
+         lp.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 140,
+            getResources().getDisplayMetrics());
+      } else {
+         // No clock, center text or use default position
+         lp.topMargin = 0;
+      }
+
       textView.setLayoutParams(lp);
       textView.setText(text);
       textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, updateTextSize());
 
+      // Update AOD Clock
+      updateAODClock();
+
+      // Note: Notification preview and music visualizer updates removed for simplicity
+
    }
+
+   private void updateAODClock() {
+      if (mAODClockView == null) return;
+
+      ContentResolver resolver = getContext().getContentResolver();
+
+      // Check if AOD clock is enabled (when ambient text is enabled)
+      boolean textEnabled = Settings.System.getIntForUser(resolver,
+         Settings.System.AMBIENT_TEXT, 0, UserHandle.USER_CURRENT) == 1;
+
+      if (textEnabled) {
+         // Get clock style setting
+         int clockStyle = android.provider.Settings.Secure.getInt(resolver,
+            "aod_clock_style", 0); // Default to classic
+
+         mAODClockView.setClockStyle(clockStyle);
+
+         // Set colors based on ambient text color
+         int textColor = Utils.getColorAccentDefaultColor(getContext());
+         try {
+            int customColor = Settings.System.getIntForUser(resolver,
+               Settings.System.AMBIENT_TEXT_COLOR, textColor, UserHandle.USER_CURRENT);
+            if (customColor != textColor) {
+               textColor = customColor;
+            }
+         } catch (Exception e) {
+            // Use default color
+         }
+
+         mAODClockView.setColors(textColor,
+            Color.argb(178, 255, 255, 255), // Secondary color
+            Color.argb(128, Color.red(textColor), Color.green(textColor), Color.blue(textColor))); // Accent
+
+         // Position clock - adjust based on whether text is shown
+         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mAODClockView.getLayoutParams();
+         String ambientText = Settings.System.getStringForUser(resolver,
+            Settings.System.AMBIENT_TEXT_STRING, UserHandle.USER_CURRENT);
+         if (ambientText != null && !ambientText.isEmpty()) {
+            // Text is enabled, position clock higher
+            params.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40,
+               getResources().getDisplayMetrics());
+            params.gravity = android.view.Gravity.CENTER_HORIZONTAL | android.view.Gravity.TOP;
+         } else {
+            // No text, center the clock
+            params.gravity = android.view.Gravity.CENTER;
+            params.topMargin = 0;
+         }
+         mAODClockView.setLayoutParams(params);
+
+         mAODClockView.setVisibility(View.VISIBLE);
+      } else {
+         mAODClockView.setVisibility(View.GONE);
+      }
+   }
+
+   // Notification preview and music visualizer methods removed for simplicity
 
    private int updateTextSize() {
         final ContentResolver resolver = mContext.getContentResolver();
