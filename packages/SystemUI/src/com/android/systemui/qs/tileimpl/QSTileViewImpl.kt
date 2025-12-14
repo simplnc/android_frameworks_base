@@ -90,7 +90,7 @@ constructor(
         private const val SECONDARY_LABEL_NAME = "secondaryLabel"
         private const val CHEVRON_NAME = "chevron"
         private const val OVERLAY_NAME = "overlay"
-        const val UNAVAILABLE_ALPHA = 0.3f
+        const val UNAVAILABLE_ALPHA = 0.5f  // BMOBILE_PATCH: Increased from 0.3f to 0.5f for darker unavailable tiles
         @VisibleForTesting internal const val TILE_STATE_RES_PREFIX = "tile_states_"
         @VisibleForTesting internal const val LONG_PRESS_EFFECT_WIDTH_SCALE = 1.1f
         @VisibleForTesting internal const val LONG_PRESS_EFFECT_HEIGHT_SCALE = 1.2f
@@ -130,12 +130,12 @@ constructor(
 
     private val overlayColorActive =
         Utils.applyAlpha(
-            /* alpha= */ 0.11f,
+            /* alpha= */ 0.20f,  // BMOBILE_PATCH: Increased from 0.11f to 0.20f for darker tiles
             Utils.getColorAttrDefaultColor(context, R.attr.onShadeActive),
         )
     private val overlayColorInactive =
         Utils.applyAlpha(
-            /* alpha= */ 0.08f,
+            /* alpha= */ 0.15f,  // BMOBILE_PATCH: Increased from 0.08f to 0.15f for darker tiles
             Utils.getColorAttrDefaultColor(context, R.attr.onShadeInactive),
         )
 

@@ -21,7 +21,7 @@
     xmlns:sysui="http://schemas.android.com/apk/res-auto"
     android:id="@+id/header"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="@integer/notification_panel_layout_gravity"
     android:background="@android:color/transparent"
     android:importantForAccessibility="no"
@@ -32,7 +32,7 @@
     android:paddingTop="0dp"
     android:paddingEnd="0dp"
     android:paddingStart="0dp"
-    android:elevation="4dp" >
+    android:elevation="0dp" >
 
     <!-- Header Image - Stretched to fill QS area -->
     <com.bosphere.fadingedgelayout.FadingEdgeLayout
@@ -62,8 +62,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:scaleType="centerCrop"
-              android:visibility="gone"
-              android:background="@drawable/qs_header_image_view_outline" />
+              android:visibility="gone" />
 
         </LinearLayout>
 
