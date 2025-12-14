@@ -21,7 +21,18 @@
     android:clipToPadding="false"
     android:clipChildren="false">
 
-    <!-- Full QS background image removed - no background for QS -->
+    <!-- Full QS background image (behind header, tiles, and footer). The actual
+         drawable is supplied at runtime by StatusBarHeaderMachine from the
+         QS header image selection. This fills the entire QS panel from top to bottom. -->
+    <ImageView
+        android:id="@+id/qs_panel_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="1.0"
+        android:src="@android:color/transparent"
+        android:importantForAccessibility="no"
+        android:elevation="0dp" />
 
     <com.android.systemui.qs.NonInterceptingScrollView
         android:id="@+id/expanded_qs_scroll_view"

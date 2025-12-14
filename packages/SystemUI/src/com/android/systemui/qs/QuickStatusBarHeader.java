@@ -33,6 +33,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.util.Log;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -225,7 +226,9 @@ public class QuickStatusBarHeader extends FrameLayout
         Configuration config = mContext.getResources().getConfiguration();
         if (config.orientation != Configuration.ORIENTATION_LANDSCAPE) {
             final boolean hasDrawable = mQsHeaderImageView != null && mQsHeaderImageView.getDrawable() != null;
-            mQsHeaderLayout.setVisibility((mHeaderImageEnabled || hasDrawable) ? View.VISIBLE : View.GONE);
+            // Always show header layout if enabled or has drawable, or if we have a default header
+            boolean shouldShow = mHeaderImageEnabled || hasDrawable || (mCurrentBackground != null);
+            mQsHeaderLayout.setVisibility(shouldShow ? View.VISIBLE : View.GONE);
         } else {
             mQsHeaderLayout.setVisibility(View.GONE);
         }
@@ -233,8 +236,17 @@ public class QuickStatusBarHeader extends FrameLayout
 
     public void setExpanded(boolean expanded, QuickQSPanelController quickQSPanelController) {
         if (mExpanded == expanded) return;
+        boolean wasExpanded = mExpanded;
         mExpanded = expanded;
         quickQSPanelController.setExpanded(expanded);
+        Log.d("QSHeader", "QS expansion state changed: " + wasExpanded + " -> " + expanded);
+        // #region agent log
+        try {
+            java.io.FileWriter fw = new java.io.FileWriter("/media/linuxmain/lineageos/android/lineageos/.cursor/debug.log", true);
+            fw.write("{\"id\":\"log_" + System.currentTimeMillis() + "\",\"timestamp\":" + System.currentTimeMillis() + ",\"location\":\"QuickStatusBarHeader.java:237\",\"message\":\"QS expansion state changed\",\"data\":{\"from\":" + wasExpanded + ",\"to\":" + expanded + ",\"qsHeaderImageViewSize\":\"" + (mQsHeaderImageView != null ? mQsHeaderImageView.getWidth() + "x" + mQsHeaderImageView.getHeight() : "null") + "\"},\"sessionId\":\"debug-session\",\"runId\":\"qs-centering-test\",\"hypothesisId\":\"L\"}\n");
+            fw.close();
+        } catch (Exception e) { Log.d("QSHeader", "Log write failed", e); }
+        // #endregion
     }
 
     public void setExpansion(boolean forceExpanded, float expansionFraction, float panelTranslationY) {
@@ -242,7 +254,36 @@ public class QuickStatusBarHeader extends FrameLayout
         if (mQQSContainerAnimator != null) {
             mQQSContainerAnimator.setPosition(forceExpanded ? 1f : expansionFraction);
         }
-        setAlpha(forceExpanded ? expansionFraction : 1);
+        // Apply alpha only to header image/layout, not entire header to keep tiles visible
+        // Use minimum alpha of 0.7f to ensure tiles remain visible when header extends
+        float headerAlpha = forceExpanded ? expansionFraction : 1f;
+        float minAlpha = 0.7f; // Minimum alpha to ensure tiles are always visible
+        headerAlpha = Math.max(headerAlpha, minAlpha);
+        
+        // Apply alpha only to header image, not the entire header view (which contains tiles)
+        if (mQsHeaderLayout != null) {
+            mQsHeaderLayout.setAlpha(headerAlpha);
+        }
+        if (mQsHeaderImageView != null) {
+            mQsHeaderImageView.setAlpha(headerAlpha);
+        }
+        // Keep header container (with tiles) at full opacity
+        super.setAlpha(1f);
+        
+        // When fully expanded, make header layout fill the entire QS panel height
+        if (mQsHeaderLayout != null && mHeaderImageEnabled) {
+            ViewGroup.LayoutParams layoutParams = mQsHeaderLayout.getLayoutParams();
+            if (layoutParams != null) {
+                if (forceExpanded || expansionFraction >= 0.95f) {
+                    // Fully expanded - fill entire panel
+                    layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                } else {
+                    // Collapsed or partially expanded - use wrap_content for small header strip
+                    layoutParams.height = mHeaderImageHeight > 0 ? mHeaderImageHeight : ViewGroup.LayoutParams.WRAP_CONTENT;
+                }
+                mQsHeaderLayout.setLayoutParams(layoutParams);
+            }
+        }
 	}
 
     public void disable(int state1, int state2, boolean animate) {
@@ -254,8 +295,9 @@ public class QuickStatusBarHeader extends FrameLayout
     }
 
     private void updateSettings() {
+        // Default to enabled (1) if not set, so headers are visible by default
         mHeaderImageEnabled = Settings.System.getIntForUser(getContext().getContentResolver(),
-                Settings.System.STATUS_BAR_CUSTOM_HEADER, 0,
+                Settings.System.STATUS_BAR_CUSTOM_HEADER, 1,
                 UserHandle.USER_CURRENT) == 1;
         updateHeaderImage();
         updateResources();
@@ -277,6 +319,31 @@ public class QuickStatusBarHeader extends FrameLayout
 
     @Override
     public void updateHeader(final Drawable headerImage, final boolean force) {
+        Log.d("QSHeader", "updateHeader called - drawable: " + headerImage + ", force: " + force);
+        if (headerImage != null) {
+            Log.d("QSHeader", "Header drawable type: " + headerImage.getClass().getSimpleName());
+            Log.d("QSHeader", "Header drawable bounds: " + headerImage.getBounds());
+            if (headerImage instanceof android.graphics.drawable.ColorDrawable) {
+                int color = ((android.graphics.drawable.ColorDrawable) headerImage).getColor();
+                Log.d("QSHeader", "ColorDrawable color: #" + Integer.toHexString(color));
+            }
+            // #region agent log
+            try {
+                java.io.FileWriter fw = new java.io.FileWriter("/media/linuxmain/lineageos/android/lineageos/.cursor/debug.log", true);
+                fw.write("{\"id\":\"log_" + System.currentTimeMillis() + "\",\"timestamp\":" + System.currentTimeMillis() + ",\"location\":\"QuickStatusBarHeader.java:312\",\"message\":\"updateHeader called\",\"data\":{\"drawableType\":\"" + headerImage.getClass().getSimpleName() + "\",\"bounds\":\"" + headerImage.getBounds() + "\",\"force\":" + force + ",\"mExpanded\":" + mExpanded + "},\"sessionId\":\"debug-session\",\"runId\":\"qs-centering-test\",\"hypothesisId\":\"J\"}\n");
+                fw.close();
+            } catch (Exception e) { Log.d("QSHeader", "Log write failed", e); }
+            // #endregion
+        } else {
+            Log.w("QSHeader", "updateHeader called with null drawable!");
+            // #region agent log
+            try {
+                java.io.FileWriter fw = new java.io.FileWriter("/media/linuxmain/lineageos/android/lineageos/.cursor/debug.log", true);
+                fw.write("{\"id\":\"log_" + System.currentTimeMillis() + "\",\"timestamp\":" + System.currentTimeMillis() + ",\"location\":\"QuickStatusBarHeader.java:312\",\"message\":\"updateHeader called with null drawable\",\"data\":{\"force\":" + force + ",\"mExpanded\":" + mExpanded + "},\"sessionId\":\"debug-session\",\"runId\":\"qs-centering-test\",\"hypothesisId\":\"J\"}\n");
+                fw.close();
+            } catch (Exception e) { Log.d("QSHeader", "Log write failed", e); }
+            // #endregion
+        }
         post(new Runnable() {
             public void run() {
                 doUpdateStatusBarCustomHeader(headerImage, force);
@@ -289,18 +356,126 @@ public class QuickStatusBarHeader extends FrameLayout
         post(new Runnable() {
             public void run() {
                 // When custom header is disabled, show a default/fallback header instead of hiding
-                try {
-                    mCurrentBackground = getContext().getDrawable(com.android.systemui.res.R.drawable.qs_header_image_1);
-                } catch (Exception ignored) {
+                mCurrentBackground = null;
+
+                // Try to load any available header image as default
+                // Include references to all 101 headers (0-100) to ensure they're compiled into the APK
+                int[] possibleDefaults = {
+                    R.drawable.qs_header_image_0,
+                    R.drawable.qs_header_image_1,
+                    R.drawable.qs_header_image_2,
+                    R.drawable.qs_header_image_3,
+                    R.drawable.qs_header_image_4,
+                    R.drawable.qs_header_image_5,
+                    R.drawable.qs_header_image_6,
+                    R.drawable.qs_header_image_7,
+                    R.drawable.qs_header_image_8,
+                    R.drawable.qs_header_image_9,
+                    R.drawable.qs_header_image_10,
+                    R.drawable.qs_header_image_11,
+                    R.drawable.qs_header_image_12,
+                    R.drawable.qs_header_image_13,
+                    R.drawable.qs_header_image_14,
+                    R.drawable.qs_header_image_15,
+                    R.drawable.qs_header_image_16,
+                    R.drawable.qs_header_image_17,
+                    R.drawable.qs_header_image_18,
+                    R.drawable.qs_header_image_19,
+                    R.drawable.qs_header_image_20,
+                    R.drawable.qs_header_image_21,
+                    R.drawable.qs_header_image_22,
+                    R.drawable.qs_header_image_23,
+                    R.drawable.qs_header_image_24,
+                    R.drawable.qs_header_image_25,
+                    R.drawable.qs_header_image_26,
+                    R.drawable.qs_header_image_27,
+                    R.drawable.qs_header_image_28,
+                    R.drawable.qs_header_image_29,
+                    R.drawable.qs_header_image_30,
+                    R.drawable.qs_header_image_31,
+                    R.drawable.qs_header_image_32,
+                    R.drawable.qs_header_image_33,
+                    R.drawable.qs_header_image_34,
+                    R.drawable.qs_header_image_35,
+                    R.drawable.qs_header_image_36,
+                    R.drawable.qs_header_image_37,
+                    R.drawable.qs_header_image_38,
+                    R.drawable.qs_header_image_39,
+                    R.drawable.qs_header_image_40,
+                    R.drawable.qs_header_image_41,
+                    R.drawable.qs_header_image_42,
+                    R.drawable.qs_header_image_43,
+                    R.drawable.qs_header_image_44,
+                    R.drawable.qs_header_image_45,
+                    R.drawable.qs_header_image_46,
+                    R.drawable.qs_header_image_47,
+                    R.drawable.qs_header_image_48,
+                    R.drawable.qs_header_image_49,
+                    R.drawable.qs_header_image_50,
+                    R.drawable.qs_header_image_51,
+                    R.drawable.qs_header_image_52,
+                    R.drawable.qs_header_image_53,
+                    R.drawable.qs_header_image_54,
+                    R.drawable.qs_header_image_55,
+                    R.drawable.qs_header_image_56,
+                    R.drawable.qs_header_image_57,
+                    R.drawable.qs_header_image_58,
+                    R.drawable.qs_header_image_59,
+                    R.drawable.qs_header_image_60,
+                    R.drawable.qs_header_image_61,
+                    R.drawable.qs_header_image_62,
+                    R.drawable.qs_header_image_63,
+                    R.drawable.qs_header_image_64,
+                    R.drawable.qs_header_image_65,
+                    R.drawable.qs_header_image_66,
+                    R.drawable.qs_header_image_67,
+                    R.drawable.qs_header_image_68,
+                    R.drawable.qs_header_image_69,
+                    R.drawable.qs_header_image_70,
+                    R.drawable.qs_header_image_71,
+                    R.drawable.qs_header_image_72,
+                    R.drawable.qs_header_image_73,
+                    R.drawable.qs_header_image_74,
+                    R.drawable.qs_header_image_75,
+                    R.drawable.qs_header_image_76,
+                    R.drawable.qs_header_image_77,
+                    R.drawable.qs_header_image_78,
+                    R.drawable.qs_header_image_79,
+                    R.drawable.qs_header_image_75,
+                    R.drawable.qs_header_image_76,
+                    R.drawable.qs_header_image_77,
+                    R.drawable.qs_header_image_78,
+                    R.drawable.qs_header_image_79
+                };
+
+                for (int resId : possibleDefaults) {
                     try {
-                        mCurrentBackground = getContext().getDrawable(com.android.systemui.res.R.drawable.default_qs_header);
+                        mCurrentBackground = getContext().getDrawable(resId);
+                        if (mCurrentBackground != null) {
+                            Log.d("QSHeader", "Loaded default header drawable from resId: " + resId + " - " + mCurrentBackground);
+                            break;
+                        }
                     } catch (Exception e) {
-                        mCurrentBackground = null;
+                        Log.d("QSHeader", "Failed to load drawable resId: " + resId + " - " + e.getMessage());
                     }
                 }
+
+                if (mCurrentBackground == null) {
+                    Log.w("QSHeader", "No default header drawables available");
+                }
                 if (mCurrentBackground != null) {
+                    Log.d("QSHeader", "Setting fallback drawable: " + mCurrentBackground +
+                          " to view: " + mQsHeaderImageView);
                     mQsHeaderImageView.setImageDrawable(mCurrentBackground);
                     mQsHeaderImageView.setVisibility(View.VISIBLE);
+
+                    // Debug drawable properties
+                    Log.d("QSHeader", "Fallback drawable type: " + mCurrentBackground.getClass().getSimpleName());
+                    Log.d("QSHeader", "Fallback drawable bounds: " + mCurrentBackground.getBounds());
+                    if (mCurrentBackground instanceof android.graphics.drawable.ColorDrawable) {
+                        int color = ((android.graphics.drawable.ColorDrawable) mCurrentBackground).getColor();
+                        Log.d("QSHeader", "Fallback ColorDrawable color: #" + Integer.toHexString(color));
+                    }
                 } else {
                     mQsHeaderImageView.setVisibility(View.GONE);
                 }
@@ -322,15 +497,30 @@ public class QuickStatusBarHeader extends FrameLayout
 
     private void doUpdateStatusBarCustomHeader(final Drawable next, final boolean force) {
         if (next != null) {
-            mQsHeaderImageView.setVisibility(View.VISIBLE);
             mCurrentBackground = next;
-            setNotificationPanelHeaderBackground(next, force);
+            // Show header image in the small header strip
+            // Also apply to full QS background via ShadeHeaderController for full coverage
+            mQsHeaderImageView.setImageDrawable(next);
+            mQsHeaderImageView.setVisibility(View.VISIBLE);
             mHeaderImageEnabled = true;
             updateResources();
         } else {
             mCurrentBackground = null;
-            mQsHeaderImageView.setVisibility(View.GONE);
-            mHeaderImageEnabled = false;
+            // When no header is set, try to show a default header
+            try {
+                Drawable defaultHeader = getContext().getDrawable(R.drawable.qs_header_image_1);
+                if (defaultHeader != null) {
+                    mQsHeaderImageView.setImageDrawable(defaultHeader);
+                    mQsHeaderImageView.setVisibility(View.VISIBLE);
+                    mHeaderImageEnabled = true;
+                } else {
+                    mQsHeaderImageView.setVisibility(View.GONE);
+                    mHeaderImageEnabled = false;
+                }
+            } catch (Exception e) {
+                mQsHeaderImageView.setVisibility(View.GONE);
+                mHeaderImageEnabled = false;
+            }
             updateResources();
         }
     }
@@ -361,13 +551,20 @@ public class QuickStatusBarHeader extends FrameLayout
     }
 
     private void updateHeaderImage() {
+        // Default to enabled (1) if not set, so headers are visible by default
         mHeaderImageEnabled = Settings.System.getIntForUser(getContext().getContentResolver(),
-                Settings.System.STATUS_BAR_CUSTOM_HEADER, 0,
+                Settings.System.STATUS_BAR_CUSTOM_HEADER, 1,
                 UserHandle.USER_CURRENT) == 1;
         int headerHeight = Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.STATUS_BAR_CUSTOM_HEADER_HEIGHT, 142,
                 UserHandle.USER_CURRENT);
-        int bottomFadeSize = (int) Math.round(headerHeight * 0.555);
+
+        // Ensure header height stays within a sane range to avoid layout issues
+        if (headerHeight < 80) headerHeight = 80;
+        if (headerHeight > 260) headerHeight = 260;
+
+        // Fade size as a fraction of header height (default ~55.5%)
+        int bottomFadeSize = (int) Math.round(headerHeight * 0.60f);
 
         // Set the image header size
         mHeaderImageHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 

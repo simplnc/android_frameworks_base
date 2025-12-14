@@ -33,6 +33,9 @@ import android.provider.Settings
 import android.os.Trace
 import android.os.Trace.TRACE_TAG_APP
 import android.provider.AlarmClock
+import android.database.ContentObserver
+import android.os.Handler
+import android.os.Looper
 import android.view.DisplayCutout
 import android.view.View
 import android.view.WindowInsets
@@ -74,10 +77,10 @@ import com.android.systemui.statusbar.policy.NextAlarmController
 import com.android.systemui.statusbar.policy.VariableDateView
 import com.android.systemui.statusbar.policy.VariableDateViewController
 import com.android.systemui.util.ViewController
+import com.android.systemui.android.header.StatusBarHeaderMachine
 import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Named
-import com.android.systemui.android.header.StatusBarHeaderMachine
 
 /**
  * Controller for QS header.
@@ -172,6 +175,13 @@ constructor(
         }
 
     private var customizing = false
+
+    // QS Header/Panel background image wiring
+    private var qsHeaderImage: View? = null
+    private var qsPanelBackgroundImage: View? = null
+    private var headerMachine: StatusBarHeaderMachine? = null
+    private var headerObserver: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver? = null
+    private var headerImageSettingsObserver: ContentObserver? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -349,11 +359,6 @@ constructor(
         }
     }
 
-    // QS Header/Panel background image wiring
-    private var qsHeaderImage: View? = null
-    private var qsPanelBackgroundImage: View? = null
-    private var headerMachine: StatusBarHeaderMachine? = null
-    private var headerObserver: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver? = null
     private fun isOnKeyguard(): Boolean {
         // Check if we're on keyguard by looking for keyguard-specific views
         val root = header.rootView
@@ -369,15 +374,91 @@ constructor(
 
     private fun isHeaderImageEnabled(): Boolean {
         return Settings.System.getIntForUser(
-            context.contentResolver, "qs_header_image_enabled", 1, UserHandle.USER_CURRENT
+            context.contentResolver, Settings.System.STATUS_BAR_CUSTOM_HEADER, 0, UserHandle.USER_CURRENT
         ) == 1
     }
 
+    /**
+     * Map QS header settings to an alpha value for the full QS background image.
+     *
+     * - Shadow (0..3) controls how dark the image is (higher = darker / more transparent).
+     * - Height (compact/default/tall/full) is repurposed as background "strength", giving
+     *   a bit more punch when users pick taller headers.
+     */
+    private fun computeHeaderBackgroundAlpha(): Float {
+        val resolver = context.contentResolver
+
+        // Shadow: 0 (disabled) .. 3 (heavy)
+        val shadow = Settings.System.getIntForUser(
+            resolver,
+            Settings.System.STATUS_BAR_CUSTOM_HEADER_SHADOW,
+            0,
+            UserHandle.USER_CURRENT
+        )
+
+        // Base alpha from shadow (brighter to dimmer)
+        val baseAlpha = when (shadow) {
+            1 -> 0.55f
+            2 -> 0.4f
+            3 -> 0.25f
+            else -> 0.7f
+        }
+
+        // Height: use as a soft strength factor; compact headers = softer background,
+        // tall/full headers = stronger image
+        val height = Settings.System.getIntForUser(
+            resolver,
+            Settings.System.STATUS_BAR_CUSTOM_HEADER_HEIGHT,
+            142,
+            UserHandle.USER_CURRENT
+        ).coerceIn(80, 260)
+
+        val strength = when {
+            height <= 120 -> 0.8f
+            height <= 160 -> 1.0f
+            height <= 200 -> 1.1f
+            else -> 1.2f
+        }
+
+        // When QS is fully expanded, use full opacity for full panel coverage
+        val isQsFullyExpanded = isQsPanelVisible()
+        val finalAlpha = if (isQsFullyExpanded) {
+            // Fully expanded - use higher alpha for full visibility (0.8-1.0)
+            (baseAlpha * strength).coerceIn(0.8f, 1.0f)
+        } else {
+            // Collapsed - use lower alpha for subtle background (0.15-0.9)
+            (baseAlpha * strength).coerceIn(0.15f, 0.9f)
+        }
+        
+        return finalAlpha
+    }
+
     private fun updateHeaderImageVisibility() {
-        // Hide header image on keyguard to avoid showing it on lockscreen
-        val shouldShow = isHeaderImageEnabled() && !isOnKeyguard()
-        qsHeaderImage?.visibility = if (shouldShow) View.VISIBLE else View.GONE
-        // QS panel background is now controlled by QSPanel itself, not here
+        // Hide small header strip on keyguard to avoid showing it on lockscreen
+        val shouldShowHeaderStrip = isHeaderImageEnabled() && !isOnKeyguard()
+        qsHeaderImage?.visibility = if (shouldShowHeaderStrip) View.VISIBLE else View.GONE
+        
+        // Panel background should be visible when header is enabled OR when it has an image
+        // The panel background is the full QS background, not just the small header strip
+        val panelIv = qsPanelBackgroundImage as? android.widget.ImageView
+        if (panelIv != null) {
+            val hasImage = panelIv.drawable != null
+            val shouldShowPanel = isHeaderImageEnabled() || hasImage
+            panelIv.visibility = if (shouldShowPanel) View.VISIBLE else View.GONE
+            
+            // If header is enabled but image isn't loaded yet, ensure it gets loaded
+            if (isHeaderImageEnabled() && !hasImage) {
+                android.util.Log.d("ShadeHeaderController", "Header enabled but no image, triggering load")
+                // Trigger header machine to load image
+                (headerMachine as? StatusBarHeaderMachine)?.updateEnablement()
+            }
+        } else {
+            // View not found - try to find it again
+            qsPanelBackgroundImage = header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+            if (qsPanelBackgroundImage != null && isHeaderImageEnabled()) {
+                (headerMachine as? StatusBarHeaderMachine)?.updateEnablement()
+            }
+        }
     }
 
     private fun isQsPanelVisible(): Boolean {
@@ -420,8 +501,26 @@ constructor(
         updateHeaderImageVisibility()
 
         // Initialize full QS panel background image (lives in qs_panel.xml)
-        // Don't control it from here - let QSPanel handle its own background
-        // qsPanelBackgroundImage = header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+        // Try to find it in root view, but it might not be inflated yet
+        qsPanelBackgroundImage =
+            header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+        
+        // If not found in root view, try finding it after a layout pass
+        if (qsPanelBackgroundImage == null) {
+            header.post {
+                qsPanelBackgroundImage =
+                    header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+                if (qsPanelBackgroundImage != null && headerMachine != null) {
+                    // If we found it now and header machine is ready, trigger update
+                    headerObserver?.let { observer ->
+                        val drawable = headerMachine?.getCurrent()
+                        if (drawable != null) {
+                            observer.updateHeader(drawable, true)
+                        }
+                    }
+                }
+            }
+        }
 
         // Hook StatusBarHeaderMachine to dynamically supply headers
         headerMachine = StatusBarHeaderMachine(context)
@@ -466,11 +565,49 @@ constructor(
         // Subscribe header machine
         headerObserver = object: StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
             override fun updateHeader(headerImage: android.graphics.drawable.Drawable?, force: Boolean) {
-                val iv = qsHeaderImage as? android.widget.ImageView ?: return
-                if (headerImage != null) {
-                    iv.setImageDrawable(headerImage)
+                // Try to find panel background image if not found yet - try multiple times
+                if (qsPanelBackgroundImage == null) {
+                    qsPanelBackgroundImage =
+                        header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
                 }
-                // QS panel background is now handled by QSPanel itself
+                
+                // If still not found, try from different root
+                if (qsPanelBackgroundImage == null) {
+                    val container = header.rootView.findViewById<View?>(com.android.systemui.res.R.id.quick_settings_container)
+                    qsPanelBackgroundImage = container?.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+                }
+                
+                val panelIv = qsPanelBackgroundImage as? android.widget.ImageView
+
+                // Use header image as full QS background, with alpha controlled by
+                // QS header settings (shadow + height).
+                if (panelIv != null && headerImage != null) {
+                    panelIv.setImageDrawable(headerImage)
+                    panelIv.alpha = computeHeaderBackgroundAlpha()
+                    // Always make visible when we have an image
+                    android.util.Log.d("ShadeHeaderController", "Setting panel background image - drawable: $headerImage, alpha: ${panelIv.alpha}, scaleType: ${panelIv.scaleType}")
+                    // #region agent log
+                    try {
+                        val fw = java.io.FileWriter("/media/linuxmain/lineageos/android/lineageos/.cursor/debug.log", true)
+                        fw.write("{\"id\":\"log_" + System.currentTimeMillis() + "\",\"timestamp\":" + System.currentTimeMillis() + ",\"location\":\"ShadeHeaderController.kt:584\",\"message\":\"Setting panel background image\",\"data\":{\"drawableType\":\"" + headerImage.javaClass.simpleName + "\",\"alpha\":" + panelIv.alpha + ",\"scaleType\":\"" + panelIv.scaleType + "\",\"imageViewSize\":\"" + panelIv.width + "x" + panelIv.height + "\"},\"sessionId\":\"debug-session\",\"runId\":\"qs-centering-test\",\"hypothesisId\":\"J\"}\n")
+                        fw.close()
+                    } catch (e: Exception) {
+                        android.util.Log.d("ShadeHeaderController", "Log write failed", e)
+                    }
+                    // #endregion
+                    panelIv.visibility = android.view.View.VISIBLE
+                    android.util.Log.d("ShadeHeaderController", "Header image applied: ${headerImage.intrinsicWidth}x${headerImage.intrinsicHeight}, alpha=${panelIv.alpha}, visible=${panelIv.visibility}")
+                } else {
+                    android.util.Log.w("ShadeHeaderController", "Cannot apply header: panelIv=${panelIv != null}, headerImage=${headerImage != null}, qsPanelBackgroundImage=${qsPanelBackgroundImage != null}")
+                    // If panel view exists but image is null, try to trigger reload
+                    if (panelIv != null && headerImage == null && isHeaderImageEnabled()) {
+                        android.util.Log.d("ShadeHeaderController", "Header image is null but header is enabled, triggering reload")
+                        (headerMachine as? StatusBarHeaderMachine)?.updateEnablement()
+                    } else if (qsPanelBackgroundImage == null) {
+                        android.util.Log.e("ShadeHeaderController", "qs_panel_background_image view not found in root view!")
+                    }
+                }
+                // Small header strip is handled separately; we don't touch it here.
             }
             override fun disableHeader() {
                 // no-op
@@ -479,8 +616,51 @@ constructor(
                 // no-op
             }
         }
+        // Find panel background image if not found yet (view might be inflated now)
+        if (qsPanelBackgroundImage == null) {
+            qsPanelBackgroundImage =
+                header.rootView.findViewById(com.android.systemui.res.R.id.qs_panel_background_image)
+        }
+        
         (headerMachine as? StatusBarHeaderMachine)?.addObserver(headerObserver)
+        // Force update enablement to ensure header loads immediately
         (headerMachine as? StatusBarHeaderMachine)?.updateEnablement()
+        // Also trigger a manual update to ensure image is applied
+        if (isHeaderImageEnabled()) {
+            header.post {
+                val drawable = (headerMachine as? StatusBarHeaderMachine)?.getCurrent()
+                if (drawable != null) {
+                    headerObserver?.updateHeader(drawable, true)
+                }
+            }
+        }
+        
+        // Register ContentObserver to watch for header image setting changes
+        headerImageSettingsObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                updateHeaderImageVisibility()
+                // Also refresh header machine to reload image if needed
+                (headerMachine as? StatusBarHeaderMachine)?.updateEnablement()
+            }
+        }
+        context.contentResolver.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.STATUS_BAR_CUSTOM_HEADER),
+            false,
+            headerImageSettingsObserver,
+            UserHandle.USER_CURRENT
+        )
+        context.contentResolver.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.STATUS_BAR_CUSTOM_HEADER_IMAGE),
+            false,
+            headerImageSettingsObserver,
+            UserHandle.USER_CURRENT
+        )
+        context.contentResolver.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.STATUS_BAR_CUSTOM_HEADER_PROVIDER),
+            false,
+            headerImageSettingsObserver,
+            UserHandle.USER_CURRENT
+        )
     }
 
     override fun onViewDetached() {
@@ -495,6 +675,11 @@ constructor(
         // tunerService.removeTunable(this) // Disabled - TunerService not available
         headerObserver?.let { (headerMachine as? StatusBarHeaderMachine)?.removeObserver(it) }
         headerObserver = null
+        // Unregister ContentObserver
+        headerImageSettingsObserver?.let {
+            context.contentResolver.unregisterContentObserver(it)
+        }
+        headerImageSettingsObserver = null
     }
 
     // Disabled TunerService functionality

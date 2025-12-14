@@ -135,16 +135,25 @@ public class StatusBarHeaderMachine {
                     Settings.System.STATUS_BAR_CUSTOM_HEADER_SHADOW))) {
                 doRefreshStatusHeaderObservers();
             } else {
+                // Always update enablement first to ensure provider is set correctly
+                updateEnablement();
+                
+                // Then forward to current active provider
                 IStatusBarHeaderProvider provider = getCurrentProvider();
-                // forward to current active provider
                 if (provider != null) {
                     try {
                         provider.settingsChanged(uri);
+                        // If image or provider changed, force update observers
+                        if (uri != null && (uri.equals(Settings.System.getUriFor(
+                                Settings.System.STATUS_BAR_CUSTOM_HEADER_IMAGE)) ||
+                                uri.equals(Settings.System.getUriFor(
+                                Settings.System.STATUS_BAR_CUSTOM_HEADER_PROVIDER)))) {
+                            doUpdateStatusHeaderObservers(true);
+                        }
                     } catch (Exception e) {
-                        // just in case
+                        Log.e(TAG, "Error in provider settingsChanged", e);
                     }
                 }
-                updateEnablement();
             }
         }
     }
@@ -196,6 +205,17 @@ public class StatusBarHeaderMachine {
 
         if (!mObservers.contains(observer)) {
             mObservers.add(observer);
+            // Immediately notify new observer if header is enabled
+            final boolean customHeader = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.STATUS_BAR_CUSTOM_HEADER, 0,
+                    UserHandle.USER_CURRENT) == 1;
+            if (customHeader) {
+                try {
+                    observer.updateHeader(getCurrent(), true);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error notifying new observer", e);
+                }
+            }
         }
     }
 
@@ -285,6 +305,7 @@ public class StatusBarHeaderMachine {
                 mAttached = true;
             } else {
                 // we dont want to wait for the alarm if provider has changed its header image
+                // Force update when image changes
                 doUpdateStatusHeaderObservers(true);
             }
         } else {

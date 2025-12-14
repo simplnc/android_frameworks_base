@@ -173,13 +173,21 @@ public class DaylightHeaderProvider implements
             mHeaderName = null;
         }
         
-        try {
-            PackageManager packageManager = mContext.getPackageManager();
-            mRes = packageManager.getResourcesForApplication(mPackageName);
+        mRes = loadResourcesForPackage(mPackageName);
+        if (mRes == null && "com.android.systemui".equals(mPackageName)) {
+            Resources alt = loadResourcesForPackage("com.android.systemui.res");
+            if (alt != null) {
+                mPackageName = "com.android.systemui.res";
+                mRes = alt;
+            }
+        }
+        if (mRes != null) {
+            try {
             loadHeaders();
         } catch (Exception e) {
             Log.e(TAG, "Failed to load header pack " + mHeaderName, e);
             mRes = null;
+            }
         }
         
         if (mRes == null) {
@@ -194,17 +202,35 @@ public class DaylightHeaderProvider implements
         mHeaderName = null;
         mSettingHeaderPackage = mPackageName;
         
-        try {
-            PackageManager packageManager = mContext.getPackageManager();
-            mRes = packageManager.getResourcesForApplication(mPackageName);
+        mRes = loadResourcesForPackage(mPackageName);
+        if (mRes == null) {
+            Resources alt = loadResourcesForPackage("com.android.systemui.res");
+            if (alt != null) {
+                mPackageName = "com.android.systemui.res";
+                mRes = alt;
+            }
+        }
+        if (mRes != null) {
+            try {
             loadHeaders();
         } catch (Exception e) {
             Log.e(TAG, "Failed to load default header pack", e);
             mRes = null;
+            }
         }
         
         if (mRes == null) {
             Log.w(TAG, "No default package found or failed to load");
+        }
+    }
+
+    private Resources loadResourcesForPackage(String pkg) {
+        try {
+            PackageManager packageManager = mContext.getPackageManager();
+            return packageManager.getResourcesForApplication(pkg);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load header pack " + pkg, e);
+            return null;
         }
     }
 
@@ -378,7 +404,7 @@ public class DaylightHeaderProvider implements
 
     @Override
     public Drawable getCurrent(final Calendar now) {
-        if (!Utils.isPackageInstalled(mContext, mPackageName)) {
+        if (!mPackageName.endsWith(".res") && !Utils.isPackageInstalled(mContext, mPackageName)) {
             Log.w(TAG, "Header pack no longer available - loading default " + mPackageName);
             loadDefaultHeaderPackage();
         }
