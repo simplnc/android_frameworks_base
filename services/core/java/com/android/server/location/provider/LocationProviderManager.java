@@ -107,6 +107,7 @@ import com.android.server.location.LocationPermissions;
 import com.android.server.location.LocationPermissions.PermissionLevel;
 import com.android.server.location.fudger.LocationFudger;
 import com.android.server.location.fudger.LocationFudgerCache;
+import com.android.server.location.privacy.LocationPrivacyHelper;
 import com.android.server.location.injector.AlarmHelper;
 import com.android.server.location.injector.AppForegroundHelper;
 import com.android.server.location.injector.AppForegroundHelper.AppForegroundListener;
@@ -928,6 +929,19 @@ public class LocationProviderManager extends
                 return null;
             }
 
+            // Check privacy settings before processing location
+            String packageName = getIdentity().getPackageName();
+            boolean isBackground = !isForeground();
+            
+            // Check if location should be masked
+            if (LocationPrivacyHelper.shouldMaskLocation(mContext, packageName, isBackground)) {
+                if (D) {
+                    Log.d(TAG, mName + " provider registration " + getIdentity()
+                            + " location masked by privacy settings");
+                }
+                return null; // Don't deliver location
+            }
+            
             LocationResult permittedLocationResult = Objects.requireNonNull(
                     getPermittedLocationResult(fineLocationResult, getPermissionLevel()));
 
@@ -2847,6 +2861,19 @@ public class LocationProviderManager extends
 
     @Nullable LocationResult getPermittedLocationResult(
             @Nullable LocationResult fineLocationResult, @PermissionLevel int permissionLevel) {
+        // Apply privacy coarsening based on precision setting
+        if (fineLocationResult != null && fineLocationResult.size() > 0) {
+            String precision = LocationPrivacyHelper.getLocationPrecision(mContext);
+            
+            // Apply coarsening if not in precise mode
+            if (!"precise".equals(precision)) {
+                fineLocationResult = fineLocationResult.map(location -> {
+                    Location coarsened = LocationPrivacyHelper.coarsenLocation(mContext, location);
+                    return coarsened != null ? coarsened : location;
+                });
+            }
+        }
+        
         switch (permissionLevel) {
             case PERMISSION_FINE:
                 return fineLocationResult;

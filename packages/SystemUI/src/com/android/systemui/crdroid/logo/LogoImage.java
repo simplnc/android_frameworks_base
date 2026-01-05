@@ -47,6 +47,7 @@ public abstract class LogoImage extends ImageView implements DarkReceiver {
     public int mLogoPosition;
     private int mLogoStyle;
     private int mTintColor = Color.WHITE;
+    private SettingsObserver mSettingsObserver;
 
     class SettingsObserver extends ContentObserver {
 
@@ -64,6 +65,11 @@ public abstract class LogoImage extends ImageView implements DarkReceiver {
             resolver.registerContentObserver(
                     Settings.System.getUriFor("status_bar_logo_style"),
                     false, this, UserHandle.USER_ALL);
+        }
+
+        void unobserve() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
         }
 
         @Override
@@ -95,8 +101,8 @@ public abstract class LogoImage extends ImageView implements DarkReceiver {
 
         mAttached = true;
 
-        SettingsObserver observer = new SettingsObserver(new Handler());
-        observer.observe();
+        mSettingsObserver = new SettingsObserver(new Handler());
+        mSettingsObserver.observe();
         updateSettings();
 
         Dependency.get(DarkIconDispatcher.class).addDarkReceiver(this);
@@ -109,6 +115,12 @@ public abstract class LogoImage extends ImageView implements DarkReceiver {
             return;
 
         mAttached = false;
+        
+        if (mSettingsObserver != null) {
+            mSettingsObserver.unobserve();
+            mSettingsObserver = null;
+        }
+        
         Dependency.get(DarkIconDispatcher.class).removeDarkReceiver(this);
     }
 

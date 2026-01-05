@@ -21,21 +21,23 @@ import android.content.Context
 import android.database.ContentObserver
 import android.os.Handler
 import android.os.UserHandle
-import android.provider.Settings.System.SECURE_LOCKSCREEN_QS_DISABLED
+import android.provider.Settings
 
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.statusbar.CommandQueue
 import com.android.systemui.statusbar.policy.KeyguardStateController
-import com.android.systemui.util.settings.SystemSettings
+import com.android.systemui.util.settings.SecureSettings
 
 import javax.inject.Inject
+
+private const val SECURE_LOCKSCREEN_QS_DISABLED = "secure_lockscreen_qs_disabled"
 
 @SysUISingleton
 class SecureLockscreenQSDisabler @Inject constructor(
     private val context: Context,
     private val commandQueue: CommandQueue,
-    private val systemSettings: SystemSettings,
+    private val secureSettings: SecureSettings,
     private val keyguardStateController: KeyguardStateController,
     @Main handler: Handler,
 ) {
@@ -49,7 +51,7 @@ class SecureLockscreenQSDisabler @Inject constructor(
                 recomputeDisableFlags()
             }
         }
-        systemSettings.registerContentObserverForUserSync(SECURE_LOCKSCREEN_QS_DISABLED,
+        secureSettings.registerContentObserverForUserSync(SECURE_LOCKSCREEN_QS_DISABLED,
             settingsObserver, UserHandle.USER_ALL)
     }
 
@@ -63,7 +65,7 @@ class SecureLockscreenQSDisabler @Inject constructor(
     }
 
     private fun shouldDisableQS(): Boolean =
-        systemSettings.getIntForUser(SECURE_LOCKSCREEN_QS_DISABLED,
+        secureSettings.getIntForUser(SECURE_LOCKSCREEN_QS_DISABLED,
             0, UserHandle.USER_CURRENT) == 1
 
     private fun recomputeDisableFlags() {

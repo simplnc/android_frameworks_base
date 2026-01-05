@@ -4262,6 +4262,44 @@ public final class Settings {
             MOVED_TO_GLOBAL.add(Settings.Global.SHOW_PROCESSES);
         }
 
+        // Monet Color Theming
+
+        /**
+         * Monet color style (0=tonal_spot, 1=spritz, 2=vibrant, 3=expressive, 4=rainbow, 5=fruit_salad).
+         * @hide
+         */
+        public static final String MONET_COLOR_STYLE = "monet_color_style";
+
+        /**
+         * Monet color preset name.
+         * @hide
+         */
+        public static final String MONET_COLOR_PRESET = "monet_color_preset";
+
+        /**
+         * Monet custom color values (comma-separated RGB values).
+         * @hide
+         */
+        public static final String MONET_CUSTOM_COLORS = "monet_custom_colors";
+
+        /**
+         * Enable Monet color override.
+         * @hide
+         */
+        public static final String MONET_OVERRIDE_ENABLED = "monet_override_enabled";
+
+        /**
+         * Monet time-based colors enabled.
+         * @hide
+         */
+        public static final String MONET_TIME_BASED_ENABLED = "monet_time_based_enabled";
+
+        /**
+         * Monet contextual colors enabled.
+         * @hide
+         */
+        public static final String MONET_CONTEXTUAL_ENABLED = "monet_contextual_enabled";
+
         /** @hide */
         public static void getMovedToGlobalSettings(Set<String> outKeySet) {
             outKeySet.addAll(MOVED_TO_GLOBAL);
@@ -5471,6 +5509,76 @@ public final class Settings {
                 "hardware_haptic_feedback_intensity";
 
         /**
+         * The intensity of haptic feedback vibrations for quick settings interactions.
+         *
+         * <b>Values:</b><br/>
+         * 0 - Vibration is disabled<br/>
+         * 1 - Weak vibrations<br/>
+         * 2 - Medium vibrations<br/>
+         * 3 - Strong vibrations
+         * @hide
+         */
+        @Readable
+        public static final String QS_HAPTICS_INTENSITY =
+                "qs_haptics_intensity";
+
+        /**
+         * The intensity of haptic feedback vibrations for quick settings tile interactions.
+         *
+         * <b>Values:</b><br/>
+         * 0 - Vibration is disabled<br/>
+         * 1 - Weak vibrations<br/>
+         * 2 - Medium vibrations<br/>
+         * 3 - Strong vibrations
+         * @hide
+         */
+        @Readable
+        public static final String QS_PANEL_TILE_HAPTIC =
+                "qs_panel_tile_haptic";
+
+        /**
+         * The intensity of haptic feedback vibrations for brightness slider interactions.
+         *
+         * <b>Values:</b><br/>
+         * 0 - Vibration is disabled<br/>
+         * 1 - Weak vibrations<br/>
+         * 2 - Medium vibrations<br/>
+         * 3 - Strong vibrations
+         * @hide
+         */
+        @Readable
+        public static final String QS_BRIGHTNESS_SLIDER_HAPTIC =
+                "qs_brightness_slider_haptic";
+
+        /**
+         * The intensity of haptic feedback vibrations for edge scrolling interactions.
+         *
+         * <b>Values:</b><br/>
+         * 0 - Vibration is disabled<br/>
+         * 1 - Weak vibrations<br/>
+         * 2 - Medium vibrations<br/>
+         * 3 - Strong vibrations
+         * @hide
+         */
+        @Readable
+        public static final String EDGE_SCROLLING_HAPTICS_INTENSITY =
+                "edge_scrolling_haptics_intensity";
+
+        /**
+         * The intensity of haptic feedback vibrations for volume slider interactions.
+         *
+         * <b>Values:</b><br/>
+         * 0 - Vibration is disabled<br/>
+         * 1 - Weak vibrations<br/>
+         * 2 - Medium vibrations<br/>
+         * 3 - Strong vibrations
+         * @hide
+         */
+        @Readable
+        public static final String VOLUME_SLIDER_HAPTICS_INTENSITY =
+                "volume_slider_haptics_intensity";
+
+        /**
          * Whether keyboard vibration feedback is enabled. The value is boolean (1 or 0).
          *
          * @hide
@@ -6462,6 +6570,79 @@ public final class Settings {
                 "screen_flash_notification_color_global";
 
         /**
+         * Settings Dashboard Style
+         * <ul>
+         *     <li> 0 = AOSP Style
+         *     <li> 1 = Epic Style
+         *     <li> 2 = V2 Style (default)
+         * </ul>
+         * @hide
+         */
+        public static final String SETTINGS_DASHBOARD_STYLE = "settings_dashboard_style";
+        
+        /**
+         * Whether to use compact dashboard grid layout.
+         * 0 = disabled, 1 = enabled
+         * @hide
+         */
+        public static final String SETTINGS_COMPACT_DASHBOARD_ENABLED = "settings_compact_dashboard_enabled";
+
+        /**
+         * Whether to use adaptive UI that adjusts based on usage patterns.
+         * 0 = disabled, 1 = enabled
+         * @hide
+         */
+        public static final String SETTINGS_ADAPTIVE_UI_ENABLED = "settings_adaptive_ui_enabled";
+
+        /**
+         * Settings Wallpaper Background
+         * Enable/disable using device wallpaper as background for settings pages
+         * <ul>
+         *     <li> 0 = Disabled
+         *     <li> 1 = Enabled
+         * </ul>
+         * @hide
+         */
+        public static final String SETTINGS_WALLPAPER_BACKGROUND_ENABLED = "settings_wallpaper_background_enabled";
+
+        /**
+         * Settings Wallpaper Background Style
+         * Style preset for wallpaper background (0=Default, 1=Standard, 2=Blurred, 3=Heavy Blur, 4=Transparent)
+         * @hide
+         */
+        public static final String SETTINGS_WALLPAPER_BACKGROUND_STYLE = "settings_wallpaper_background_style";
+
+        /**
+         * Settings Wallpaper Blur
+         * Enable/disable blur effect on wallpaper background
+         * <ul>
+         *     <li> 0 = Disabled
+         *     <li> 1 = Enabled
+         * </ul>
+         * @hide
+         */
+        public static final String SETTINGS_WALLPAPER_BLUR_ENABLED = "settings_wallpaper_blur_enabled";
+
+        /**
+         * Settings Wallpaper Blur Radius
+         * Blur intensity level (0-100)
+         * Default: 20
+         * @hide
+         */
+        public static final String SETTINGS_WALLPAPER_BLUR_RADIUS = "settings_wallpaper_blur_radius";
+
+        /**
+         * Settings Display Effects
+         * Enable/disable visual effects and animations
+         * <ul>
+         *     <li> 0 = Disabled
+         *     <li> 1 = Enabled
+         * </ul>
+         * @hide
+         */
+        public static final String SETTINGS_DISPLAY_EFFECTS_ENABLED = "settings_display_effects_enabled";
+
+        /**
          * Volume keys control cursor in text fields (default is 0)
          * 0 - Disabled
          * 1 - Volume up/down moves cursor left/right
@@ -6726,6 +6907,11 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_CUSTOM_HEADER_IMAGE = "status_bar_custom_header_image";
+        /**
+         * Custom header file path/URI (for user-selected images/GIFs)
+         * @hide
+         */
+        public static final String STATUS_BAR_CUSTOM_HEADER_FILE = "status_bar_custom_header_file";
 
         /**
          * @hide
@@ -6871,6 +7057,7 @@ public final class Settings {
         @Readable
         public static final String SENSOR_BLOCKED_APP_DUMMY = "sensor_blocked_app_dummy";
 
+
        /**
         * Ambient Customization
         * @hide
@@ -6924,6 +7111,12 @@ public final class Settings {
          * @hide
          */
         public static final String AMBIENT_CUSTOM_IMAGE = "ambient_custom_image";
+
+        /**
+         * Ambient Image File Path
+         * @hide
+         */
+        public static final String AMBIENT_IMAGE_FILE = "ambient_image_file";
 
         /**
          * Statusbar logo
@@ -7533,6 +7726,7 @@ public final class Settings {
             return context.checkSelfPermission(Manifest.permission.WRITE_SETTINGS)
                     == PackageManager.PERMISSION_GRANTED;
         }
+
     }
 
     /**
@@ -7704,6 +7898,42 @@ public final class Settings {
             sProviderHolder.clearProviderForTest();
             sNameValueCache.clearGenerationTrackerForTest();
         }
+
+        /**
+         * Monet accent saturation (0-200, 100=default).
+         * @hide
+         */
+        public static final String MONET_ACCENT_SATURATION = "monet_accent_saturation";
+
+        /**
+         * Monet background saturation (0-200, 100=default).
+         * @hide
+         */
+        public static final String MONET_BACKGROUND_SATURATION = "monet_background_saturation";
+
+        /**
+         * Monet background lightness (0-200, 100=default).
+         * @hide
+         */
+        public static final String MONET_BACKGROUND_LIGHTNESS = "monet_background_lightness";
+
+        /**
+         * Monet pitch black theme enabled (0=disabled, 1=enabled).
+         * @hide
+         */
+        public static final String MONET_PITCH_BLACK = "monet_pitch_black";
+
+        /**
+         * Monet manual color override (ARGB color value).
+         * @hide
+         */
+        public static final String MONET_MANUAL_COLOR_OVERRIDE = "monet_manual_color_override";
+
+        /**
+         * Monet color modifications enabled (0=disabled, 1=enabled).
+         * @hide
+         */
+        public static final String MONET_COLOR_MODIFICATIONS_ENABLED = "monet_color_modifications_enabled";
 
         /** @hide */
         public static void getPublicSettings(Set<String> allKeys, Set<String> readableKeys,
@@ -9227,6 +9457,90 @@ public final class Settings {
         @Readable
         public static final String SHOW_NOTE_ABOUT_NOTIFICATION_HIDING =
                 "show_note_about_notification_hiding";
+
+        /**
+         * Controls whether the PIN keypad layout should be scrambled to prevent observation attacks.
+         * @hide
+         */
+        @Readable
+        public static final String SCRAMBLE_LOCKSCREEN_PIN_LAYOUT = "scramble_lockscreen_pin_layout";
+
+        /**
+         * Controls lockdown mode that disables biometrics and notifications on lock screen.
+         * @hide
+         */
+        @Readable
+        public static final String LOCKDOWN_MODE_ENABLED = "lockdown_mode_enabled";
+
+        /**
+         * Controls MAC address randomization per WiFi network.
+         * @hide
+         */
+        @Readable
+        public static final String MAC_RANDOMIZATION_ENABLED = "mac_randomization_enabled";
+
+        /**
+         * Controls display of network traffic in status bar.
+         * @hide
+         */
+        @Readable
+        public static final String NETWORK_TRAFFIC_DISPLAY_ENABLED = "network_traffic_display_enabled";
+
+        /**
+         * Controls automatic WiFi disabling when not in use.
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_DISABLE_WIFI_ENABLED = "auto_disable_wifi_enabled";
+
+        /**
+         * Controls automatic Bluetooth disabling when not in use.
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_DISABLE_BLUETOOTH_ENABLED = "auto_disable_bluetooth_enabled";
+
+        /**
+         * Controls privacy indicators for camera/microphone usage.
+         * @hide
+         */
+        @Readable
+        public static final String PRIVACY_INDICATORS_ENABLED = "privacy_indicators_enabled";
+
+        /**
+         * Controls granular file permissions per app.
+         * @hide
+         */
+        @Readable
+        public static final String STORAGE_SCOPES_ENABLED = "storage_scopes_enabled";
+
+        /**
+         * Controls limited contact access per app.
+         * @hide
+         */
+        @Readable
+        public static final String CONTACT_SCOPES_ENABLED = "contact_scopes_enabled";
+
+        /**
+         * Controls password visibility in text fields.
+         * @hide
+         */
+        @Readable
+        public static final String SHOW_PASSWORDS_ENABLED = "show_passwords_enabled";
+
+        /**
+         * Controls WebView JIT compilation for security/performance balance.
+         * @hide
+         */
+        @Readable
+        public static final String WEBVIEW_JIT_ENABLED = "webview_jit_enabled";
+
+        /**
+         * Controls native code debugging restrictions.
+         * @hide
+         */
+        @Readable
+        public static final String NATIVE_DEBUGGING_RESTRICTED = "native_debugging_restricted";
 
         /**
          * Set to 1 by the system after trust agents have been initialized.
@@ -12087,11 +12401,42 @@ public final class Settings {
         public static final String AUTO_REBOOT_ENABLED = "auto_reboot_enabled";
 
         /**
+         * Auto-reboot scheduling mode
+         * 0 = inactivity delay, 1 = daily, 2 = weekly
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_REBOOT_MODE = "auto_reboot_mode";
+
+        /**
          * Auto-reboot delay in milliseconds
          * @hide
          */
         @Readable
         public static final String AUTO_REBOOT_DELAY = "auto_reboot_delay";
+
+        /**
+         * Auto-reboot time of day (minutes from midnight)
+         * Used when {@link #AUTO_REBOOT_MODE} != 0
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_REBOOT_TIME_OF_DAY = "auto_reboot_time_of_day";
+
+        /**
+         * Auto-reboot weekly day mask (bit 0 = Sunday ... bit 6 = Saturday)
+         * Used when {@link #AUTO_REBOOT_MODE} == 2
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_REBOOT_DAY_MASK = "auto_reboot_day_mask";
+
+        /**
+         * Require device to be locked before auto reboot executes
+         * @hide
+         */
+        @Readable
+        public static final String AUTO_REBOOT_REQUIRE_LOCK = "auto_reboot_require_lock";
 
         /**
          * System-wide ad blocking enabled
@@ -13824,6 +14169,12 @@ public final class Settings {
         public static final String V_TO_U_RESTORE_DENYLIST = "v_to_u_restore_denylist";
 
         /**
+         * Switch to change custom system theme (0=Default, 1=Black, 2=Vivid, 3=Snowpaint, 4=Espresso)
+         * @hide
+         */
+        public static final String SYSTEM_CUSTOM_THEME = "system_custom_theme";
+
+        /**
          * Integer property that determines which charging optimization mode is applied.
          * [0-10] inclusive representing different modes, where 0 is the default indicating
          * no optimization mode is applied.
@@ -13847,6 +14198,7 @@ public final class Settings {
          * @hide
          */
         public static final String ADVANCED_PROTECTION_MODE = "advanced_protection_mode";
+
     }
 
     /**

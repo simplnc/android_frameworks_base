@@ -540,12 +540,24 @@ public final class NavBarHelper implements
      * {@link InputMethodService} and the keyguard states.
      */
     public boolean isImeShown(@ImeWindowVisibility int vis) {
-        View shadeWindowView =  mNotificationShadeWindowController.getWindowRootView();
-        boolean isKeyguardShowing = mKeyguardStateController.isShowing();
-        boolean imeVisibleOnShade = shadeWindowView != null && shadeWindowView.isAttachedToWindow()
-                && shadeWindowView.getRootWindowInsets().isVisible(WindowInsets.Type.ime());
-        return imeVisibleOnShade
-                || (!isKeyguardShowing && (vis & InputMethodService.IME_VISIBLE) != 0);
+        // Primary check: use the IME visibility flag from InputMethodService
+        boolean imeVisible = (vis & InputMethodService.IME_VISIBLE) != 0;
+
+        // Additional check for shade window (notification panel) IME visibility
+        // Only consider this if IME is actually visible according to the primary flag
+        if (imeVisible) {
+            View shadeWindowView = mNotificationShadeWindowController.getWindowRootView();
+            boolean isKeyguardShowing = mKeyguardStateController.isShowing();
+            boolean imeVisibleOnShade = shadeWindowView != null && shadeWindowView.isAttachedToWindow()
+                    && shadeWindowView.getRootWindowInsets().isVisible(WindowInsets.Type.ime());
+
+            // If keyguard is not showing, trust the primary IME visibility flag
+            // If keyguard is showing, also check shade IME visibility
+            return !isKeyguardShowing || imeVisibleOnShade;
+        }
+
+        // If IME is not visible according to primary flag, return false
+        return false;
     }
 
     @Override

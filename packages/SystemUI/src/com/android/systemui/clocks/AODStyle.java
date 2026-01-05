@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -188,9 +189,69 @@ public class AODStyle extends RelativeLayout implements TunerService.Tunable {
         }
     }
 
+    /**
+     * Validates image path for security - prevents directory traversal attacks
+     */
+    private boolean isValidImagePath(String path) {
+        if (path == null || path.isEmpty()) {
+            return false;
+        }
+
+        // Prevent directory traversal attacks
+        if (path.contains("..") || path.contains("../")) {
+            Log.w(TAG, "Path traversal attempt blocked: " + path);
+            return false;
+        }
+
+        // Prevent access to sensitive system directories
+        String[] blockedPaths = {
+            "/system/",
+            "/data/system/",
+            "/data/misc/",
+            "/proc/",
+            "/sys/",
+            "/vendor/"
+        };
+
+        for (String blockedPath : blockedPaths) {
+            if (path.startsWith(blockedPath)) {
+                Log.w(TAG, "Access to sensitive path blocked: " + path);
+                return false;
+            }
+        }
+
+        // Only allow standard user-accessible directories
+        String[] allowedPrefixes = {
+            "/storage/",
+            "/sdcard/",
+            "/data/media/",
+            "/mnt/"
+        };
+
+        for (String allowedPrefix : allowedPrefixes) {
+            if (path.startsWith(allowedPrefix)) {
+                return true;
+            }
+        }
+
+        Log.w(TAG, "Path not in allowed directories: " + path);
+        return false;
+    }
+
     private void loadAodImage() {
         if (mAodImageView == null || mCurrImagePath == null
                 || mCurrImagePath.isEmpty() || mImageLoaded) return;
+
+        // Security check: validate image path
+        if (!isValidImagePath(mCurrImagePath)) {
+            Log.e(TAG, "Invalid image path rejected: " + mCurrImagePath);
+            mImageLoaded = false;
+            if (mAodImageView != null) {
+                mAodImageView.setVisibility(View.GONE);
+            }
+            return;
+        }
+
         Bitmap bitmap = null;
         try {
             bitmap = BitmapFactory.decodeFile(mCurrImagePath);

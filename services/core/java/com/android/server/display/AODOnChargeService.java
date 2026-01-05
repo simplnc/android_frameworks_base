@@ -59,16 +59,54 @@ public class AODOnChargeService extends SystemService {
         }
     };
 
+    /**
+     * Sanitizes input strings to prevent injection attacks
+     */
+    private String sanitizeInput(String input) {
+        if (input == null) {
+            return null;
+        }
+        // Remove potentially dangerous characters
+        return input.replaceAll("[<>\"';()&|]", "").trim();
+    }
+
+    /**
+     * Validates integer values from settings to prevent overflow attacks
+     */
+    private int sanitizeIntValue(int value, int min, int max, int defaultValue) {
+        if (value < min || value > max) {
+            Slog.w(TAG, "Invalid value detected: " + value + ", using default: " + defaultValue);
+            return defaultValue;
+        }
+        return value;
+    }
+
     private final ContentObserver mSettingsObserver = new ContentObserver(null) {
         @Override
         public void onChange(boolean selfChange) {
-            mServiceEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                    "doze_always_on_charge_mode", 0) != 0;
-            mAODActive = Settings.Secure.getInt(mContext.getContentResolver(),
-                    Settings.Secure.DOZE_ALWAYS_ON, 0) != 0;
-            if (mServiceEnabled) {
-                registerPowerReceiver();
-            } else {
+            try {
+                int serviceEnabledValue = Settings.System.getInt(mContext.getContentResolver(),
+                        "doze_always_on_charge_mode", 0);
+                int aodActiveValue = Settings.Secure.getInt(mContext.getContentResolver(),
+                        Settings.Secure.DOZE_ALWAYS_ON, 0);
+
+                // Sanitize values to prevent potential attacks
+                serviceEnabledValue = sanitizeIntValue(serviceEnabledValue, 0, 1, 0);
+                aodActiveValue = sanitizeIntValue(aodActiveValue, 0, 1, 0);
+
+                mServiceEnabled = serviceEnabledValue != 0;
+                mAODActive = aodActiveValue != 0;
+
+                if (mServiceEnabled) {
+                    registerPowerReceiver();
+                } else {
+                    unregisterPowerReceiver();
+                }
+            } catch (Exception e) {
+                Slog.e(TAG, "Error in settings observer", e);
+                // Reset to safe defaults on error
+                mServiceEnabled = false;
+                mAODActive = false;
                 unregisterPowerReceiver();
             }
         }

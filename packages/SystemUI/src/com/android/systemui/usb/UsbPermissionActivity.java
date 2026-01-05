@@ -18,6 +18,7 @@ package com.android.systemui.usb;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import javax.inject.Inject;
 
@@ -36,6 +37,11 @@ public class UsbPermissionActivity extends UsbDialogActivity {
 
     @Override
     public void onCreate(Bundle icicle) {
+        if (isUsbPopupBlocked()) {
+            // USB permission dialogs are globally blocked by AppSec setting
+            finish();
+            return;
+        }
         super.onCreate(icicle);
         mUsbPermissionMessageHandler.init(UsbAudioWarningDialogMessage.TYPE_PERMISSION,
                 mDialogHelper);
@@ -80,5 +86,18 @@ public class UsbPermissionActivity extends UsbDialogActivity {
         }
         mPermissionGranted = true;
         finish();
+    }
+
+    /**
+     * Check AppSec setting to determine if USB permission popups should be blocked.
+     * This reads the secure setting written by BlockUsbPopupController in Settings.
+     */
+    private boolean isUsbPopupBlocked() {
+        try {
+            return Settings.Secure.getInt(getContentResolver(),
+                    "block_usb_popup_enabled", 0) != 0;
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 }

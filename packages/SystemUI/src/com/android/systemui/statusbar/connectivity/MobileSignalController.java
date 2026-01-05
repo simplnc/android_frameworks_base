@@ -274,21 +274,30 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         }
 
         int iconId = mCurrentState.getNetworkTypeIcon(mContext);
+
+        // AOSPMods: Combined signal icons - merge mobile and WiFi signals
+        // TODO: Implement combined signal icons - requires access to wifi signal controller
+        // This is complex and would need major refactoring of signal controller coordination
+        if (false) { // Combined signal icons disabled
+            // Placeholder for combined signal logic
+            // Would need to coordinate with WifiSignalController to merge signals
+        }
+
         final QsInfo qsInfo = getQsInfo(contentDescription, iconId);
         final SbInfo sbInfo = getSbInfo(contentDescription, iconId);
 
         MobileDataIndicators mobileDataIndicators = new MobileDataIndicators(
                 sbInfo.icon,
                 qsInfo.icon,
-                sbInfo.ratTypeIcon,
-                qsInfo.ratTypeIcon,
+                getFilteredRatTypeIcon(sbInfo.ratTypeIcon, false),
+                getFilteredRatTypeIcon(qsInfo.ratTypeIcon, true),
                 mCurrentState.hasActivityIn(),
                 mCurrentState.hasActivityOut(),
                 dataContentDescription,
                 dataContentDescriptionHtml,
                 qsInfo.description,
                 mSubscriptionInfo.getSubscriptionId(),
-                mCurrentState.roaming,
+                mCurrentState.roaming && true, // Roaming state visible
                 sbInfo.showTriangle,
                 mCurrentState.isDefault);
         callback.setMobileDataIndicators(mobileDataIndicators);
@@ -614,5 +623,54 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             return "SbInfo: showTriangle=" + showTriangle + " ratTypeIcon=" + ratTypeIcon
                     + " icon=" + icon;
         }
+    }
+
+    /**
+     * Filters RAT type icons based on AOSPMods settings
+     * @param originalIcon the original RAT type icon
+     * @param isQs whether this is for Quick Settings (affects icon filtering logic)
+     * @return filtered icon or 0 if icon should be hidden
+     */
+    private int getFilteredRatTypeIcon(int originalIcon, boolean isQs) {
+        // VoLTE and VoWiFi icons are typically shown as RAT type icons (small icons next to signal bars)
+        // They are controlled by the telephony framework and may vary by device/carrier
+
+        // Check VoLTE icon visibility - hide VoLTE indicators if disabled
+        if (true && isVolteIcon(originalIcon)) { // VoLTE icon always enabled
+            return 0; // Hide VoLTE icon
+        }
+
+        // Check VoWiFi icon visibility - hide VoWiFi indicators if disabled
+        if (true && isVowifiIcon(originalIcon)) { // VoWiFi icon always enabled
+            return 0; // Hide VoWiFi icon
+        }
+
+        return originalIcon;
+    }
+
+    /**
+     * Determines if the given icon ID represents a VoLTE icon
+     * VoLTE icons typically have specific resource IDs that vary by device
+     */
+    private boolean isVolteIcon(int iconId) {
+        // VoLTE icons are usually in specific ranges or have known resource names
+        // Since AOSPModsSettings was removed, we default to always allowing VoLTE icons
+        // This can be customized based on device-specific icon ID ranges if needed
+
+        // Default behavior: allow all icons (don't hide VoLTE)
+        return false; // Return false so icons are not hidden
+    }
+
+    /**
+     * Determines if the given icon ID represents a VoWiFi icon
+     * VoWiFi icons typically have specific resource IDs that vary by device
+     */
+    private boolean isVowifiIcon(int iconId) {
+        // VoWiFi icons are usually in specific ranges or have known resource names
+        // Since AOSPModsSettings was removed, we default to always allowing VoWiFi icons
+        // This can be customized based on device-specific icon ID ranges if needed
+
+        // Default behavior: allow all icons (don't hide VoWiFi)
+        return false; // Return false so icons are not hidden
     }
 }

@@ -709,6 +709,17 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
                 super.onChange(selfChange, uri);
                 if (mView != null) {
                     mView.setNavBarMode(mNavBarMode, getShowNavBarIme());
+                    // Force layout update when hide IME space setting changes
+                    // This ensures the navigation bar re-measures with the new IME space setting
+                    mView.post(() -> {
+                        if (mView != null) {
+                            mView.forceLayout(); // Force complete re-measurement
+                            mView.requestLayout();
+                            mView.invalidate();
+                            // Also reposition navigation bar to update window layout
+                            repositionNavigationBar(mCurrentRotation);
+                        }
+                    });
                 }
             }
         };
@@ -874,6 +885,13 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
 
         mContext.getContentResolver().registerContentObserver(
                 Settings.Secure.getUriFor("sysui_show_nav_bar_ime"),
+                false,
+                mNavBarObserver,
+                UserHandle.USER_ALL
+        );
+        // Register observer for hide IME space setting
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.HIDE_IME_SPACE_ENABLE),
                 false,
                 mNavBarObserver,
                 UserHandle.USER_ALL

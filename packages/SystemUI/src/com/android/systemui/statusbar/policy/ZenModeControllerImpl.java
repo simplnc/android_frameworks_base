@@ -116,10 +116,14 @@ public class ZenModeControllerImpl implements ZenModeController, Dumpable {
         ContentObserver modeContentObserver = new ContentObserver(handler) {
             @Override
             public void onChange(boolean selfChange) {
-                int value = getModeSettingValueFromProvider();
-                Log.d(TAG, "Zen mode setting changed to " + value);
-                updateZenMode(value);
-                fireZenChanged(value);
+                try {
+                    int value = getModeSettingValueFromProvider();
+                    Log.d(TAG, "Zen mode setting changed to " + value);
+                    updateZenMode(value);
+                    fireZenChanged(value);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in zen mode observer", e);
+                }
             }
         };
         ContentObserver configContentObserver = new ContentObserver(handler) {
@@ -128,6 +132,8 @@ public class ZenModeControllerImpl implements ZenModeController, Dumpable {
                 try {
                     Trace.beginSection("updateZenModeConfig");
                     updateZenModeConfig();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in zen mode config observer", e);
                 } finally {
                     Trace.endSection();
                 }
@@ -163,7 +169,7 @@ public class ZenModeControllerImpl implements ZenModeController, Dumpable {
 
     @Override
     public boolean areNotificationsHiddenInShade() {
-        if (mZenMode != Global.ZEN_MODE_OFF) {
+        if (mZenMode != Global.ZEN_MODE_OFF && mConsolidatedNotificationPolicy != null) {
             return (mConsolidatedNotificationPolicy.suppressedVisualEffects
                     & NotificationManager.Policy.SUPPRESSED_EFFECT_NOTIFICATION_LIST) != 0;
         }
@@ -193,10 +199,19 @@ public class ZenModeControllerImpl implements ZenModeController, Dumpable {
 
     @Override
     public void setZen(int zen, Uri conditionId, String reason) {
-        if (Flags.modesApi()) {
-            mNoMan.setZenMode(zen, conditionId, reason, /* fromUser= */ true);
-        } else {
-            mNoMan.setZenMode(zen, conditionId, reason);
+        if (mNoMan == null) {
+            Log.w(TAG, "NotificationManager is null, cannot set zen mode");
+            return;
+        }
+        try {
+            if (Flags.modesApi()) {
+                mNoMan.setZenMode(zen, conditionId, reason, /* fromUser= */ true);
+            } else {
+                mNoMan.setZenMode(zen, conditionId, reason);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting zen mode", e);
+            // Don't crash SystemUI if there's an issue setting zen mode
         }
     }
 
@@ -291,34 +306,51 @@ public class ZenModeControllerImpl implements ZenModeController, Dumpable {
 
     @VisibleForTesting
     protected void updateConsolidatedNotificationPolicy() {
-        final NotificationManager.Policy policy = mNoMan.getConsolidatedNotificationPolicy();
-        if (!Objects.equals(policy, mConsolidatedNotificationPolicy)) {
-            mConsolidatedNotificationPolicy = policy;
-            fireConsolidatedPolicyChanged(policy);
+        if (mNoMan == null) {
+            Log.w(TAG, "NotificationManager is null, skipping consolidated policy update");
+            return;
+        }
+        try {
+            final NotificationManager.Policy policy = mNoMan.getConsolidatedNotificationPolicy();
+            if (!Objects.equals(policy, mConsolidatedNotificationPolicy)) {
+                mConsolidatedNotificationPolicy = policy;
+                fireConsolidatedPolicyChanged(policy);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating consolidated notification policy", e);
+            // Don't crash SystemUI if there's an issue with policy
         }
     }
 
     @VisibleForTesting
     protected void updateZenModeConfig() {
-        final ZenModeConfig config = mNoMan.getZenModeConfig();
-        if (Objects.equals(config, mConfig)) return;
-        final ZenRule oldRule = mConfig != null ? mConfig.manualRule : null;
-        mConfig = config;
-        mZenUpdateTime = System.currentTimeMillis();
-        fireConfigChanged(config);
-
-        final ZenRule newRule = config != null ? config.manualRule : null;
-        if (!Objects.equals(oldRule, newRule)) {
-            fireManualRuleChanged(newRule);
+        if (mNoMan == null) {
+            Log.w(TAG, "NotificationManager is null, skipping zen mode config update");
+            return;
         }
+        try {
+            final ZenModeConfig config = mNoMan.getZenModeConfig();
+            if (Objects.equals(config, mConfig)) return;
+            final ZenRule oldRule = mConfig != null ? mConfig.manualRule : null;
+            mConfig = config;
+            mZenUpdateTime = System.currentTimeMillis();
+            fireConfigChanged(config);
 
-        final NotificationManager.Policy consolidatedPolicy =
-                mNoMan.getConsolidatedNotificationPolicy();
-        if (!Objects.equals(consolidatedPolicy, mConsolidatedNotificationPolicy)) {
-            mConsolidatedNotificationPolicy = consolidatedPolicy;
-            fireConsolidatedPolicyChanged(consolidatedPolicy);
+            final ZenRule newRule = config != null ? config.manualRule : null;
+            if (!Objects.equals(oldRule, newRule)) {
+                fireManualRuleChanged(newRule);
+            }
+
+            final NotificationManager.Policy consolidatedPolicy =
+                    mNoMan.getConsolidatedNotificationPolicy();
+            if (!Objects.equals(consolidatedPolicy, mConsolidatedNotificationPolicy)) {
+                mConsolidatedNotificationPolicy = consolidatedPolicy;
+                fireConsolidatedPolicyChanged(consolidatedPolicy);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating zen mode config", e);
+            // Don't crash SystemUI if there's an issue with zen mode config
         }
-
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {

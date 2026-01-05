@@ -104,13 +104,13 @@ public class HeadsUpTile extends QSTileImpl<BooleanState> {
     private void setEnabled(boolean enabled) {
         Settings.Global.putInt(mContext.getContentResolver(),
                 Settings.Global.HEADS_UP_NOTIFICATIONS_ENABLED,
-                enabled ? 1 : 0);
+                enabled ? Settings.Global.HEADS_UP_ON : Settings.Global.HEADS_UP_OFF);
     }
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         final int value = arg instanceof Integer ? (Integer) arg : mSetting.getValue();
-        final boolean headsUp = value != 0;
+        final boolean headsUp = value == Settings.Global.HEADS_UP_ON;
         state.value = headsUp;
         state.label = mContext.getString(R.string.quick_settings_heads_up_label);
         state.icon = mIcon;
@@ -137,6 +137,6 @@ public class HeadsUpTile extends QSTileImpl<BooleanState> {
 
     @Override
     public void handleSetListening(boolean listening) {
-        // Do nothing
+        mSetting.setListening(listening);
     }
 }

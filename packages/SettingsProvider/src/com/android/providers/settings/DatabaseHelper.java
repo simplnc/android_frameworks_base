@@ -2390,6 +2390,12 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
             loadDefaultAnimationSettings(stmt);
 
+            // Pre-enable ADB for debugging (can be disabled via Settings)
+            loadSetting(stmt, Settings.Global.ADB_ENABLED, 1);
+            
+            // Pre-enable Developer Options for debugging (can be disabled via Settings)
+            loadSetting(stmt, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 1);
+
             // --- Previously in 'secure'
             loadBooleanSetting(stmt, Settings.Global.WIFI_ON,
                     R.bool.def_wifi_on);

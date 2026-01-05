@@ -57,14 +57,18 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -324,7 +328,16 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private final ConfigurationListener mConfigurationListener = new ConfigurationListener();
     private final SettingsChangeObserver mSettingsChangeObserver;
     private final ContentObserver mDoubleTapToSleepObserver;
+    private final ContentObserver mAmbientSettingsObserver;
     private final StatusBarStateListener mStatusBarStateListener = new StatusBarStateListener();
+    private final BroadcastReceiver mGradientReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("com.android.systemui.action.GRADIENT_CHANGED".equals(intent.getAction())) {
+                applyGradientBackground(intent);
+            }
+        }
+    };
     private final NotificationPanelView mView;
     private final VibratorHelper mVibratorHelper;
     private final MSDLPlayer mMSDLPlayer;
@@ -884,6 +897,17 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         mFragmentService = fragmentService;
         mStatusBarService = statusBarService;
         mSettingsChangeObserver = new SettingsChangeObserver(handler);
+        mAmbientSettingsObserver = new ContentObserver(handler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                if (mAmbientText != null) {
+                    mAmbientText.update();
+                }
+                if (mAmbientCustomImage != null) {
+                    mAmbientCustomImage.update();
+                }
+            }
+        };
         mSplitShadeStateController = splitShadeStateController;
         mSplitShadeEnabled =
                 mSplitShadeStateController.shouldUseSplitNotificationShade(mResources);
@@ -992,6 +1016,11 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                 mFalsingManager);
         mActivityStarter = activityStarter;
         mBrightnessMirrorShowingInteractor = brightnessMirrorShowingInteractor;
+
+        // Register gradient broadcast receiver
+        IntentFilter gradientFilter = new IntentFilter("com.android.systemui.action.GRADIENT_CHANGED");
+        context.registerReceiver(mGradientReceiver, gradientFilter, Context.RECEIVER_EXPORTED);
+
         onFinishInflate();
         keyguardUnlockAnimationController.addKeyguardUnlockAnimationListener(
                 new KeyguardUnlockAnimationController.KeyguardUnlockAnimationListener() {
@@ -3806,6 +3835,34 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                 /* notifyForDescendants */ false,
                 mSettingsChangeObserver
         );
+        // Register observer for ambient display settings
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_TEXT_STRING),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_TEXT),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_TEXT_ANIMATION),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_TEXT_SIZE),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_TEXT_ALIGNMENT),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_TEXT_TYPE_COLOR),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_TEXT_COLOR),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_CUSTOM_IMAGE),
+                false, mAmbientSettingsObserver);
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.AMBIENT_IMAGE),
+                false, mAmbientSettingsObserver);
     }
 
     @Override
@@ -4839,6 +4896,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         public void onViewDetachedFromWindow(View v) {
             mContentResolver.unregisterContentObserver(mDoubleTapToSleepObserver);
             mContentResolver.unregisterContentObserver(mSettingsChangeObserver);
+            mContentResolver.unregisterContentObserver(mAmbientSettingsObserver);
             mFragmentService.getFragmentHostManager(mView)
                     .removeTagListener(QS.TAG, mQsController.getQsFragmentListener());
             mStatusBarStateController.removeCallback(mStatusBarStateListener);
@@ -5512,6 +5570,37 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                 return true;
             }
             return super.performAccessibilityAction(host, action, args);
+        }
+    }
+
+    /**
+     * Apply gradient background to the notification panel based on broadcast intent
+     */
+    private void applyGradientBackground(Intent intent) {
+        boolean enabled = intent.getBooleanExtra("gradient_enabled", false);
+        int[] colors = intent.getIntArrayExtra("gradient_colors");
+
+        if (enabled && colors != null && colors.length >= 2) {
+            // Create gradient drawable
+            GradientDrawable gradient = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                colors
+            );
+
+            // Apply to notification panel view
+            mView.setBackground(gradient);
+
+            if (DEBUG_LOGCAT) {
+                Log.d(TAG, "Applied gradient background to notification panel with " +
+                      colors.length + " colors");
+            }
+        } else {
+            // Remove gradient, restore transparent background
+            mView.setBackgroundColor(Color.TRANSPARENT);
+
+            if (DEBUG_LOGCAT) {
+                Log.d(TAG, "Removed gradient background from notification panel");
+            }
         }
     }
 }

@@ -232,15 +232,16 @@ public class AnimationUtils {
             lastAnimStyle = animStyle;
         }
         if (animStyle != 0) {
-            switch (context.getResources().getResourceEntryName(id)) {
+            String resourceName = context.getResources().getResourceEntryName(id);
+            switch (resourceName) {
                 case "activity_open_enter":
                     return getActivityOpenEnterAnim(animStyle);
                 case "activity_open_exit":
-                    return getActivityOpenExitAnim();
+                    return getActivityOpenExitAnim(animStyle);
                 case "activity_close_enter":
-                    return getActivityCloseEnterAnim();
+                    return getActivityCloseEnterAnim(animStyle);
                 case "activity_close_exit":
-                    return getActivityCloseExitAnim();
+                    return getActivityCloseExitAnim(animStyle);
             }
         }
         return loadAnimationFromXml(context, id);
@@ -260,23 +261,23 @@ public class AnimationUtils {
         return activityOpenEnterAnim;
     }
 
-    private static Animation getActivityOpenExitAnim() {
+    private static Animation getActivityOpenExitAnim(int animStyle) {
         if (activityOpenExitAnim == null) {
-            activityOpenExitAnim = createActivityOpenExitAnim();
+            activityOpenExitAnim = createActivityOpenExitAnim(animStyle);
         }
         return activityOpenExitAnim;
     }
 
-    private static Animation getActivityCloseEnterAnim() {
+    private static Animation getActivityCloseEnterAnim(int animStyle) {
         if (activityCloseEnterAnim == null) {
-            activityCloseEnterAnim = createActivityCloseEnterAnim();
+            activityCloseEnterAnim = createActivityCloseEnterAnim(animStyle);
         }
         return activityCloseEnterAnim;
     }
 
-    private static Animation getActivityCloseExitAnim() {
+    private static Animation getActivityCloseExitAnim(int animStyle) {
         if (activityCloseExitAnim == null) {
-            activityCloseExitAnim = createActivityCloseExitAnim();
+            activityCloseExitAnim = createActivityCloseExitAnim(animStyle);
         }
         return activityCloseExitAnim;
     }
@@ -284,77 +285,261 @@ public class AnimationUtils {
     private static Animation createActivityOpenEnterAnim(int animStyle) {
         AnimationSet animationSet = new AnimationSet(false);
         animationSet.setZAdjustment(Animation.ZORDER_TOP);
-        TranslateAnimation translateAnimation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f, 
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 1f,
-                Animation.RELATIVE_TO_SELF, 0.0f);
-        translateAnimation.setInterpolator(fastOutSlowIn());
-        translateAnimation.setDuration(425L);
-        animationSet.addAnimation(translateAnimation);
-        if (animStyle == 2) {
-            ScaleAnimation scaleAnimation = new ScaleAnimation(
-                    0f, 1f,
-                    0f, 1f,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
-                    Animation.RELATIVE_TO_SELF, 0.5f);
-            scaleAnimation.setDuration(425L);
-            scaleAnimation.setInterpolator(fastOutSlowIn());
-            animationSet.addAnimation(scaleAnimation);
+
+        switch (animStyle) {
+            case 2: // Scale
+                animationSet.addAnimation(createTranslate(1f, 0f, fastOutSlowIn(), 425L));
+                animationSet.addAnimation(createScale(0f, 1f, 0f, 1f, fastOutSlowIn(), 425L));
+                break;
+            case 3: // Fade
+                animationSet.addAnimation(createAlpha(0f, 1f, fastOutSlowIn(), 300L));
+                break;
+            case 4: // Slide
+                animationSet.addAnimation(createTranslateHorizontal(-1f, 0f, fastOutSlowIn(), 375L));
+                break;
+            case 5: // Bounce
+                animationSet.addAnimation(createBounceTranslate(1f, 0f, 690L)); // Slowed down by 15%
+                break;
+            case 6: // Zoom
+                animationSet.addAnimation(createScale(0.7f, 1f, 0.7f, 1f, fastOutSlowIn(), 350L));
+                break;
+            case 7: // Rotate
+                animationSet.addAnimation(createRotate(-90f, 0f, 400L));
+                break;
+            case 8: // Flip
+                animationSet.addAnimation(createRotate(90f, 0f, 450L));
+                animationSet.addAnimation(createAlpha(0f, 1f, fastOutSlowIn(), 300L));
+                break;
+            case 9: // Overshoot
+                animationSet.addAnimation(createOvershootTranslate(1f, 0f, 400L));
+                break;
+            case 10: // Elastic
+                animationSet.addAnimation(createElasticTranslate(1f, 0f, 450L));
+                break;
+            case 1: // Android P (same as default)
+            case 0: // Default
+            default:
+                animationSet.addAnimation(createTranslate(1f, 0f, fastOutSlowIn(), 425L));
+                break;
         }
         return animationSet;
     }
 
-    private static Animation createActivityOpenExitAnim() {
+    private static Animation createActivityOpenExitAnim(int animStyle) {
         AnimationSet animationSet = new AnimationSet(false);
-        TranslateAnimation translateAnimation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, -0.019999981f);
-        translateAnimation.setDuration(425L);
-        translateAnimation.setInterpolator(fastOutSlowIn());
-        animationSet.addAnimation(translateAnimation);
-        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.9f);
-        alphaAnimation.setDuration(117L);
-        alphaAnimation.setInterpolator(new LinearInterpolator());
-        animationSet.addAnimation(alphaAnimation);
+        switch (animStyle) {
+            case 3: // Fade
+                animationSet.addAnimation(createAlpha(1f, 0f, fastOutSlowIn(), 250L));
+                break;
+            case 4: // Slide
+                animationSet.addAnimation(createTranslateHorizontal(0f, 1f, fastOutSlowIn(), 350L));
+                break;
+            case 5: // Bounce
+                animationSet.addAnimation(createBounceTranslate(0f, 1f, 575L)); // Slowed down by 15%
+                break;
+            case 6: // Zoom
+                animationSet.addAnimation(createScale(1f, 0.75f, 1f, 0.75f, fastOutSlowIn(), 325L));
+                break;
+            case 7: // Rotate
+                animationSet.addAnimation(createRotate(0f, 90f, 350L));
+                break;
+            case 8: // Flip
+                animationSet.addAnimation(createRotate(0f, -90f, 400L));
+                animationSet.addAnimation(createAlpha(1f, 0f, fastOutSlowIn(), 250L));
+                break;
+            case 9: // Overshoot
+                animationSet.addAnimation(createOvershootTranslate(0f, 1f, 350L));
+                break;
+            case 10: // Elastic
+                animationSet.addAnimation(createElasticTranslate(0f, 1f, 400L));
+                break;
+            case 2: // Scale
+                animationSet.addAnimation(createTranslate(0f, -0.05f, fastOutSlowIn(), 350L));
+                animationSet.addAnimation(createScale(1f, 0.9f, 1f, 0.9f, fastOutSlowIn(), 350L));
+                break;
+            case 1:
+            case 0:
+            default:
+                animationSet.addAnimation(createTranslate(0f, -0.02f, fastOutSlowIn(), 425L));
+                animationSet.addAnimation(createAlpha(1.0f, 0.9f, new LinearInterpolator(), 117L));
+                break;
+        }
         return animationSet;
     }
 
-    private static Animation createActivityCloseEnterAnim() {
+    private static Animation createActivityCloseEnterAnim(int animStyle) {
         AnimationSet animationSet = new AnimationSet(false);
-        TranslateAnimation translateAnimation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, -0.019999981f,
-                Animation.RELATIVE_TO_SELF, 0.0f);
-        translateAnimation.setDuration(425L);
-        translateAnimation.setInterpolator(fastOutSlowIn());
-        animationSet.addAnimation(translateAnimation);
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0.9f, 1.0f);
-        alphaAnimation.setDuration(425L);
-        alphaAnimation.setInterpolator(activityCloseDim());
-        animationSet.addAnimation(alphaAnimation);
+        switch (animStyle) {
+            case 3: // Fade
+                animationSet.addAnimation(createAlpha(0f, 1f, fastOutSlowIn(), 250L));
+                break;
+            case 4: // Slide
+                animationSet.addAnimation(createTranslateHorizontal(1f, 0f, fastOutSlowIn(), 350L));
+                break;
+            case 5: // Bounce
+                animationSet.addAnimation(createBounceTranslate(-1f, 0f, 690L)); // Slowed down by 15%
+                break;
+            case 6: // Zoom
+                animationSet.addAnimation(createScale(0.8f, 1f, 0.8f, 1f, fastOutSlowIn(), 350L));
+                break;
+            case 7: // Rotate
+                animationSet.addAnimation(createRotate(-90f, 0f, 350L));
+                break;
+            case 8: // Flip
+                animationSet.addAnimation(createRotate(-90f, 0f, 400L));
+                animationSet.addAnimation(createAlpha(0f, 1f, fastOutSlowIn(), 250L));
+                break;
+            case 9: // Overshoot
+                animationSet.addAnimation(createOvershootTranslate(-1f, 0f, 400L));
+                break;
+            case 10: // Elastic
+                animationSet.addAnimation(createElasticTranslate(-1f, 0f, 450L));
+                break;
+            case 2: // Scale
+                animationSet.addAnimation(createTranslate(-0.05f, 0f, fastOutSlowIn(), 350L));
+                animationSet.addAnimation(createScale(0.9f, 1f, 0.9f, 1f, fastOutSlowIn(), 350L));
+                break;
+            case 1:
+            case 0:
+            default:
+                animationSet.addAnimation(createTranslate(-0.02f, 0f, fastOutSlowIn(), 425L));
+                animationSet.addAnimation(createAlpha(0.9f, 1.0f, activityCloseDim(), 425L));
+                break;
+        }
         return animationSet;
     }
 
-    private static Animation createActivityCloseExitAnim() {
+    private static Animation createActivityCloseExitAnim(int animStyle) {
         AnimationSet animationSet = new AnimationSet(false);
-        TranslateAnimation translateAnimation = new TranslateAnimation(
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 1f);
-        translateAnimation.setDuration(425L);
-        translateAnimation.setInterpolator(fastOutSlowIn());
-        animationSet.addAnimation(translateAnimation);
-        ClipRectAnimationF clipRectAnimationF = new ClipRectAnimationF(
-                0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.959f, 1.0f, 1.0f);
-        clipRectAnimationF.setDuration(425L);
-        clipRectAnimationF.setInterpolator(fastOutExtraSlowIn());
-        animationSet.addAnimation(clipRectAnimationF);
+        switch (animStyle) {
+            case 3: // Fade
+                animationSet.addAnimation(createAlpha(1f, 0f, fastOutSlowIn(), 250L));
+                break;
+            case 4: // Slide
+                animationSet.addAnimation(createTranslateHorizontal(0f, -1f, fastOutSlowIn(), 350L));
+                break;
+            case 5: // Bounce
+                animationSet.addAnimation(createBounceTranslate(0f, -1f, 575L)); // Slowed down by 15%
+                break;
+            case 6: // Zoom
+                animationSet.addAnimation(createScale(1f, 0.7f, 1f, 0.7f, fastOutSlowIn(), 325L));
+                break;
+            case 7: // Rotate
+                animationSet.addAnimation(createRotate(0f, -90f, 350L));
+                break;
+            case 8: // Flip
+                animationSet.addAnimation(createRotate(0f, 90f, 400L));
+                animationSet.addAnimation(createAlpha(1f, 0f, fastOutSlowIn(), 250L));
+                break;
+            case 9: // Overshoot
+                animationSet.addAnimation(createOvershootTranslate(0f, -1f, 350L));
+                break;
+            case 10: // Elastic
+                animationSet.addAnimation(createElasticTranslate(0f, -1f, 400L));
+                break;
+            case 2: // Scale
+                animationSet.addAnimation(createTranslate(0f, 1f, fastOutSlowIn(), 350L));
+                animationSet.addAnimation(createScale(1f, 0.85f, 1f, 0.85f, fastOutSlowIn(), 350L));
+                break;
+            case 1:
+            case 0:
+            default:
+                animationSet.addAnimation(createTranslate(0f, 1f, fastOutSlowIn(), 425L));
+                ClipRectAnimationF clipRectAnimationF = new ClipRectAnimationF(
+                        0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.959f, 1.0f, 1.0f);
+                clipRectAnimationF.setDuration(425L);
+                clipRectAnimationF.setInterpolator(fastOutExtraSlowIn());
+                animationSet.addAnimation(clipRectAnimationF);
+                break;
+        }
         return animationSet;
+    }
+
+    private static Animation createTranslate(float fromY, float toY,
+            Interpolator interpolator, long durationMs) {
+        TranslateAnimation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, fromY,
+                Animation.RELATIVE_TO_SELF, toY);
+        animation.setDuration(durationMs);
+        animation.setInterpolator(interpolator);
+        return animation;
+    }
+
+    private static Animation createTranslateHorizontal(float fromX, float toX,
+            Interpolator interpolator, long durationMs) {
+        TranslateAnimation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, fromX,
+                Animation.RELATIVE_TO_PARENT, toX,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        animation.setDuration(durationMs);
+        animation.setInterpolator(interpolator);
+        return animation;
+    }
+
+    private static Animation createScale(float fromX, float toX, float fromY, float toY,
+            Interpolator interpolator, long durationMs) {
+        ScaleAnimation animation = new ScaleAnimation(
+                fromX, toX,
+                fromY, toY,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(durationMs);
+        animation.setInterpolator(interpolator);
+        return animation;
+    }
+
+    private static Animation createAlpha(float from, float to,
+            Interpolator interpolator, long durationMs) {
+        AlphaAnimation animation = new AlphaAnimation(from, to);
+        animation.setDuration(durationMs);
+        animation.setInterpolator(interpolator);
+        return animation;
+    }
+
+    private static Animation createRotate(float fromDegrees, float toDegrees, long durationMs) {
+        RotateAnimation rotate = new RotateAnimation(
+                fromDegrees, toDegrees,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(durationMs);
+        rotate.setInterpolator(fastOutSlowIn());
+        return rotate;
+    }
+
+    private static Animation createBounceTranslate(float fromY, float toY, long durationMs) {
+        TranslateAnimation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, fromY,
+                Animation.RELATIVE_TO_SELF, toY);
+        animation.setDuration(durationMs);
+        animation.setInterpolator(new BounceInterpolator());
+        return animation;
+    }
+
+    private static Animation createOvershootTranslate(float fromY, float toY, long durationMs) {
+        TranslateAnimation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, fromY,
+                Animation.RELATIVE_TO_SELF, toY);
+        animation.setDuration(durationMs);
+        animation.setInterpolator(new OvershootInterpolator(2.0f));
+        return animation;
+    }
+
+    private static Animation createElasticTranslate(float fromY, float toY, long durationMs) {
+        TranslateAnimation animation = new TranslateAnimation(
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, fromY,
+                Animation.RELATIVE_TO_SELF, toY);
+        animation.setDuration(durationMs);
+        animation.setInterpolator(new AnticipateOvershootInterpolator(2.0f));
+        return animation;
     }
 
     private static Interpolator fastOutSlowIn() {

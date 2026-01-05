@@ -1,6 +1,8 @@
 package com.android.server.security;
 
 import android.content.Context;
+import android.database.ContentObserver;
+import android.os.Handler;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
@@ -18,6 +20,7 @@ public class AutoRebootManager {
     private final Context mContext;
     private static AutoRebootManager sInstance;
     private Timer mRebootTimer;
+    private SettingsObserver mSettingsObserver;
     
     // Auto-reboot settings
     private static final String AUTO_REBOOT_ENABLED = "auto_reboot_enabled";
@@ -29,6 +32,7 @@ public class AutoRebootManager {
     
     private AutoRebootManager(Context context) {
         mContext = context;
+        mSettingsObserver = new SettingsObserver(new Handler(context.getMainLooper()));
     }
     
     public static synchronized AutoRebootManager getInstance(Context context) {
@@ -42,6 +46,9 @@ public class AutoRebootManager {
      * Initialize auto-reboot functionality.
      */
     public void initialize() {
+        // Register settings observer to watch for changes
+        mSettingsObserver.register();
+        
         if (isAutoRebootEnabled()) {
             scheduleAutoReboot();
         }
@@ -224,5 +231,41 @@ public class AutoRebootManager {
         }
         
         return status.toString();
+    }
+    
+    /**
+     * Settings observer to watch for auto-reboot setting changes.
+     */
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+        
+        void register() {
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(AUTO_REBOOT_ENABLED),
+                    false, this);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(AUTO_REBOOT_DELAY),
+                    false, this);
+        }
+        
+        void unregister() {
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+        
+        @Override
+        public void onChange(boolean selfChange) {
+            if (DEBUG) {
+                Log.d(TAG, "Auto-reboot settings changed");
+            }
+            
+            // Reschedule reboot if enabled, or cancel if disabled
+            if (isAutoRebootEnabled()) {
+                scheduleAutoReboot();
+            } else {
+                cancelScheduledReboot();
+            }
+        }
     }
 }
