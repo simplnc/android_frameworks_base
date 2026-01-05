@@ -6926,6 +6926,12 @@ public final class Settings {
         public static final String AMBIENT_CUSTOM_IMAGE = "ambient_custom_image";
 
         /**
+         * Ambient Custom Image File Path
+         * @hide
+         */
+        public static final String AMBIENT_IMAGE_FILE = "ambient_image_file";
+
+        /**
          * Statusbar logo
          * @hide
          */
