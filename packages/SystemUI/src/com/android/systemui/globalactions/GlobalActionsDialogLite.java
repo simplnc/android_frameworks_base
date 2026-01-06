@@ -205,7 +205,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private static final String RESTART_ACTION_KEY_RESTART_BOOTLOADER = "restart_bootloader";
     private static final String RESTART_ACTION_KEY_RESTART_DOWNLOAD = "restart_download";
     private static final String RESTART_ACTION_KEY_RESTART_FASTBOOT = "restart_fastboot";
-    private static final String RESTART_ACTION_KEY_RESTART_SYSUI = "restart_sysui";
+    private static final String RESTART_ACTION_KEY_RESTART_SYSUI = "restart_systemui";
 
     private static final String GLOBAL_ACTION_KEY_ADVANCED_RESTART = "advanced";
     private static final String GLOBAL_ACTION_KEY_TORCH = "torch";
@@ -741,7 +741,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         // Define the missing action variables
         RestartBootloaderAction restartBootloaderAction = blAction;
         RestartRecoveryAction restartRecoveryAction = recAction;
-        RestartSystemAction restartSystemUiAction = sysAction;
+        RestartSystemAction restartSystemAction = sysAction;
+        RestartSystemUIAction restartSystemUiAction = sysuiAction;
         ArraySet<String> addedKeys = new ArraySet<>();
         ArraySet<String> addedRestartKeys = new ArraySet<String>();
         List<Action> tempActions = new ArrayList<>();
