@@ -36,7 +36,7 @@ public class LogoImageView extends LogoImage {
 
     @Override
     protected boolean isLogoVisible() {
-        if (mLogoPosition == 0) {
+        if (mLogoPosition == 0 || mLogoPosition == 1) {
             return true;
         }
         return false;

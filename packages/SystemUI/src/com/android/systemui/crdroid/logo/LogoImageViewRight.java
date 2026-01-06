@@ -36,7 +36,7 @@ public class LogoImageViewRight extends LogoImage {
 
     @Override
     protected boolean isLogoVisible() {
-        if (mLogoPosition == 1) {
+        if (mLogoPosition == 2) {
             return true;
         }
         return false;

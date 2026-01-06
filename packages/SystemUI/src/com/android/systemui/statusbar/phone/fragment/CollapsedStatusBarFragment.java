@@ -171,6 +171,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private Map<Startable, Startable.State> mStartableStates = new ArrayMap<>();
 
     private View mLeftLogo;
+    private View mRightLogo;
 
     private final OngoingCallListener mOngoingCallListener = new OngoingCallListener() {
         @Override
@@ -390,6 +391,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mSecondaryOngoingActivityChip =
                 mStatusBar.findViewById(R.id.ongoing_activity_chip_secondary);
         mLeftLogo = mStatusBar.findViewById(R.id.statusbar_logo);
+        mRightLogo = mStatusBar.findViewById(R.id.statusbar_logo_right);
         if (!StatusBarRootModernization.isEnabled()) {
             showEndSideContent(false);
             showClock(false);
@@ -915,12 +917,14 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public void hideNotificationIconArea(boolean animate) {
         StatusBarRootModernization.assertInLegacyMode();
         animateHide(mLeftLogo, animate);
+        animateHide(mRightLogo, animate);
         animateHide(mNotificationIconAreaInner, animate);
     }
 
     public void showNotificationIconArea(boolean animate) {
         StatusBarRootModernization.assertInLegacyMode();
         animateShow(mLeftLogo, animate);
+        animateShow(mRightLogo, animate);
         animateShow(mNotificationIconAreaInner, animate);
     }
 

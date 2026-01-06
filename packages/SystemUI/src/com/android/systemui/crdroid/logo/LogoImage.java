@@ -272,17 +272,8 @@ public abstract class LogoImage extends ImageView implements DarkReceiver {
             case 41:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_reddit);
                 break;
-            case 42:
-                drawable = mContext.getResources().getDrawable(R.drawable.ic_netflix);
-                break;
             case 43:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_spotify);
-                break;
-            case 44:
-                drawable = mContext.getResources().getDrawable(R.drawable.ic_youtube);
-                break;
-            case 45:
-                drawable = mContext.getResources().getDrawable(R.drawable.ic_twitch);
                 break;
             case 46:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_samsung);
@@ -348,60 +339,57 @@ public abstract class LogoImage extends ImageView implements DarkReceiver {
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_converse);
                 break;
             case 67:
-                drawable = mContext.getResources().getDrawable(R.drawable.ic_instagram);
-                break;
-            case 68:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_facebook);
                 break;
-            case 69:
+            case 68:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_tiktok);
                 break;
-            case 70:
+            case 69:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_snapchat);
                 break;
-            case 71:
+            case 70:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_linkedin);
                 break;
-            case 72:
+            case 71:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_pinterest);
                 break;
-            case 73:
+            case 72:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_tumblr);
                 break;
-            case 74:
+            case 73:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_vimeo);
                 break;
-            case 75:
+            case 74:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_soundcloud);
                 break;
-            case 76:
+            case 75:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_bandcamp);
                 break;
-            case 77:
+            case 76:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_paypal);
                 break;
-            case 78:
+            case 77:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_venmo);
                 break;
-            case 79:
+            case 78:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_cash_app);
                 break;
-            case 80:
+            case 79:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_robinhood);
                 break;
-            case 81:
+            case 80:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_uber);
                 break;
-            case 82:
+            case 81:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_lyft);
                 break;
-            case 83:
+            case 82:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_airbnb);
                 break;
-            case 84:
+            case 83:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_patreon);
                 break;
-            case 85:
+            case 84:
                 drawable = mContext.getResources().getDrawable(R.drawable.ic_kickstarter);
                 break;
         }
@@ -442,45 +430,39 @@ public abstract class LogoImage extends ImageView implements DarkReceiver {
             case 39:    // WhatsApp
             case 40:    // Signal
             case 41:    // Reddit
-            case 42:    // Netflix
-            case 43:    // Spotify
-            case 44:    // YouTube
-            case 45:    // Twitch
-            case 46:    // Samsung
-            case 47:    // OnePlus
-            case 48:    // Xiaomi
-            case 49:    // Google
-            case 50:    // GitHub
-            case 51:    // GitLab
-            case 57:    // Deadpool
-            case 58:    // Wolverine
-            case 59:    // Hulk
-            case 60:    // Thor
-            case 61:    // Star Wars
-            case 62:    // Pokemon
-            case 63:    // Under Armour
-            case 64:    // Reebok
-            case 65:    // Vans
-            case 66:    // Converse
-            case 67:    // Instagram
-            case 68:    // Facebook
-            case 69:    // TikTok
-            case 70:    // Snapchat
-            case 71:    // LinkedIn
-            case 72:    // Pinterest
-            case 73:    // Tumblr
-            case 74:    // Vimeo
-            case 75:    // SoundCloud
-            case 76:    // Bandcamp
-            case 77:    // PayPal
-            case 78:    // Venmo
-            case 79:    // Cash App
-            case 80:    // Robinhood
-            case 81:    // Uber
-            case 82:    // Lyft
-            case 83:    // Airbnb
-            case 84:    // Patreon
-            case 85:    // Kickstarter
+            case 42:    // Spotify
+            case 43:    // Samsung
+            case 46:    // Google
+            case 47:    // GitHub
+            case 48:    // GitLab
+            case 49:    // Deadpool
+            case 50:    // Wolverine
+            case 51:    // Hulk
+            case 52:    // Thor
+            case 53:    // Star Wars
+            case 54:    // Pokemon
+            case 55:    // Under Armour
+            case 56:    // Reebok
+            case 57:    // Vans
+            case 58:    // Converse
+            case 59:    // Facebook
+            case 60:    // TikTok
+            case 61:    // Snapchat
+            case 62:    // LinkedIn
+            case 63:    // Pinterest
+            case 64:    // Tumblr
+            case 65:    // Vimeo
+            case 66:    // SoundCloud
+            case 67:    // Bandcamp
+            case 68:    // PayPal
+            case 69:    // Venmo
+            case 70:    // Cash App
+            case 71:    // Robinhood
+            case 72:    // Uber
+            case 73:    // Lyft
+            case 74:    // Airbnb
+            case 75:    // Patreon
+            case 76:    // Kickstarter
                 return false; // Keep original colors for brand logos
             default:
                 return true;  // Tint generic/simple logos
