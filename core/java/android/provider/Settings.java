@@ -6632,6 +6632,20 @@ public final class Settings {
          */
         public static final String HIDE_IME_SPACE_ENABLE = "hide_ime_space_enable";
 
+        /**
+         * Clock style for keyguard
+         * 0 = Default
+         * 1 = OOS
+         * 2 = Center
+         * 3 = Simple
+         * 4 = IDE
+         * 5 = MIUI
+         * 6 = Moto
+         *
+         * @hide
+         */
+        public static final String CLOCK_STYLE = "clock_style";
+
          /**
          * Whether to display settings in the power menu
          *

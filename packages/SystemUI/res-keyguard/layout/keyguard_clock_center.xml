@@ -28,7 +28,7 @@
             android:layout_height="wrap_content">
             
             <TextView
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textColor="@android:color/white"
                 android:id="@+id/summary"
                 android:layout_width="match_parent"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content">
             
             <TextClock
-                android:textSize="40.0dip"
+                android:textSize="32dp"
                 android:textColor="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,9 +53,9 @@
                 android:singleLine="true"
                 android:format12Hour="hh:mm"
                 android:format24Hour="HH:mm"/>
-            
+
             <TextClock
-                android:textSize="40.0dip"
+                android:textSize="32dp"
                 android:textColor="@android:color/system_accent1_600"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

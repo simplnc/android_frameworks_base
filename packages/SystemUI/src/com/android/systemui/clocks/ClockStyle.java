@@ -20,6 +20,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -35,29 +37,42 @@ import android.widget.TextClock;
 import com.android.systemui.res.R;
 import com.android.systemui.Dependency;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
-import com.android.systemui.tuner.TunerService;
 
-public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
+public class ClockStyle extends RelativeLayout {
 
     private static final int[] CLOCK_LAYOUTS = {
             0,
             R.layout.keyguard_clock_oos,
             R.layout.keyguard_clock_center,
             R.layout.keyguard_clock_simple,
-            R.layout.keyguard_clock_ide
+            R.layout.keyguard_clock_ide,
+            R.layout.keyguard_clock_miui,
+            R.layout.keyguard_clock_moto
     };
-
-    private final static int[] mCenterClocks = {2, 3, 4};
 
     private static final int DEFAULT_STYLE = 1; // OOS clock by default
     public static final String CLOCK_STYLE_KEY = "clock_style";
 
     private final Context mContext;
     private final KeyguardManager mKeyguardManager;
-    private final TunerService mTunerService;
 
     private View currentClockView;
-    private int mClockStyle;    
+    private int mClockStyle;
+    private int mClockPosition;
+
+    private final ContentObserver mClockStyleObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            updateClockStyle();
+        }
+    };
+
+    private final ContentObserver mClockPositionObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            updateClockPosition();
+        }
+    };    
 
     private static final long UPDATE_INTERVAL_MILLIS = 15 * 1000;
     private long lastUpdateTimeMillis = 0;
@@ -122,18 +137,23 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
         super(context, attrs);
         mContext = context;
         mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-        mTunerService = Dependency.get(TunerService.class);
-        
-        // Set default clock style if not already set
-        String currentValue = mTunerService.getValue(CLOCK_STYLE_KEY);
-        if (currentValue == null) {
-            mTunerService.setValue(CLOCK_STYLE_KEY, String.valueOf(DEFAULT_STYLE));
-        }
-        
-        mTunerService.addTunable(this, CLOCK_STYLE_KEY);
+
         mStatusBarStateController = Dependency.get(StatusBarStateController.class);
         mStatusBarStateController.addCallback(mStatusBarStateListener);
         mStatusBarStateListener.onDozingChanged(mStatusBarStateController.isDozing());
+
+        // Register content observers for clock style and position changes
+        mContext.getContentResolver().registerContentObserver(
+            Settings.Global.getUriFor(CLOCK_STYLE_KEY),
+            false,
+            mClockStyleObserver
+        );
+        mContext.getContentResolver().registerContentObserver(
+            Settings.Global.getUriFor("clock_position"),
+            false,
+            mClockPositionObserver
+        );
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_TIME_TICK);
@@ -145,23 +165,16 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        // Initialize clock style from TunerService
-        mClockStyle = mTunerService.getValue(CLOCK_STYLE_KEY, DEFAULT_STYLE);
-        
-        // Force set to OOS clock if not set or invalid
-        if (mClockStyle == 0 || mClockStyle >= CLOCK_LAYOUTS.length) {
-            mClockStyle = DEFAULT_STYLE;
-            mTunerService.setValue(CLOCK_STYLE_KEY, String.valueOf(DEFAULT_STYLE));
-        }
-        
-        updateClockView();
+        updateClockStyle();
+        updateClockPosition();
     }
     
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mStatusBarStateController.removeCallback(mStatusBarStateListener);
-        mTunerService.removeTunable(this);
+        mContext.getContentResolver().unregisterContentObserver(mClockStyleObserver);
+        mContext.getContentResolver().unregisterContentObserver(mClockPositionObserver);
         mBurnInProtectionHandler.removeCallbacks(mBurnInProtectionRunnable);
         mContext.unregisterReceiver(mScreenReceiver);
     }
@@ -203,6 +216,30 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
         }
     }
 
+    private void updateClockStyle() {
+        mClockStyle = Settings.Global.getInt(mContext.getContentResolver(), CLOCK_STYLE_KEY, DEFAULT_STYLE);
+
+        // Force set to OOS clock if invalid
+        if (mClockStyle < 0 || mClockStyle >= CLOCK_LAYOUTS.length) {
+            mClockStyle = DEFAULT_STYLE;
+            Settings.Global.putInt(mContext.getContentResolver(), CLOCK_STYLE_KEY, DEFAULT_STYLE);
+        }
+
+        updateClockView();
+    }
+
+    private void updateClockPosition() {
+        mClockPosition = Settings.Global.getInt(mContext.getContentResolver(), "clock_position", 1); // Default to center
+
+        // Force valid position (0=left, 1=center, 2=right)
+        if (mClockPosition < 0 || mClockPosition > 2) {
+            mClockPosition = 1;
+            Settings.Global.putInt(mContext.getContentResolver(), "clock_position", 1);
+        }
+
+        updateClockView();
+    }
+
     private void updateClockView() {
         if (currentClockView != null) {
             ((ViewGroup) currentClockView.getParent()).removeView(currentClockView);
@@ -213,7 +250,7 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
             if (stub != null) {
                 stub.setLayoutResource(CLOCK_LAYOUTS[mClockStyle]);
                 currentClockView = stub.inflate();
-                int gravity = isCenterClock(mClockStyle) ? Gravity.CENTER : Gravity.START;
+                int gravity = getGravityForPosition(mClockPosition);
                 if (currentClockView instanceof LinearLayout) {
                     ((LinearLayout) currentClockView).setGravity(gravity);
                 }
@@ -232,27 +269,14 @@ public class ClockStyle extends RelativeLayout implements TunerService.Tunable {
         }
     }
 
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        switch (key) {
-            case CLOCK_STYLE_KEY:
-                mClockStyle = parseIntegerOrDefault(newValue, DEFAULT_STYLE);
-                if (mClockStyle != 0) {
-                    Settings.Secure.putIntForUser(mContext.getContentResolver(), 
-                        Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE, 0, UserHandle.USER_CURRENT);
-                }
-                updateClockView();
-                break;
-        }
-    }
 
-    private boolean isCenterClock(int clockStyle) {
-        for (int centerClock : mCenterClocks) {
-            if (centerClock == clockStyle) {
-                return true;
-            }
+    private int getGravityForPosition(int position) {
+        switch (position) {
+            case 0: return Gravity.START;    // Left
+            case 1: return Gravity.CENTER;   // Center
+            case 2: return Gravity.END;      // Right
+            default: return Gravity.CENTER;  // Default to center
         }
-        return false;
     }
 
     private int parseIntegerOrDefault(String value, int defaultValue) {
