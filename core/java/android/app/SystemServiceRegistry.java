@@ -42,6 +42,7 @@ import android.app.contentsuggestions.IContentSuggestionsManager;
 import android.app.contextualsearch.ContextualSearchManager;
 import android.app.ecm.EnhancedConfirmationFrameworkInitializer;
 import android.app.job.JobSchedulerFrameworkInitializer;
+import android.app.LineageSandboxManager;
 import android.app.ondeviceintelligence.OnDeviceIntelligenceFrameworkInitializer;
 import android.app.people.PeopleManager;
 import android.app.prediction.AppPredictionManager;
@@ -280,6 +281,7 @@ import android.webkit.WebViewBootstrapFrameworkInitializer;
 import com.android.internal.R;
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.app.IBatteryStats;
+import com.android.internal.app.ILineageSandboxService;
 import com.android.internal.app.ISoundTriggerService;
 import com.android.internal.appwidget.IAppWidgetService;
 import com.android.internal.graphics.fonts.IFontManager;
@@ -701,6 +703,17 @@ public final class SystemServiceRegistry {
                                 Context.SENSOR_PRIVACY_SERVICE);
                         return SensorPrivacyManager.getInstance(
                                 ctx, ISensorPrivacyManager.Stub.asInterface(b));
+                    }});
+
+        registerService(Context.LINEAGE_SANDBOX_SERVICE, LineageSandboxManager.class,
+                new CachedServiceFetcher<LineageSandboxManager>() {
+                    @Override
+                    public LineageSandboxManager createService(ContextImpl ctx)
+                            throws ServiceNotFoundException {
+                        IBinder b = ServiceManager.getServiceOrThrow(
+                                Context.LINEAGE_SANDBOX_SERVICE);
+                        ILineageSandboxService service = ILineageSandboxService.Stub.asInterface(b);
+                        return new LineageSandboxManager(ctx.getOuterContext(), service);
                     }});
 
         registerService(Context.STATUS_BAR_SERVICE, StatusBarManager.class,

@@ -4803,6 +4803,16 @@ public abstract class Context {
 
     /**
      * Use with {@link #getSystemService(String)} to retrieve a {@link
+     * android.app.LineageSandboxManager} for LineageOS sandbox functionality.
+     *
+     * @hide
+     * @see #getSystemService(String)
+     * @see android.app.LineageSandboxManager
+     */
+    public static final String LINEAGE_SANDBOX_SERVICE = "lineage_sandbox";
+
+    /**
+     * Use with {@link #getSystemService(String)} to retrieve a {@link
      * android.security.keystore.KeyStoreManager} for accessing
      * <a href="/privacy-and-security/keystore">Android Keystore</a>
      * functions.

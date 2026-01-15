@@ -253,6 +253,8 @@ import com.android.server.security.AttestationVerificationManagerService;
 import com.android.server.security.FileIntegrityService;
 import com.android.server.security.KeyAttestationApplicationIdProviderService;
 import com.android.server.security.KeyChainSystemService;
+import com.android.server.security.TrickyStoreSystemService;
+import com.android.server.security.LineageSandboxService;
 import com.android.server.security.advancedprotection.AdvancedProtectionService;
 import com.android.server.security.authenticationpolicy.AuthenticationPolicyService;
 import com.android.server.security.authenticationpolicy.SecureLockDeviceService;
@@ -1152,6 +1154,10 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startService(FileIntegrityService.class);
         t.traceEnd();
 
+        t.traceBegin("StartLineageSandboxService");
+        mSystemServiceManager.startService(LineageSandboxService.class);
+        t.traceEnd();
+
         // Wait for installd to finish starting up so that it has a chance to
         // create critical directories such as /data/user with the appropriate
         // permissions.  We need this to complete before we initialize other services.
@@ -1562,6 +1568,10 @@ public final class SystemServer implements Dumpable {
 
             t.traceBegin("StartKeyChainSystemService");
             mSystemServiceManager.startService(KeyChainSystemService.class);
+            t.traceEnd();
+
+            t.traceBegin("StartTrickyStoreSystemService");
+            mSystemServiceManager.startService(TrickyStoreSystemService.class);
             t.traceEnd();
 
             t.traceBegin("StartBinaryTransparencyService");
