@@ -43,6 +43,6 @@
         android:key="lockscreen_oneplus_style"
         android:title="@string/lockscreen_oneplus_style_title"
         android:summary="@string/lockscreen_oneplus_style_summary"
-        sysui:defValue="false" />
+        sysui:defValue="true" />
 
 </PreferenceScreen>

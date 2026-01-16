@@ -236,13 +236,18 @@ public class KeyguardClockSwitch extends RelativeLayout {
             // LockScreenWidgets not available, continue with normal keyguard
         }
         
-        
-        // Hide AOSP clocks on initialization when custom clock is enabled
-        if (mSmallClockFrame != null) {
-            mSmallClockFrame.setVisibility(GONE);
-        }
-        if (mLargeClockFrame != null) {
-            mLargeClockFrame.setVisibility(GONE);
+
+        // Only hide AOSP clocks on initialization when OnePlus style is enabled
+        boolean onePlusStyleEnabled = android.provider.Settings.System.getInt(
+                getContext().getContentResolver(), "lockscreen_oneplus_style", 1) == 1;
+
+        if (onePlusStyleEnabled) {
+            if (mSmallClockFrame != null) {
+                mSmallClockFrame.setVisibility(GONE);
+            }
+            if (mLargeClockFrame != null) {
+                mLargeClockFrame.setVisibility(GONE);
+            }
         }
         
         onConfigChanged();
@@ -540,6 +545,13 @@ public class KeyguardClockSwitch extends RelativeLayout {
         }
 
         if (mDisplayedClockSize != null && !mChildrenAreLaidOut) {
+            post(() -> updateClockViews(mDisplayedClockSize == LARGE, mAnimateOnLayout));
+        } else if (!mChildrenAreLaidOut && mClock != null) {
+            // Fallback: ensure clock is visible even if displayClock was never called
+            // or if clocks were hidden during initialization
+            if (mDisplayedClockSize == null) {
+                mDisplayedClockSize = SMALL;
+            }
             post(() -> updateClockViews(mDisplayedClockSize == LARGE, mAnimateOnLayout));
         }
         mChildrenAreLaidOut = true;
