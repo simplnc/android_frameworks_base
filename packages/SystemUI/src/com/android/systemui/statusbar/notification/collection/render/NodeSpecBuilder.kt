@@ -70,11 +70,16 @@ class NodeSpecBuilder(
 
             // If this notif begins a new section, first add the section's header view
             if (section != currentSection) {
-                if (section.headerController != currentSection?.headerController && showHeaders) {
+                if (section.headerController != currentSection?.headerController) {
                     section.headerController?.let { headerController ->
-                        root.children.add(NodeSpecImpl(root, headerController))
-                        if (Compile.IS_DEBUG) {
-                            sectionHeaders[section] = headerController
+                        // Show header if headers are visible, or if it's the essential header
+                        // (essential header stays visible on keyguard)
+                        val isEssentialHeader = headerController.nodeLabel == "essential header"
+                        if (showHeaders || isEssentialHeader) {
+                            root.children.add(NodeSpecImpl(root, headerController))
+                            if (Compile.IS_DEBUG) {
+                                sectionHeaders[section] = headerController
+                            }
                         }
                     }
                 }

@@ -4076,4 +4076,9 @@
     <string name="oneplus_show_notifications_summary">Display notification count on lock screen</string>
     <string name="oneplus_show_date_title">Show Date</string>
     <string name="oneplus_show_date_summary">Display current date on lock screen</string>
+
+    <!-- Essential Notifications -->
+    <string name="essential_notifications_title">Essential Notifications</string>
+    <string name="notification_section_header_essential">Essential notification</string>
+    <string name="accessibility_notification_section_header_gentle_clear_all">Clear all essential notifications</string>
 </resources>

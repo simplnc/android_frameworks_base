@@ -46,6 +46,7 @@ import com.android.systemui.statusbar.notification.collection.provider.VisualSta
 import com.android.systemui.statusbar.notification.domain.interactor.SeenNotificationsInteractor;
 import com.android.systemui.statusbar.notification.shared.NotificationMinimalism;
 import com.android.systemui.statusbar.notification.headsup.HeadsUpManager;
+import com.android.systemui.statusbar.notification.stack.NotificationPriorityBucketKt;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.kotlin.BooleanFlowOperators;
@@ -237,6 +238,10 @@ public class VisualStabilityCoordinator implements Coordinator, Dumpable {
 
                 @Override
                 public boolean isSectionChangeAllowed(@NonNull NotificationEntry entry) {
+                    // Essential notifications are always allowed to change sections
+                    if (entry.getBucket() == NotificationPriorityBucketKt.BUCKET_ESSENTIAL) {
+                        return true;
+                    }
                     final boolean isSectionChangeAllowedForEntry =
                             mReorderingAllowed
                                     || canMoveForHeadsUp(entry)

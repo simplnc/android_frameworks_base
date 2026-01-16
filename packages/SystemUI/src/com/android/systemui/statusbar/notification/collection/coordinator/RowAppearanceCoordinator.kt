@@ -26,6 +26,7 @@ import com.android.systemui.statusbar.notification.collection.NotificationEntry
 import com.android.systemui.statusbar.notification.collection.coordinator.dagger.CoordinatorScope
 import com.android.systemui.statusbar.notification.collection.provider.SectionStyleProvider
 import com.android.systemui.statusbar.notification.collection.render.NotifRowController
+import com.android.systemui.statusbar.notification.stack.BUCKET_ESSENTIAL
 import javax.inject.Inject
 
 /**
@@ -71,12 +72,17 @@ internal constructor(
     }
 
     private fun onAfterRenderEntry(entry: NotificationEntry, controller: NotifRowController) {
+        val isEssential = entry.bucket == BUCKET_ESSENTIAL
+
         // If mAlwaysExpandNonGroupedNotification is false, then only expand the
         // very first notification if it's not a child of grouped notifications and when
         // mAutoExpandFirstNotification is true.
+        // Essential notifications are always collapsed by default.
         controller.setSystemExpanded(
-            mAlwaysExpandNonGroupedNotification ||
-                (mAutoExpandFirstNotification && entry == entryToExpand)
+            !isEssential && (
+                mAlwaysExpandNonGroupedNotification ||
+                    (mAutoExpandFirstNotification && entry == entryToExpand)
+            )
         )
         // Show/hide the feedback icon
         controller.setFeedbackIcon(mAssistantFeedbackController.getFeedbackIcon(entry))

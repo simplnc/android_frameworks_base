@@ -23,6 +23,8 @@ import com.android.systemui.statusbar.notification.collection.SortBySectionTimeF
 import com.android.systemui.statusbar.notification.collection.coordinator.dagger.CoordinatorScope
 import com.android.systemui.statusbar.notification.collection.listbuilder.pluggable.NotifSectioner
 import com.android.systemui.statusbar.notification.collection.provider.SectionStyleProvider
+import com.android.systemui.statusbar.notification.lineage.collection.coordinator.EssentialClassificationCoordinator
+import com.android.systemui.statusbar.notification.lineage.collection.coordinator.EssentialCoordinator
 import com.android.systemui.statusbar.notification.shared.NotificationMinimalism
 import com.android.systemui.statusbar.notification.shared.NotificationsLiveDataStoreRefactor
 import com.android.systemui.statusbar.notification.shared.PriorityPeopleSection
@@ -50,6 +52,8 @@ constructor(
     deviceProvisionedCoordinator: DeviceProvisionedCoordinator,
     bubbleCoordinator: BubbleCoordinator,
     headsUpCoordinator: HeadsUpCoordinator,
+    essentialCoordinator: EssentialCoordinator,
+    essentialClassificationCoordinator: EssentialClassificationCoordinator,
     gutsCoordinator: GutsCoordinator,
     conversationCoordinator: ConversationCoordinator,
     debugModeCoordinator: DebugModeCoordinator,
@@ -103,9 +107,11 @@ constructor(
         mCoordinators.add(shadeEventCoordinator)
         mCoordinators.add(viewConfigCoordinator)
         mCoordinators.add(visualStabilityCoordinator)
+        mCoordinators.add(essentialClassificationCoordinator) // Must be early for classification
         mCoordinators.add(sensitiveContentCoordinator)
         mCoordinators.add(smartspaceDedupingCoordinator)
         mCoordinators.add(headsUpCoordinator)
+        mCoordinators.add(essentialCoordinator)
         mCoordinators.add(gutsCoordinator)
         mCoordinators.add(preparationCoordinator)
         mCoordinators.add(remoteInputCoordinator)
@@ -120,6 +126,7 @@ constructor(
             mOrderedSections.add(lockScreenMinimalismCoordinator.topOngoingSectioner) // Top Ongoing
         }
         mOrderedSections.add(headsUpCoordinator.sectioner) // HeadsUp
+        mOrderedSections.add(essentialCoordinator.essentialSectioner) // Essential
         if (NotificationMinimalism.isEnabled) {
             mOrderedSections.add(lockScreenMinimalismCoordinator.topUnseenSectioner) // Top Unseen
         }

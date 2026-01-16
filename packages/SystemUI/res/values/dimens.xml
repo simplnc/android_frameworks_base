@@ -2140,4 +2140,10 @@
     <dimen name="kg_widget_margin_bottom">24dp</dimen>
     <dimen name="kg_widgets_icon_padding">12dp</dimen>
     <dimen name="kg_widgets_margin_horizontal">8dp</dimen>
+
+    <!-- Essential Notifications -->
+    <dimen name="essential_notification_row_padding">4dp</dimen>
+    <dimen name="essential_section_padding">1.5dp</dimen>
+    <dimen name="essential_section_corner_radius">16dp</dimen>
+    <dimen name="essential_section_header_height">36dp</dimen>
 </resources>
