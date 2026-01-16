@@ -22,12 +22,11 @@ import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.content.Context;
 import android.os.UserHandle;
 import android.provider.Settings;
 
 import org.rising.server.ShakeGestureUtils;
-
-import com.android.server.NtServiceInjector;
 
 public final class ShakeGestureImpl {
 
@@ -47,8 +46,8 @@ public final class ShakeGestureImpl {
 
     private boolean gestureCurrentlyEnabled = false;
 
-    public ShakeGestureImpl(Callbacks callbacks) {
-        mContext = NtServiceInjector.getCtx();
+    public ShakeGestureImpl(Context context, Callbacks callbacks) {
+        mContext = context;
 
         HandlerThread thread = new HandlerThread("Shake-Gesture");
         thread.start();

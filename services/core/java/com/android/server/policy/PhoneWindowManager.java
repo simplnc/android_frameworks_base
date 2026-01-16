@@ -7495,7 +7495,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
         mGestureLauncherService = LocalServices.getService(GestureLauncherService.class);
         
-        mShakeGestureImpl = new ShakeGestureImpl(new ShakeGestureImpl.Callbacks() {
+        mShakeGestureImpl = new ShakeGestureImpl(mContext, new ShakeGestureImpl.Callbacks() {
             @Override
             public void onShake() {
                 if (mShakeAction == Action.NOTHING)
