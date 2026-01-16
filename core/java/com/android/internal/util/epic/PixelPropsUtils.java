@@ -73,6 +73,8 @@ public final class PixelPropsUtils {
     private static final String PROP_HOOKS = "persist.sys.pihooks_";
     public static final String SPOOF_PIXEL_GMS = "persist.sys.pixelprops.gms";
     public static final String ENABLE_GAME_PROP_OPTIONS = "persist.sys.gameprops.enabled";
+    public static final String ENABLE_TRICKYSTORE = "persist.sys.trickystore.enabled";
+    public static final String ENABLE_TRICKYSTORE = "persist.sys.trickystore.enabled";
 
     private static final String TAG = PixelPropsUtils.class.getSimpleName();
     private static final boolean DEBUG = false;

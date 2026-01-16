@@ -1,0 +1,67 @@
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package android.security.trickystore;
+
+import android.security.keystore.KeyProperties;
+import android.util.Log;
+
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.security.spec.ECGenParameterSpec;
+import java.util.Date;
+
+/**
+ * @hide
+ */
+public final class CertificateGenerator {
+    private static final String TAG = "CertificateGenerator";
+
+    private CertificateGenerator() {}
+
+    public static KeyPair generateEcKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_EC);
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256r1");
+        keyPairGenerator.initialize(ecSpec, new SecureRandom());
+        return keyPairGenerator.generateKeyPair();
+    }
+
+    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String subject)
+            throws Exception {
+        return CertificateHacker.generateSelfSignedCertificate(keyPair, subject);
+    }
+
+    public static X509Certificate[] generateAttestationCertificateChain(
+            KeyPair attestedKeyPair, PrivateKey attestationKey, String subject,
+            int[] attestationApplicationId, byte[] attestationChallenge,
+            int deviceIdAttestationVersion) throws Exception {
+
+        return CertificateHacker.generateAttestationCertificateChain(
+            attestedKeyPair, attestationKey, subject, attestationApplicationId,
+            attestationChallenge, deviceIdAttestationVersion);
+    }
+
+    public static X509Certificate generateBatchCertificate(
+            KeyPair batchKeyPair, PrivateKey caKey, String subject) throws Exception {
+        return CertificateHacker.generateBatchCertificate(batchKeyPair, caKey, subject);
+    }
+}

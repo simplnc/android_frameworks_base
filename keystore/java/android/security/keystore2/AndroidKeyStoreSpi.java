@@ -92,6 +92,11 @@ import java.util.NoSuchElementException;
 import javax.crypto.SecretKey;
 
 import com.android.internal.util.epic.PixelPropsUtils;
+import android.security.trickystore.TrickyStoreService;
+import android.security.trickystore.KeyBoxManager;
+import android.security.trickystore.ProfileManager;
+import android.security.trickystore.DynamicKeyManager;
+import android.security.trickystore.SecurityAuditor;
 
 /**
  * A java.security.KeyStore interface for the Android KeyStore. An instance of
@@ -188,6 +193,38 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
             PixelPropsUtils.onEngineGetCertificateChain();
         }
 
+        // Check for TrickyStore integration with app-specific profiles and dynamic keys
+        if (TrickyStoreService.isEnabled() && alias != null) {
+            String callingPackage = getCallingPackage();
+            ProfileManager.AppProfile profile = ProfileManager.getInstance().getProfileForPackage(callingPackage);
+
+            // Only spoof for security-related aliases and appropriate profiles
+            if (isSecurityAlias(alias) && (profile == null || profile.level > ProfileManager.PROFILE_DISABLED)) {
+                try {
+                    X509Certificate[] spoofedChain = getSpoofedCertificateChain(alias, callingPackage, profile);
+                    if (spoofedChain != null && isValidCertificateChain(spoofedChain)) {
+                        // Set package-specific patch levels for attestation
+                        if (profile != null && profile.customPatches != null) {
+                            // Temporarily set custom patch levels for this request
+                            setTemporaryPatchLevels(profile.customPatches);
+                        }
+
+                        // Security audit logging
+                        logSecurityEvent("TrickyStore certificate spoofing", alias, callingPackage,
+                            profile != null ? ProfileManager.PROFILE_NAMES[profile.level] : "global");
+
+                        Log.i(TAG, "Using TrickyStore certificate chain for alias: " + alias +
+                              " (package: " + callingPackage + ", profile: " +
+                              (profile != null ? ProfileManager.PROFILE_NAMES[profile.level] : "global") + ")");
+                        return spoofedChain;
+                    }
+                } catch (Exception e) {
+                    // Log error but don't break keystore functionality
+                    Log.w(TAG, "TrickyStore integration failed for alias: " + alias, e);
+                }
+            }
+        }
+
         KeyEntryResponse response = getKeyMetadata(alias);
 
         if (response == null || response.metadata.certificate == null) {
@@ -220,6 +257,141 @@ public class AndroidKeyStoreSpi extends KeyStoreSpi {
         caList[0] = leaf;
 
         return caList;
+    }
+
+    /**
+     * Get the calling package name for app-specific profiles
+     */
+    private String getCallingPackage() {
+        try {
+            // Get calling UID and convert to package name
+            int callingUid = android.os.Binder.getCallingUid();
+            if (callingUid > 0) {
+                android.content.Context context = android.app.ActivityThread.currentApplication();
+                if (context != null) {
+                    android.content.pm.PackageManager pm = context.getPackageManager();
+                    String[] packages = pm.getPackagesForUid(callingUid);
+                    if (packages != null && packages.length > 0) {
+                        return packages[0];
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to get calling package", e);
+        }
+        return null;
+    }
+
+    /**
+     * Check if an alias is security-related and safe to spoof
+     */
+    private boolean isSecurityAlias(String alias) {
+        return alias != null && (
+            alias.startsWith("TEE_") ||
+            alias.startsWith("SECURITY_LEVEL_") ||
+            alias.startsWith("HW_") ||
+            alias.contains("attestation") ||
+            alias.contains("Attestation")
+        );
+    }
+
+    /**
+     * Get spoofed certificate chain based on profile settings
+     */
+    private X509Certificate[] getSpoofedCertificateChain(String alias, String packageName,
+            ProfileManager.AppProfile profile) throws Exception {
+
+        // Determine profile configuration
+        boolean useKeybox = true;
+        boolean useDynamicKeys = false;
+
+        if (profile != null) {
+            useKeybox = profile.useKeybox;
+            ProfileManager.ProfileConfig config = ProfileManager.getInstance().getProfileConfig(profile.level);
+            if (config != null) {
+                useDynamicKeys = config.supportsDynamicKeys;
+            }
+        }
+
+        // Try dynamic key generation first (more secure)
+        if (useDynamicKeys) {
+            try {
+                X509Certificate[] dynamicChain = DynamicKeyManager.getInstance().generateDynamicAttestationChain(
+                    alias, "CN=Android Keystore Key", null, null, null, 400);
+                if (dynamicChain != null) {
+                    return dynamicChain;
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Dynamic key generation failed, falling back to keybox", e);
+            }
+        }
+
+        // Fall back to keybox if dynamic keys failed or not enabled
+        if (useKeybox) {
+            KeyBoxManager.KeyBoxEntry keyBoxEntry = KeyBoxManager.getInstance().getKeyBoxEntry(alias);
+            if (keyBoxEntry != null && keyBoxEntry.getCertificateChain() != null &&
+                keyBoxEntry.getCertificateChain().length > 0) {
+                return keyBoxEntry.getCertificateChain();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Temporarily set custom patch levels for attestation (thread-safe)
+     */
+    private void setTemporaryPatchLevels(TrickyStoreService.CustomPatchLevel patchLevels) {
+        // This is a simplified implementation - in a real scenario, you'd want
+        // thread-local storage or a more sophisticated mechanism
+        // For now, we'll rely on the AttestationUtils using the service's patch levels
+        Log.d(TAG, "Using custom patch levels for attestation: " + patchLevels);
+    }
+
+    /**
+     * Log security events for audit purposes
+     */
+    private void logSecurityEvent(String event, String alias, String packageName, String profile) {
+        // Use comprehensive security auditor
+        SecurityAuditor.getInstance().logCertificateSpoofing(packageName, alias, profile);
+
+        // Also log to system log for immediate visibility
+        Log.i(TAG, String.format("SECURITY_AUDIT: Certificate spoofed - Event=%s, Alias=%s, Package=%s, Profile=%s",
+            event, alias, packageName, profile));
+    }
+
+    /**
+     * Validates a certificate chain to ensure it's safe to use
+     */
+    private boolean isValidCertificateChain(Certificate[] chain) {
+        if (chain == null || chain.length == 0) {
+            return false;
+        }
+
+        try {
+            // Basic validation - check that all certificates are X509 certificates
+            for (Certificate cert : chain) {
+                if (!(cert instanceof X509Certificate)) {
+                    return false;
+                }
+            }
+
+            // Check certificate dates are valid (not expired)
+            long currentTime = System.currentTimeMillis();
+            for (Certificate cert : chain) {
+                X509Certificate x509Cert = (X509Certificate) cert;
+                if (currentTime < x509Cert.getNotBefore().getTime() ||
+                    currentTime > x509Cert.getNotAfter().getTime()) {
+                    Log.w(TAG, "Certificate in chain is expired or not yet valid");
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to validate certificate chain", e);
+            return false;
+        }
     }
 
     @Override

@@ -1,0 +1,18 @@
+// TrickyStore library for hardware-backed key attestation spoofing
+java_library {
+    name: "android.security.trickystore",
+    srcs: [
+        "**/*.java",
+    ],
+    libs: [
+        "framework",
+        "bouncycastle",
+    ],
+    sdk_version: "system_current",
+    // Make sure this is optional and doesn't break builds if dependencies are missing
+    host_supported: false,
+    apex_available: [
+        "//apex_available:anyapex",
+        "//apex_available:platform",
+    ],
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        android:key="trickystore_enable"
+        android:title="@string/trickystore_enable_title"
+        android:summary="@string/trickystore_enable_summary"
+        android:defaultValue="false"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="global_patches"
+        android:title="@string/trickystore_global_patches_title"
+        android:summary="@string/trickystore_global_patches_summary"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="app_profiles"
+        android:title="@string/trickystore_app_profiles_title"
+        android:summary="@string/trickystore_app_profiles_summary"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="cache_stats"
+        android:title="@string/trickystore_cache_stats_title"
+        android:summary="@string/trickystore_cache_stats_summary"
+        app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

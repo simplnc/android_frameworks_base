@@ -6724,4 +6724,8 @@ ul.</string>
 
     <!-- Fingerprint loe notification string -->
     <string name="fingerprint_loe_notification_msg">Your fingerprints can no longer be recognized. Set up Fingerprint Unlock again.</string>
+
+    <!-- TrickyStore permission strings -->
+    <string name="perm_label_access_trickystore">TrickyStore Access</string>
+    <string name="perm_desc_access_trickystore">Allows access to TrickyStore functionality for hardware-backed key attestation spoofing. This permission is only granted to system applications.</string>
 </resources>

@@ -6914,6 +6914,15 @@
     <permission android:name="android.permission.RECOVER_KEYSTORE"
         android:protectionLevel="signature|privileged" />
 
+    <!-- @SystemApi Allows access to TrickyStore functionality for key attestation spoofing.
+         <p>This permission is only granted to system applications and is used for
+         hardware-backed key attestation spoofing in custom ROMs.
+         @hide -->
+    <permission android:name="android.permission.ACCESS_TRICKYSTORE"
+        android:protectionLevel="signature|privileged"
+        android:label="@string/perm_label_access_trickystore"
+        android:description="@string/perm_desc_access_trickystore" />
+
     <!-- Allows a package to launch the secure full-backup confirmation UI.
          ONLY the system process may hold this permission.
          @hide -->

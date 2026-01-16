@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TrickyStore system property overlays -->
+<resources>
+    <!-- Default system properties for TrickyStore -->
+    <string name="persist.sys.trickystore.enabled">false</string>
+</resources>

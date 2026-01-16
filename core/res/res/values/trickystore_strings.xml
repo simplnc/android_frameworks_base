@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TrickyStore settings strings -->
+<resources>
+    <!-- Settings UI -->
+    <string name="trickystore_enable_title">Enable TrickyStore</string>
+    <string name="trickystore_enable_summary">Enable hardware-backed key attestation spoofing</string>
+    <string name="trickystore_enabled">TrickyStore enabled</string>
+    <string name="trickystore_disabled">TrickyStore disabled</string>
+
+    <!-- Global Patches -->
+    <string name="trickystore_global_patches_title">Global Security Patches</string>
+    <string name="trickystore_global_patches_summary">Set global security patch levels</string>
+    <string name="trickystore_global_patches_description">Configure custom security patch levels that will be used when no app-specific profile is configured.</string>
+    <string name="trickystore_system_patch_hint">System patch (e.g., 2024-12-01)</string>
+    <string name="trickystore_vendor_patch_hint">Vendor patch (e.g., 2024-12-01)</string>
+    <string name="trickystore_boot_patch_hint">Boot patch (e.g., 2024-12-01)</string>
+    <string name="trickystore_patches_saved">Security patches saved</string>
+
+    <!-- App Profiles -->
+    <string name="trickystore_app_profiles_title">App-Specific Profiles</string>
+    <string name="trickystore_app_profiles_summary">Configure different spoofing levels per app</string>
+    <string name="trickystore_app_profiles_description">Configure different spoofing profiles for individual apps. Apps without specific profiles will use global settings.</string>
+    <string name="trickystore_no_profiles">No app-specific profiles configured</string>
+
+    <!-- Add Profile -->
+    <string name="trickystore_add_profile_title">Add App Profile</string>
+    <string name="trickystore_add_profile_description">Create a spoofing profile for a specific app.</string>
+    <string name="trickystore_package_name_hint">Package name (e.g., com.example.app)</string>
+    <string name="trickystore_browse_apps_button">Browse Installed Apps</string>
+    <string name="trickystore_select_app">Select App</string>
+    <string name="trickystore_profile_level_label">Spoofing Level</string>
+    <string name="trickystore_add_profile_button">Add Profile</string>
+    <string name="trickystore_profile_added">Profile added</string>
+
+    <!-- Edit Profile -->
+    <string name="trickystore_edit_profile_title">Edit Profile: %s</string>
+    <string name="trickystore_edit_profile_description">Modify the spoofing settings for this app.</string>
+    <string name="trickystore_use_keybox_label">Use Keybox</string>
+    <string name="trickystore_profile_updated">Profile updated</string>
+
+    <!-- Delete Profile -->
+    <string name="trickystore_delete_profile_title">Delete Profile</string>
+    <string name="trickystore_delete_profile_message">Delete the spoofing profile for %s? This action cannot be undone.</string>
+    <string name="trickystore_delete_profile_button">Delete Profile</string>
+    <string name="trickystore_profile_deleted">Profile deleted</string>
+
+    <!-- Cache Stats -->
+    <string name="trickystore_cache_stats_title">Dynamic Key Cache</string>
+    <string name="trickystore_cache_stats_summary">%d keys cached</string>
+    <string name="trickystore_cache_stats_details">Dynamic key cache contains %d generated key pairs. Keys expire after 30 minutes.</string>
+    <string name="trickystore_cache_stats_error">Failed to get cache statistics</string>
+    <string name="trickystore_clear_cache">Clear Cache</string>
+    <string name="trickystore_cache_cleared">Cache cleared</string>
+
+    <!-- Common -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="add">Add</string>
+    <string name="done">Done</string>
+    <string name="edit">Edit</string>
+</resources>
