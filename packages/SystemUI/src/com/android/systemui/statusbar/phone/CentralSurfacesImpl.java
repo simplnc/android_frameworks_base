@@ -53,6 +53,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.hardware.devicestate.DeviceStateManager;
+import android.hardware.display.DisplayManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.metrics.LogMaker;
 import android.net.Uri;
@@ -82,6 +83,8 @@ import android.view.ThreadedRenderer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowInsetsController.Appearance;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityManager;
@@ -466,7 +469,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
 
     private GameSpaceManager mGameSpaceManager;
 
-    private CentralSurfacesComponent mCentralSurfacesComponent;
+    // CentralSurfacesComponent removed - not used and class not found
 
     private DisplayManager mDisplayManager;
 
